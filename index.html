@@ -1738,6 +1738,7 @@ if (window.__hkGateBlocked) {
           <canvas id="adminAttendanceChart"></canvas>
         </div>
         <div class="flex justify-center gap-4 text-[8px] font-bold uppercase tracking-wider border-t border-slate-50 dark:border-slate-700 pt-3">
+            <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0c4a6e]"></span> <span>Owner</span></div>
             <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0ea5e9]"></span> <span>Field</span></div>
             <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#8b5cf6]"></span> <span>Core</span></div>
             <div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#f59e0b]"></span> <span>PMI</span></div>
@@ -1749,8 +1750,14 @@ if (window.__hkGateBlocked) {
         <h3 class="text-sm font-bold flex items-center gap-2 text-brand-600">
           <i class="fa-solid fa-map-location-dot"></i> Peta Sebaran Kegiatan Tim
         </h3>
-        <p class="text-[10px] text-slate-400">Visualisasi lokasi pekerjaan seluruh personil (Warna titik sesuai Kategori Konsultan).</p>
+        <p class="text-[10px] text-slate-400">Visualisasi lokasi pekerjaan seluruh personil (Warna titik sesuai Kategori Tim).</p>
         <div id="adminTeamMap" class="w-full h-80 rounded-xl border border-slate-200 dark:border-slate-700 z-0 bg-slate-50"></div>
+        <div class="flex justify-center gap-4 text-[8px] font-bold uppercase tracking-wider border-t border-slate-50 dark:border-slate-700 pt-3">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0c4a6e] border border-white shadow-sm"></span> <span>Owner (Pusat)</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9] border border-white shadow-sm"></span> <span>Field Team</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] border border-white shadow-sm"></span> <span>Core Team</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] border border-white shadow-sm"></span> <span>PMI</span></div>
+        </div>
       </div>
 
       <!-- Firestore Data View (Simulated for now) -->
@@ -2020,6 +2027,12 @@ if (window.__hkGateBlocked) {
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600"></div>
             </div>
         </div>
+        <div class="flex justify-center gap-4 text-[8px] font-bold uppercase tracking-wider border-t border-slate-50 dark:border-slate-700 pt-3">
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0c4a6e] border border-white shadow-sm"></span> <span>Owner (Pusat)</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#0ea5e9] border border-white shadow-sm"></span> <span>Field Team</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#8b5cf6] border border-white shadow-sm"></span> <span>Core Team</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-[#f59e0b] border border-white shadow-sm"></span> <span>PMI</span></div>
+        </div>
       </div>
 
       <!-- ACTION PLAN MANAGEMENT (NEW) -->
@@ -2069,7 +2082,7 @@ if (window.__hkGateBlocked) {
 
     <!-- Version & Copyright -->
     <div class="pt-8 pb-12 text-center space-y-1 opacity-60">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.9.21</p>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.22</p>
       <p class="text-[10px] text-slate-400 font-medium">Copyright &copy; <span id="copyrightYearFooter">2026</span> PJT Paltung 1-2. All Rights Reserved.</p>
     </div>
 
@@ -2792,7 +2805,7 @@ if (window.__hkGateBlocked) {
 
         <div class="flex-1 overflow-y-auto pr-2 space-y-6">
             <!-- Global Config -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Tim</label>
                     <select id="apCategory" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
@@ -2803,10 +2816,14 @@ if (window.__hkGateBlocked) {
                     </select>
                 </div>
                 <div class="space-y-1">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
+                    <input type="date" id="apGlobalTargetDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800 dark:text-slate-100">
+                </div>
+                <div class="space-y-1">
                     <label class="text-[10px] font-bold text-slate-400 uppercase flex justify-between">
                         <span>Pilih Sumber Data (PDF/Gambar)</span>
                     </label>
-                    <button onclick="document.getElementById('apFileInput').click()" class="w-full bg-brand-50 text-brand-600 font-black py-2.5 rounded-xl text-xs border border-brand-200 hover:bg-brand-100 transition flex items-center justify-center gap-2 uppercase tracking-widest">
+                    <button onclick="document.getElementById('apFileInput').click()" class="w-full bg-brand-50 text-brand-600 font-black py-2 rounded-xl text-xs border border-brand-200 hover:bg-brand-100 transition flex items-center justify-center gap-2 uppercase tracking-widest">
                         <i class="fa-solid fa-file-pdf"></i> <span id="apFileName">Impor via AI Gemini</span>
                     </button>
                     <input type="file" id="apFileInput" class="hidden" accept="application/pdf,image/*" onchange="handleActionPlanFileSelect(event)">
@@ -2821,11 +2838,12 @@ if (window.__hkGateBlocked) {
                 </div>
 
                 <!-- Table-like header -->
-                <div class="hidden md:grid grid-cols-12 gap-3 px-3 py-1 text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-900/50 rounded-lg">
-                    <div class="col-span-4">Nama Item Pekerjaan</div>
+                <div class="hidden md:grid grid-cols-12 gap-2 md:gap-3 px-3 py-1 text-[9px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+                    <div class="col-span-3">Nama Pekerjaan</div>
                     <div class="col-span-2 text-center">Target Vol</div>
                     <div class="col-span-2 text-center">Satuan</div>
-                    <div class="col-span-3">Pilih PIC Lapangan</div>
+                    <div class="col-span-2 text-center">Target Selesai</div>
+                    <div class="col-span-2">PIC Lapangan</div>
                     <div class="col-span-1"></div>
                 </div>
 
@@ -3366,7 +3384,31 @@ if (window.__hkGateBlocked) {
       } catch (e) {}
     }
 
+    // [30] Normalisasi presensi lama tanpa kategori (idempoten)
+    window.__hkNormalizeTerlambat = function () {
+      try {
+        if (window.__hkTerlambatDone) return;
+        let changed = false;
+        (state.presensi || []).forEach(p => {
+          if (p && p.type === 'masuk' && !p.category && p.time) {
+            const t = p.time.split(':');
+            const h = parseInt(t[0], 10), m = parseInt(t[1], 10);
+            if (!isNaN(h) && !isNaN(m) && (h * 60 + m) > 8 * 60) { p.category = 'Terlambat'; changed = true; }
+            else { p.category = 'Tepat Waktu'; changed = true; }
+          }
+        });
+        if (changed) {
+          saveDataToStorage();
+          if (window.Android && window.Android.syncToCloud) {
+            try { window.Android.syncToCloud(JSON.stringify(state)); } catch (e) {}
+          }
+        }
+        window.__hkTerlambatDone = true;
+      } catch (e) { console.warn("[30] normalisasi gagal:", e); }
+    };
+
     function checkAutoCheckOut() {
+        try { window.__hkNormalizeTerlambat && window.__hkNormalizeTerlambat(); } catch (e) {} // [30]
         if (!state || !state.presensi || !Array.isArray(state.presensi)) return;
         const todayStr = getTodayDateString();
 
@@ -3396,6 +3438,7 @@ if (window.__hkGateBlocked) {
                         address: masukEntry.address || 'Auto Check-Out Sistem (17:00)',
                         accuracy: 'Auto (Sistem)',
                         photo: masukEntry.photo || '',
+                        category: (masukEntry && masukEntry.category === 'Terlambat') ? 'Terlambat' : 'Tepat Waktu', // [30]
                         note: 'Auto Check-Out Sistem (Ganti Hari / 17:00)',
                         autoGenerated: true,
                         updatedAt: Date.now()
@@ -4087,7 +4130,8 @@ if (window.__hkGateBlocked) {
         let actionBtn = "";
 
         if (p.type === 'masuk') {
-          typeBadge = `<span class="bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Masuk</span>`;
+          const lateMasuk = p.category === 'Terlambat'; // [30]
+          typeBadge = `<span class="${lateMasuk ? 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300' : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'} text-[10px] font-bold px-2.5 py-0.5 rounded-full">${lateMasuk ? 'Masuk (Terlambat)' : 'Masuk'}</span>`;
           details = `Jam: ${p.time} | Akurasi: ${p.accuracy}`;
           actionBtn = `<button onclick="openDetailModalView('masuk', '${p.date}')" class="text-xs font-bold text-brand-600 dark:text-sky-400 hover:underline">Lihat Detail & Foto <i class="fa-solid fa-angle-right"></i></button>`;
         } else if (p.type === 'pulang') {
@@ -4404,6 +4448,8 @@ if (window.__hkGateBlocked) {
         accuracy: `${liveCoords.accuracy.toFixed(1)}m`,
         photo: photoReference,
         mockDetected: "Aman (Hardware GPS)",
+        // [30] Terlambat jika absen Masuk lewat jam 08:00
+        category: (currentAbsenType === 'masuk' && (function () { const d = new Date(); return (d.getHours() * 60 + d.getMinutes()) > 8 * 60; })()) ? "Terlambat" : "Tepat Waktu",
         updatedAt: Date.now()
       };
 
@@ -4415,6 +4461,10 @@ if (window.__hkGateBlocked) {
       }
 
       saveDataToStorage();
+
+      if (currentAbsenType === 'masuk' && newAbsen.category === 'Terlambat') {
+          setTimeout(() => showToast("Anda tercatat TERLAMBAT (absen setelah jam 08:00).", "error"), 900); // [30]
+      }
 
       showToast(`Absen ${currentAbsenType === 'masuk' ? 'Masuk' : 'Pulang'} Berhasil disimpan!`, "success");
       closeAbsenModal();
@@ -5502,6 +5552,10 @@ if (window.__hkGateBlocked) {
           <div class="flex justify-between">
             <span class="text-slate-400">Jam Presensi:</span>
             <span class="font-bold text-brand-600 dark:text-sky-400">${item.time}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Status:</span>
+            <span class="font-extrabold ${item.category === 'Terlambat' ? 'text-rose-500' : 'text-emerald-500'}">${item.category === 'Terlambat' ? 'TERLAMBAT (> 08:00)' : 'Tepat Waktu'}</span>
           </div>
           <div class="flex justify-between">
             <span class="text-slate-400">Akurasi GPS:</span>
@@ -7054,9 +7108,9 @@ if (window.__hkGateBlocked) {
         document.getElementById('adminLaporanLabel').textContent = isTodaySelected ? "Kegiatan Hari Ini" : "Kegiatan Terpilih";
         document.getElementById('adminUserAktifLabel').textContent = isTodaySelected ? "Total User Aktif" : "User Aktif Terpilih";
 
-        // Data for Chart: { day: [Field, Core, PMI] }
+        // Data for Chart: { day: [Owner, Field, Core, PMI] }
         const chartCounts = {};
-        for(let d=1; d<=totalDays; d++) chartCounts[d] = [0, 0, 0];
+        for(let d=1; d<=totalDays; d++) chartCounts[d] = [0, 0, 0, 0];
 
         const role = state.profile.role || state.profile.konsultan;
         let allDataToRender = [...remoteTeamData];
@@ -7103,9 +7157,10 @@ if (window.__hkGateBlocked) {
 
                 presentDays.forEach(day => {
                     if (chartCounts[day]) {
-                        if (userCategory === "Konsultan Field Team") chartCounts[day][0]++;
-                        else if (userCategory === "Konsultan Core Team") chartCounts[day][1]++;
-                        else if (userCategory === "Konsultan PMI") chartCounts[day][2]++;
+                        if (userCategory === "Owner") chartCounts[day][0]++;
+                        else if (userCategory === "Konsultan Field Team") chartCounts[day][1]++;
+                        else if (userCategory === "Konsultan Core Team") chartCounts[day][2]++;
+                        else if (userCategory === "Konsultan PMI") chartCounts[day][3]++;
                     }
                 });
             } catch (err) {
@@ -7317,7 +7372,7 @@ if (window.__hkGateBlocked) {
                     } else if (masuk || pulang) {
                         cellContent = `
                             <button onclick="viewRemoteDetail('${user.id}', '${dateStr}', 'masuk')" class="text-brand-600 font-bold hover:underline mb-1 inline-block">Detail</button>
-                            <div class="text-[9px]">Masuk : <span class="${masuk ? 'text-slate-800 dark:text-slate-100 font-semibold' : 'text-slate-300'}">${masuk ? masuk.time : '-'}</span></div>
+                            <div class="text-[9px]">Masuk : <span class="${masuk ? 'text-slate-800 dark:text-slate-100 font-semibold' : 'text-slate-300'}">${masuk ? masuk.time : '-'}</span>${masuk && masuk.category === 'Terlambat' ? ' <span class="text-[8px] font-black text-rose-500 uppercase">Terlambat</span>' : ''}</div>
                             <div class="text-[9px]">Pulang : <span class="${pulang ? 'text-slate-800 dark:text-slate-100 font-semibold' : 'text-slate-300'}">${pulang ? pulang.time : '-'}</span></div>
                         `;
                     } else {
@@ -7405,7 +7460,7 @@ if (window.__hkGateBlocked) {
         }
 
         document.getElementById('adminFieldsMasuk').innerHTML = masuk ? `
-            <p><b>Jam:</b> ${masuk.time}</p>
+            <p><b>Jam:</b> ${masuk.time}${masuk.category === 'Terlambat' ? ' <span class="text-rose-500 font-black uppercase">(Terlambat)</span>' : ''}</p>
             <p><b>Akurasi:</b> ${masuk.accuracy}</p>
             <p class="font-mono text-[8px] truncate"><b>Loc:</b> ${masuk.coords}</p>
         ` : `<p class="text-slate-400 italic">Belum absen masuk</p>`;
@@ -7699,14 +7754,16 @@ if (window.__hkGateBlocked) {
         if (adminAttendanceChart) adminAttendanceChart.destroy();
 
         const labels = Array.from({length: totalDays}, (_, i) => (i + 1).toString());
+        const dataOwner = [];
         const dataField = [];
         const dataCore = [];
         const dataPMI = [];
 
         for (let d = 1; d <= totalDays; d++) {
-            dataField.push(chartCounts[d][0]);
-            dataCore.push(chartCounts[d][1]);
-            dataPMI.push(chartCounts[d][2]);
+            dataOwner.push(chartCounts[d][0]);
+            dataField.push(chartCounts[d][1]);
+            dataCore.push(chartCounts[d][2]);
+            dataPMI.push(chartCounts[d][3]);
         }
 
         adminAttendanceChart = new Chart(ctx, {
@@ -7714,6 +7771,7 @@ if (window.__hkGateBlocked) {
             data: {
                 labels: labels,
                 datasets: [
+                    { label: 'Owner', data: dataOwner, backgroundColor: '#0c4a6e', borderRadius: 2 },
                     { label: 'Field', data: dataField, backgroundColor: '#0ea5e9', borderRadius: 2 },
                     { label: 'Core', data: dataCore, backgroundColor: '#8b5cf6', borderRadius: 2 },
                     { label: 'PMI', data: dataPMI, backgroundColor: '#f59e0b', borderRadius: 2 }
@@ -8254,13 +8312,65 @@ if (window.__hkGateBlocked) {
         }
     };
 
+    function formatDateShort(d) {
+        if (!d) return "-";
+        if (typeof d === 'string' && d.length >= 10) {
+            const parts = d.substring(0, 10).split('-');
+            if (parts.length === 3) {
+                const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agt", "Sep", "Okt", "Nov", "Des"];
+                const mIdx = parseInt(parts[1]) - 1;
+                return `${parts[2]} ${months[mIdx] || parts[1]} ${parts[0]}`;
+            }
+        }
+        return d;
+    }
+
+    function filterPlansByMonth(plans, monthSel, yearSel) {
+        if (!plans || !Array.isArray(plans)) return [];
+        const monthPrefix = `${yearSel}-${(monthSel + 1).toString().padStart(2, '0')}`;
+
+        return plans.filter(p => {
+            if (!p) return false;
+
+            // 1. Target Date check (e.g., "2026-09-30")
+            if (p.targetDate && typeof p.targetDate === 'string' && p.targetDate !== "") {
+                if (p.targetDate.startsWith(monthPrefix)) return true;
+            }
+
+            // 2. Timestamp check (creation time)
+            if (p.timestamp) {
+                let dateStr = "";
+                if (typeof p.timestamp === 'string') dateStr = p.timestamp;
+                else if (typeof p.timestamp === 'number') dateStr = new Date(p.timestamp).toISOString();
+                else if (p.timestamp.seconds) dateStr = new Date(p.timestamp.seconds * 1000).toISOString();
+
+                if (dateStr && dateStr.startsWith(monthPrefix)) return true;
+            }
+
+            // 3. Realizations check
+            if (p.realizations && Array.isArray(p.realizations)) {
+                if (p.realizations.some(r => r && r.date && r.date.startsWith(monthPrefix))) return true;
+            }
+
+            // Fallback for legacy plans without date
+            if (!p.targetDate && !p.timestamp) return true;
+
+            return false;
+        });
+    }
+
     function renderAdminActionPlans() {
         const container = document.getElementById('adminActionPlanList');
         const paginationContainer = document.getElementById('paginationActionPlan');
         if (!container) return;
 
-        if (cachedActionPlans.length === 0) {
-            container.innerHTML = `<div class="p-6 text-center text-slate-300 italic text-[10px] border-2 border-dashed border-slate-50 dark:border-slate-700 rounded-xl">Belum ada action plan dibuat.</div>`;
+        const monthSel = parseInt((document.getElementById('adminFilterBulan') || {}).value || new Date().getMonth());
+        const yearSel = CURRENT_YEAR || new Date().getFullYear();
+
+        const filteredPlans = filterPlansByMonth(cachedActionPlans, monthSel, yearSel);
+
+        if (filteredPlans.length === 0) {
+            container.innerHTML = `<div class="p-6 text-center text-slate-300 italic text-[10px] border-2 border-dashed border-slate-50 dark:border-slate-700 rounded-xl">Belum ada action plan untuk bulan ini.</div>`;
             if (paginationContainer) paginationContainer.classList.add('hidden');
             return;
         }
@@ -8269,7 +8379,7 @@ if (window.__hkGateBlocked) {
         const pag = paginationState.adminActionPlan;
         const startIndex = (pag.currentPage - 1) * pag.pageSize;
         const endIndex = startIndex + pag.pageSize;
-        const plansToDisplay = cachedActionPlans.slice(startIndex, endIndex);
+        const plansToDisplay = filteredPlans.slice(startIndex, endIndex);
 
         container.innerHTML = "";
         plansToDisplay.forEach((plan, idx) => {
@@ -8277,6 +8387,7 @@ if (window.__hkGateBlocked) {
             const realizations = plan.realizations || [];
             const status = plan.status || 'Planned';
             const targetVol = plan.targetVolume || 0;
+            const targetDateDisplay = formatDateShort(plan.targetDate);
 
             let latestVol = "-";
             if (realizations.length > 0) {
@@ -8290,7 +8401,7 @@ if (window.__hkGateBlocked) {
                 <div onclick="showActionPlanDetail('${plan.id}')" class="p-3 bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm space-y-2 transition hover:shadow-md cursor-pointer group">
                     <div class="flex justify-between items-start">
                         <div class="min-w-0 flex-1">
-                            <p class="text-[7px] text-brand-600 font-black uppercase tracking-tighter mb-0.5">${plan.category.replace("Konsultan ", "")}</p>
+                            <p class="text-[7px] text-brand-600 font-black uppercase tracking-tighter mb-0.5">${plan.category.replace("Konsultan ", "")} • Target Selesai: <span class="text-slate-500 font-bold">${targetDateDisplay}</span></p>
                             <p class="text-[10px] font-bold text-slate-700 dark:text-slate-100 leading-tight group-hover:text-brand-600 transition-colors truncate">${plan.activityName}</p>
                         </div>
                         <span class="text-[7px] px-2 py-0.5 rounded-full font-black uppercase flex-shrink-0 ${status === 'In Progress' ? 'bg-sky-50 text-brand-600' : (status === 'Completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600')}">${status}</span>
@@ -8312,7 +8423,7 @@ if (window.__hkGateBlocked) {
             `;
         });
 
-        renderPaginationUI(cachedActionPlans.length, 'adminActionPlan', 'paginationActionPlan', 'renderAdminActionPlans');
+        renderPaginationUI(filteredPlans.length, 'adminActionPlan', 'paginationActionPlan', 'renderAdminActionPlans');
     }
 
     function showActionPlanDetail(planId) {
@@ -8340,10 +8451,14 @@ if (window.__hkGateBlocked) {
                         <span class="text-[8px] px-3 py-1 rounded-full font-black uppercase ${plan.status === 'Completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">${plan.status || 'Planned'}</span>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200 dark:border-slate-800 mb-3">
+                    <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-200 dark:border-slate-800 mb-3">
                          <div>
                             <p class="text-[7px] text-slate-400 font-bold uppercase tracking-tight">Kategori</p>
                             <p class="text-[10px] font-bold text-brand-600">${plan.category.replace("Konsultan ", "")}</p>
+                         </div>
+                         <div>
+                            <p class="text-[7px] text-slate-400 font-bold uppercase tracking-tight">Target Selesai</p>
+                            <p class="text-[10px] font-bold text-slate-700 dark:text-slate-200">${formatDateShort(plan.targetDate)}</p>
                          </div>
                          <div>
                             <p class="text-[7px] text-slate-400 font-bold uppercase tracking-tight">Tim PIC Lapangan</p>
@@ -8535,8 +8650,12 @@ if (window.__hkGateBlocked) {
         if (!container) return;
 
         const myId = (window.Android && window.Android.getUserId) ? window.Android.getUserId() : "";
+        const monthSel = new Date().getMonth();
+        const yearSel = CURRENT_YEAR || new Date().getFullYear();
 
-        const myTasks = cachedActionPlans.filter(p => {
+        const filteredPlans = filterPlansByMonth(cachedActionPlans, monthSel, yearSel);
+
+        const myTasks = filteredPlans.filter(p => {
             const pics = Array.isArray(p.pics) ? p.pics : [];
             return pics.some(pic => (pic.uid === myId) || (pic === myId));
         });
@@ -8545,7 +8664,7 @@ if (window.__hkGateBlocked) {
             container.innerHTML = `
                 <div class="p-10 text-center text-slate-400 italic text-[11px] bg-white dark:bg-slate-800 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
                     <i class="fa-solid fa-calendar-check text-3xl mb-3 block opacity-20"></i>
-                    Tidak ada tugas pengawasan yang ditugaskan kepada Anda.
+                    Tidak ada tugas pengawasan untuk bulan ini.
                 </div>`;
             return;
         }
@@ -8636,6 +8755,11 @@ if (window.__hkGateBlocked) {
         const modal = document.getElementById('actionPlanModal');
         document.getElementById('apCategory').value = state.profile.role === 'Administrator' ? 'Konsultan Field Team' : (state.profile.managedRole || 'Konsultan Field Team');
 
+        const globalDateInput = document.getElementById('apGlobalTargetDate');
+        if (globalDateInput) {
+            globalDateInput.value = getTodayDateString();
+        }
+
         const container = document.getElementById('apTasksContainer');
         container.innerHTML = "";
         selectedRowPics = {};
@@ -8659,14 +8783,16 @@ if (window.__hkGateBlocked) {
         }
     }
 
-    function addAPTaskRow(name = "", vol = 0, unit = "m3") {
+    function addAPTaskRow(name = "", vol = 0, unit = "m3", targetDate = "") {
         const container = document.getElementById('apTasksContainer');
         const rowId = 'ap_row_' + Date.now() + Math.random().toString(36).substr(2, 5);
         selectedRowPics[rowId] = [];
 
+        const defaultDate = targetDate || document.getElementById('apGlobalTargetDate')?.value || getTodayDateString();
+
         const html = `
             <div id="${rowId}" class="grid grid-cols-12 gap-2 md:gap-3 items-center bg-slate-50 dark:bg-slate-900/80 p-3 rounded-2xl border border-slate-100 dark:border-slate-700 group transition hover:border-brand-200">
-                <div class="col-span-12 md:col-span-4 space-y-1">
+                <div class="col-span-12 md:col-span-3 space-y-1">
                     <input type="text" placeholder="Nama pekerjaan..." value="${name}" class="ap-task-input w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold px-3 py-2 focus:ring-1 focus:ring-brand-500 text-slate-800 dark:text-slate-100">
                 </div>
                 <div class="col-span-6 md:col-span-2">
@@ -8675,9 +8801,12 @@ if (window.__hkGateBlocked) {
                 <div class="col-span-6 md:col-span-2">
                     <input type="text" placeholder="Satuan" value="${unit}" class="ap-unit-input w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold px-2 py-2 focus:ring-1 focus:ring-brand-500 text-slate-800 dark:text-slate-100 text-center">
                 </div>
-                <div class="col-span-10 md:col-span-3">
-                    <button onclick="openRowPicSelector('${rowId}')" id="btn_pic_${rowId}" class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-left hover:bg-slate-50 transition">
-                        <span id="label_pic_${rowId}" class="text-[10px] font-bold text-slate-400 truncate">Pilih PIC...</span>
+                <div class="col-span-6 md:col-span-2">
+                    <input type="date" value="${defaultDate}" class="ap-target-date-input w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-[10px] font-bold px-2 py-2 focus:ring-1 focus:ring-brand-500 text-slate-800 dark:text-slate-100 text-center">
+                </div>
+                <div class="col-span-4 md:col-span-2">
+                    <button onclick="openRowPicSelector('${rowId}')" id="btn_pic_${rowId}" class="w-full flex items-center justify-between bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-2 py-2 text-left hover:bg-slate-50 transition">
+                        <span id="label_pic_${rowId}" class="text-[9px] font-bold text-slate-400 truncate">Pilih PIC...</span>
                         <i class="fa-solid fa-user-plus text-slate-300 text-xs"></i>
                     </button>
                 </div>
@@ -8816,6 +8945,7 @@ if (window.__hkGateBlocked) {
 
     function saveActionPlan() {
         const cat = document.getElementById('apCategory').value;
+        const globalTargetDate = document.getElementById('apGlobalTargetDate')?.value || getTodayDateString();
         const taskRows = document.querySelectorAll('#apTasksContainer > div');
         const plans = [];
 
@@ -8824,12 +8954,14 @@ if (window.__hkGateBlocked) {
             const input = row.querySelector('.ap-task-input');
             const targetVolInput = row.querySelector('.ap-target-vol-input');
             const unitInput = row.querySelector('.ap-unit-input');
+            const targetDateInput = row.querySelector('.ap-target-date-input');
 
             if (!input) return;
 
             const name = input.value.trim();
             const targetVol = targetVolInput ? parseFloat(targetVolInput.value) || 0 : 0;
             const unit = unitInput ? unitInput.value.trim() : "";
+            const targetDate = targetDateInput ? targetDateInput.value : globalTargetDate;
             const pics = selectedRowPics[rowId] || [];
 
             if (name && pics.length > 0) {
@@ -8837,6 +8969,7 @@ if (window.__hkGateBlocked) {
                     activityName: name,
                     targetVolume: targetVol,
                     unit: unit,
+                    targetDate: targetDate,
                     pics: pics,
                     category: cat
                 });
@@ -9049,7 +9182,7 @@ async function buildAbsensiExcelBrowser(data, fileName) {
           const row = ws.getRow(r);
           row.height = 110;
           const cNo = row.getCell(1); cNo.value = no++;
-          const cM = row.getCell(2); cM.value = masuk ? `${masuk.date || ''}\n${masuk.time || ''}` : '-';
+          const cM = row.getCell(2); cM.value = masuk ? `${masuk.date || ''}\n${masuk.time || ''}${masuk.category === 'Terlambat' ? ' (TERLAMBAT)' : ''}` : '-'; // [30]
           const cMLoc = row.getCell(3); cMLoc.value = masuk ? `\n\n\n\n\n\nLoc: ${masuk.coords || '-'}` : '-';
           const cP = row.getCell(4); cP.value = pulang ? `${pulang.date || ''}\n${pulang.time || ''}` : '-';
           const cPLoc = row.getCell(5); cPLoc.value = pulang ? `\n\n\n\n\n\nLoc: ${pulang.coords || '-'}` : '-';
@@ -9290,6 +9423,7 @@ async function buildAdminRecapExcelBrowser(data, fileName) {
           const masuk = dayEntries.find(e => e.type === 'masuk');
           const pulang = dayEntries.find(e => e.type === 'pulang');
           const absence = dayEntries.find(e => e.type === 'ketidakhadiran');
+          const isLateDay = masuk && masuk.category === 'Terlambat'; // [30]
 
           const cell = row.getCell(d + 1);
           cell.font = { size: 8 };
@@ -9299,7 +9433,7 @@ async function buildAdminRecapExcelBrowser(data, fileName) {
           if (absence) {
             cell.value = `IZIN: ${absence.category || ''}`;
           } else if (masuk || pulang) {
-            cell.value = `M: ${masuk ? masuk.time : '-'}\nP: ${pulang ? pulang.time : '-'}`;
+            cell.value = `M: ${masuk ? masuk.time : '-'}${isLateDay ? ' (TERLAMBAT)' : ''}\nP: ${pulang ? pulang.time : '-'}`; // [30]
           }
         }
         rowIdx++;
