@@ -1039,8 +1039,13 @@ if (window.__hkGateBlocked) {
         <div class="relative flex justify-center text-[10px] uppercase font-bold"><span class="bg-white dark:bg-slate-800 px-2 text-slate-400">Atau</span></div>
       </div>
 
-      <button onclick="showRequestAdmin()" class="w-full bg-slate-50 dark:bg-slate-700/50 text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-xs transition">
+      <button onclick="showRequestAdmin()" class="w-full bg-slate-50 dark:bg-slate-70/50 text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-xl border border-slate-200 dark:border-slate-600 text-xs transition mb-2">
         Hubungi Admin / Request Akses
+      </button>
+
+      <button onclick="openDefectLoginPage()" class="w-full bg-slate-900 hover:bg-slate-800 text-amber-400 font-extrabold py-3.5 rounded-2xl border border-slate-700 text-xs transition flex items-center justify-center gap-2 shadow-md uppercase tracking-wider">
+        <i class="fa-solid fa-list-check text-amber-400"></i>
+        <span>Beralih ke Akun Defect List</span>
       </button>
     </div>
 
@@ -1083,6 +1088,58 @@ if (window.__hkGateBlocked) {
     </div>
   </section>
 
+  <!-- PAGE 2: DEFECT LIST FULL LOGIN PAGE (NEW) -->
+  <section id="page-defect-login" class="fixed inset-0 z-45 bg-slate-900 flex flex-col items-center justify-center p-6 space-y-8 hidden">
+    <div class="text-center space-y-2">
+      <div class="bg-amber-500/20 p-6 rounded-3xl backdrop-blur-md shadow-2xl mb-4 inline-block border border-amber-500/30">
+        <img src="img/logo.png" alt="Logo" class="h-16 w-auto mx-auto">
+      </div>
+      <h2 class="text-2xl font-black text-amber-400">Selamat Datang</h2>
+      <p class="text-xs text-amber-200/80 font-bold uppercase tracking-widest">Login Khusus Akun Defect List (Inspeksi Cacat)</p>
+    </div>
+
+    <!-- Defect Login Form -->
+    <div class="w-full max-w-sm lg:max-w-md bg-slate-800 p-8 lg:p-10 rounded-3xl shadow-2xl border border-slate-700 space-y-6">
+      <div class="space-y-2">
+        <label class="text-[10px] font-bold text-amber-400 uppercase">Alamat Email (Gmail)</label>
+        <div class="relative">
+          <i class="fa-solid fa-envelope absolute left-3 top-3 text-slate-400"></i>
+          <input type="email" id="defectPageLoginEmail" placeholder="user.defect@gmail.com" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label class="text-[10px] font-bold text-amber-400 uppercase">Kata Sandi</label>
+        <div class="relative">
+          <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-400"></i>
+          <input type="password" id="defectPageLoginPass" placeholder="••••••••" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+        </div>
+      </div>
+
+      <button onclick="handleDefectPageLogin()" id="btnDefectLogin" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-black py-4 lg:py-5 rounded-2xl shadow-xl shadow-amber-500/25 transition flex items-center justify-center space-x-3 text-sm uppercase tracking-widest">
+        <span>Masuk ke Defect List</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+
+      <div class="text-center">
+        <button onclick="showResetForm()" class="text-[10px] font-bold text-slate-400 hover:text-amber-400 transition uppercase tracking-wider">Lupa Password / Aktivasi Akun?</button>
+      </div>
+
+      <div class="relative py-2">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-700"></div></div>
+        <div class="relative flex justify-center text-[10px] uppercase font-bold"><span class="bg-slate-800 px-2 text-slate-400">Atau</span></div>
+      </div>
+
+      <button onclick="showRequestAdmin()" class="w-full bg-slate-700/60 text-slate-300 font-bold py-2.5 rounded-xl border border-slate-600 text-xs transition mb-2 hover:bg-slate-700">
+        Hubungi Admin / Request Akses
+      </button>
+
+      <button onclick="openMainLoginPage()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-xl border border-brand-500 text-xs transition flex items-center justify-center gap-2 shadow-md uppercase tracking-wider">
+        <i class="fa-solid fa-house-chimney text-white"></i>
+        <span>Beralih ke Login Presensi Utama</span>
+      </button>
+    </div>
+  </section>
+
   <!-- APP VIEW CONTAINER (Responsive for Mobile, Tablet & Desktop PC) -->
   <main id="app-main" class="max-w-md md:max-w-4xl lg:max-w-6xl xl:max-w-[1400px] mx-auto p-4 lg:p-10 space-y-8 hidden">
 
@@ -1120,6 +1177,24 @@ if (window.__hkGateBlocked) {
                 <span id="liveDate" class="text-[10px] font-bold">17 Juni 2026</span>
             </div>
             <i class="fa-solid fa-clock absolute -right-4 -bottom-4 text-7xl opacity-10 -rotate-12"></i>
+        </div>
+
+        <!-- Defect List Quick Switch Card -->
+        <div id="defectQuickSwitchCard" class="col-span-12 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-600 p-4 rounded-[2rem] text-white flex items-center justify-between shadow-lg shadow-amber-500/20 relative overflow-hidden">
+            <div class="flex items-center gap-3.5 z-10 min-w-0 pr-2">
+                <div class="w-11 h-11 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-xl text-amber-100 flex-shrink-0">
+                    <i class="fa-solid fa-bug"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-amber-100">Modul Defect List Inspeksi</h3>
+                    <p class="text-[10px] opacity-90 truncate">Kelola temuan cacat, foto pemeriksaan, & update PIC</p>
+                </div>
+            </div>
+            <button onclick="switchToDefectListMode()" class="bg-white text-amber-700 hover:bg-amber-50 font-black text-[10px] uppercase tracking-wider px-4 py-2.5 rounded-xl shadow-md transition flex-shrink-0 flex items-center gap-1.5">
+                <span>Beralih Ke Defect</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            <i class="fa-solid fa-triangle-exclamation absolute -right-4 -bottom-4 text-7xl opacity-10 rotate-12"></i>
         </div>
 
         <!-- Block 3: Attendance Actions (Bento Span 7) -->
@@ -1195,6 +1270,7 @@ if (window.__hkGateBlocked) {
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Waktu produktif harian dalam 1 bulan</p>
                 </div>
                 <select id="rekapBulan" onchange="renderStatsAndCalendar()" class="bg-slate-50 dark:bg-slate-900 border-none text-[11px] font-black uppercase tracking-wider px-5 py-2.5 rounded-2xl focus:ring-2 focus:ring-brand-500 cursor-pointer shadow-inner transition-all">
+                    <option value="all">Semua Bulan (Tampilkan Seluruh Absensi)</option>
                     <option value="0">Januari 2026</option>
                     <option value="1">Februari 2026</option>
                     <option value="2">Maret 2026</option>
@@ -2080,9 +2156,448 @@ if (window.__hkGateBlocked) {
         </div>
     </section>
 
+    <!-- PAGE 6: DEFECT LIST MODULE (NEW) -->
+    <section id="page-defect-list" class="space-y-6 hidden">
+        <!-- Header Banner -->
+        <div class="bg-gradient-to-r from-amber-600 via-amber-700 to-orange-700 p-6 rounded-3xl text-white shadow-xl relative overflow-hidden">
+            <div class="relative z-10 flex justify-between items-start">
+                <div>
+                    <span class="text-[9px] font-black uppercase tracking-[0.2em] bg-white/20 px-2.5 py-1 rounded-full text-amber-100">Modul Inspeksi Lapangan</span>
+                    <h2 class="text-xl font-black italic tracking-tight mt-2">Defect List & Penanganan Cacat</h2>
+                    <p class="text-xs opacity-90 mt-1 font-medium">Penginputan temuan cacat, foto pemeriksaan, & pemantauan PIC</p>
+                </div>
+                <button onclick="switchToMainApp()" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-xl backdrop-blur-md transition text-xs font-extrabold flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Presensi Utama</span>
+                </button>
+            </div>
+            <i class="fa-solid fa-bug absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12"></i>
+        </div>
+
+        <!-- Sub Tabs Navigation (Compact Scrollable Bar: Beranda, Kelola Akun, Profil) -->
+        <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl p-1.5 shadow-inner overflow-x-auto scrollbar-none">
+            <button id="defTabBtnMain" onclick="switchDefectTab('main')" class="flex-1 min-w-[100px] text-center py-2 px-3 text-xs font-black rounded-xl bg-white dark:bg-slate-700 shadow-md text-amber-600 dark:text-amber-400 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-house text-amber-500"></i> <span>Beranda Defect</span>
+            </button>
+            <button id="defTabBtnManageAcc" onclick="switchDefectTab('manage-acc')" class="flex-1 min-w-[110px] text-center py-2 px-3 text-xs font-black rounded-xl text-slate-500 dark:text-slate-400 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap hidden">
+                <i class="fa-solid fa-users-gear text-amber-500"></i> <span>Kelola Akun Defect</span>
+            </button>
+            <button id="defTabBtnProfile" onclick="switchDefectTab('profile')" class="flex-1 min-w-[100px] text-center py-2 px-3 text-xs font-black rounded-xl text-slate-500 dark:text-slate-400 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap">
+                <i class="fa-solid fa-user-gear text-amber-500"></i> <span>Profil Akun</span>
+            </button>
+        </div>
+
+        <!-- SUBTAB 1: BERANDA DEFECT LIST (1 TOMBOL TAMBAH DEFECT + SINKRON + LIST DEFECT) -->
+        <div id="defectTabMainSection" class="space-y-6">
+            <!-- Action Card dengan 1 Tombol Tambah Defect & Tombol Sinkron Data -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-slate-100 dark:border-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <h3 class="text-sm font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-bug"></i> Beranda Defect List
+                    </h3>
+                    <p class="text-[10px] text-slate-400 font-medium">Kelola & laporkan temuan cacat/kerusakan konstruksi di lapangan.</p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <!-- TOMBOL SINKRON DATA -->
+                    <button onclick="syncDefectData()" id="btnSyncDefect" class="bg-amber-100 hover:bg-amber-200 text-amber-800 font-extrabold px-4 py-3.5 rounded-2xl border border-amber-300 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up text-amber-600"></i>
+                        <span>Sinkron Data</span>
+                    </button>
+
+                    <!-- 1 TOMBOL TAMBAH DEFECT -->
+                    <button onclick="openAddDefectModal()" id="btnOpenAddDefectModal" class="bg-amber-500 hover:bg-amber-600 text-white font-extrabold px-5 py-3.5 rounded-2xl shadow-lg shadow-amber-500/25 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus-circle text-base"></i>
+                        <span>Tambah Defect Baru</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Peta Sebaran Lokasi Defect Lapangan -->
+            <div id="defectDistributionMapContainer" class="bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-md border border-slate-100 dark:border-slate-700 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot"></i> Peta Sebaran Lokasi Defect
+                    </h3>
+                    <button onclick="renderDefectList()" class="text-[9px] font-bold text-slate-400 hover:text-amber-600 flex items-center gap-1 uppercase tracking-wider transition">
+                        <i class="fa-solid fa-rotate"></i> Refresh Peta
+                    </button>
+                </div>
+
+                <div id="defectDistributionMap" class="w-full h-60 rounded-2xl border border-slate-200 dark:border-slate-700 z-0 bg-slate-100 dark:bg-slate-900 overflow-hidden"></div>
+
+                <div class="flex flex-wrap justify-center gap-4 text-[9px] font-bold uppercase tracking-wider border-t border-slate-100 dark:border-slate-700 pt-3">
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 border border-white shadow-sm"></span> <span>Kritis</span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 border border-white shadow-sm"></span> <span>Mayor</span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500 border border-white shadow-sm"></span> <span>Minor</span></div>
+                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white shadow-sm"></span> <span>Closed/Selesai</span></div>
+                </div>
+            </div>
+
+            <!-- GRAFIK JUMLAH DEFECT AKUN ADMIN (BAR CHART TIM 1 - 7) -->
+            <div id="adminDefectChartContainer" class="bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-md border border-slate-100 dark:border-slate-700 space-y-3 hidden">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-bar"></i> Grafik Temuan Defect Per Tim (Tim 1 - 7)
+                    </h3>
+                    <span class="text-[9px] font-bold text-slate-400">Ringkasan Admin</span>
+                </div>
+                <div class="w-full h-48">
+                    <canvas id="adminDefectChart"></canvas>
+                </div>
+            </div>
+
+            <!-- RINGKASAN JUMLAH DEFECT TIM (SUB-ADMIN & ANGGOTA TIM) -->
+            <div id="teamDefectStatsContainer" class="bg-white dark:bg-slate-800 rounded-3xl p-5 shadow-md border border-slate-100 dark:border-slate-700 space-y-3 hidden">
+                <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-2">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie"></i> Ringkasan Defect Tim
+                    </h3>
+                    <span id="teamDefectTitleLabel" class="text-[10px] font-extrabold text-brand-600 dark:text-sky-400">Tim 1</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-2 text-center text-[10px]">
+                    <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-700">
+                        <p class="text-slate-400 font-bold uppercase text-[8px]">Total Defect</p>
+                        <p id="statTotalDefect" class="text-base font-black text-slate-800 dark:text-white">0</p>
+                    </div>
+                    <div class="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-2xl border border-amber-100 dark:border-amber-900/40">
+                        <p class="text-amber-600 font-bold uppercase text-[8px]">Open</p>
+                        <p id="statOpenDefect" class="text-base font-black text-amber-600">0</p>
+                    </div>
+                    <div class="p-3 bg-sky-50 dark:bg-sky-950/30 rounded-2xl border border-sky-100 dark:border-sky-900/40">
+                        <p class="text-sky-600 font-bold uppercase text-[8px]">In Progress</p>
+                        <p id="statInProgressDefect" class="text-base font-black text-sky-600">0</p>
+                    </div>
+                    <div class="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-2xl border border-emerald-100 dark:border-emerald-900/40">
+                        <p class="text-emerald-600 font-bold uppercase text-[8px]">Resolved</p>
+                        <p id="statResolvedDefect" class="text-base font-black text-emerald-600">0</p>
+                    </div>
+                    <div class="p-3 bg-slate-200 dark:bg-slate-700 rounded-2xl border border-slate-300 dark:border-slate-600">
+                        <p class="text-slate-600 dark:text-slate-300 font-bold uppercase text-[8px]">Closed</p>
+                        <p id="statClosedDefect" class="text-base font-black text-slate-700 dark:text-slate-200">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar / List Defect -->
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h3 class="text-xs font-black uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-amber-500"></i> Daftar Temuan Defect
+                    </h3>
+
+                    <!-- Controls: Limit (10, 20, 30) & Filter Tim -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
+                        <select id="defectPageLimit" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
+                            <option value="10">10 / Hal</option>
+                            <option value="20">20 / Hal</option>
+                            <option value="30">30 / Hal</option>
+                        </select>
+
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tim:</label>
+                        <select id="defectFilterTim" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold">
+                            <option value="ALL">Semua Tim (Tim 1 - 7)</option>
+                            <option value="Tim 1">Tim 1</option>
+                            <option value="Tim 2">Tim 2</option>
+                            <option value="Tim 3">Tim 3</option>
+                            <option value="Tim 4">Tim 4</option>
+                            <option value="Tim 5">Tim 5</option>
+                            <option value="Tim 6">Tim 6</option>
+                            <option value="Tim 7">Tim 7</option>
+                        </select>
+                        <button onclick="fetchDefectList()" class="text-[9px] font-bold text-amber-600 bg-amber-50 px-2.5 py-1.5 rounded-xl border border-amber-200 flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div id="defectListContainer" class="space-y-3">
+                    <div class="p-8 text-center text-slate-400 italic text-[11px] bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+                        Memuat daftar defect...
+                    </div>
+                </div>
+
+                <!-- Page Navigation UI -->
+                <div id="paginationDefectList" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs hidden"></div>
+            </div>
+        </div>
+
+        <!-- SUBTAB 2: KELOLA AKUN DEFECT LIST (KHUSUS ADMINISTRATOR DEFECT) -->
+        <div id="defectTabManageAccSection" class="space-y-6 hidden">
+            <!-- Form Pendaftaran Personil Defect Baru -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-slate-100 dark:border-slate-700 space-y-4">
+                <div class="flex items-center gap-2.5 border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <div class="w-10 h-10 rounded-2xl bg-amber-100 dark:bg-amber-950/40 text-amber-600 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Form Pendaftaran Personil Defect Baru</h3>
+                        <p class="text-[10px] text-slate-400">Tambahkan personil baru, atur role managed defect, tim, dan kategori organisasi.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap <span class="text-rose-500">*</span></label>
+                        <input type="text" id="defRegNama" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Gmail / Email <span class="text-rose-500">*</span></label>
+                        <input type="email" id="defRegEmail" placeholder="budi.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Managed Role Defect <span class="text-rose-500">*</span></label>
+                        <select id="defRegRole" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <option value="Anggota">Anggota</option>
+                            <option value="Ketua Tim">Ketua Tim</option>
+                            <option value="Administrator">Administrator</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke : <span class="text-rose-500">*</span></label>
+                        <select id="defRegTimKe" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <option value="Tim 1">Tim 1</option>
+                            <option value="Tim 2">Tim 2</option>
+                            <option value="Tim 3">Tim 3</option>
+                            <option value="Tim 4">Tim 4</option>
+                            <option value="Tim 5">Tim 5</option>
+                            <option value="Tim 6">Tim 6</option>
+                            <option value="Tim 7">Tim 7</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi <span class="text-rose-500">*</span></label>
+                        <select id="defRegOrgCat" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <option value="Kontraktor">Kontraktor</option>
+                            <option value="Konsultan">Konsultan</option>
+                            <option value="Owner">Owner</option>
+                            <option value="ETC">ETC</option>
+                        </select>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
+                        <input type="text" id="defRegPerusahaan" placeholder="PT Hutama Karya Infrastruktur" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                    </div>
+                </div>
+
+                <button onclick="registerDefectUserByAdmin()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/25 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Daftarkan Personil Defect Baru</span>
+                </button>
+            </div>
+
+            <!-- Daftar Akun Personil Defect & Pengubah Role (Admin Only) -->
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-slate-100 dark:border-slate-700 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-10 h-10 rounded-2xl bg-sky-100 dark:bg-sky-950/40 text-sky-600 flex items-center justify-center text-lg">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-800 dark:text-white uppercase tracking-wider">Daftar Akun Personil Defect</h3>
+                            <p class="text-[10px] text-slate-400">Tinjau seluruh personil defect dan ubah role secara langsung.</p>
+                        </div>
+                    </div>
+
+                    <!-- Limit (10, 20, 30) & Refresh Button -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
+                        <select id="defectUserPageLimit" onchange="defectUserCurrentPage=1; renderDefectUserList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
+                            <option value="10">10 / Hal</option>
+                            <option value="20">20 / Hal</option>
+                            <option value="30">30 / Hal</option>
+                        </select>
+                        <button onclick="fetchDefectUsers()" class="text-[10px] font-bold text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-3 py-1.5 rounded-xl border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                            <i class="fa-solid fa-arrows-rotate"></i> Refresh List
+                        </button>
+                    </div>
+                </div>
+
+                <div id="defectUserListContainer" class="space-y-3">
+                    <div class="p-6 text-center text-slate-400 italic text-[11px]">
+                        Memuat daftar personil defect...
+                    </div>
+                </div>
+
+                <!-- Pagination Nav UI for Defect Users -->
+                <div id="paginationDefectUserList" class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs hidden"></div>
+            </div>
+        </div>
+
+        <!-- SUBTAB 3: PROFIL AKUN DEFECT LIST (SUNTING PROFIL & DATA PERSONIL) -->
+        <div id="defectTabProfileSection" class="space-y-6 hidden">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-md border border-slate-100 dark:border-slate-700 space-y-5">
+                <!-- User Bio Header -->
+                <div class="flex flex-col items-center text-center space-y-3 pb-4 border-b border-slate-100 dark:border-slate-700">
+                    <div class="w-20 h-20 rounded-full bg-amber-500 text-white flex items-center justify-center text-3xl font-black shadow-lg shadow-amber-500/20">
+                        <i class="fa-solid fa-user-gear"></i>
+                    </div>
+                    <div>
+                        <h3 id="defDisplayNamaHeader" class="text-base font-extrabold text-slate-800 dark:text-slate-100">Amanda Setyawati</h3>
+                        <span id="defDisplayBadge" class="bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider inline-block mt-1 border border-amber-200 dark:border-amber-800">
+                            Inspektur Defect List
+                        </span>
+                        <p class="text-[9px] text-slate-400 mt-2 font-medium tracking-wide uppercase">Palembang - Betung Seksi 1 & 2</p>
+                    </div>
+                    <button onclick="toggleDefectProfileEdit()" class="mt-2 text-xs font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/30 px-4 py-2 rounded-full hover:bg-amber-100 transition">
+                        <i class="fa-solid fa-user-pen"></i> Sunting Profil Defect
+                    </button>
+                </div>
+
+                <!-- READ-ONLY VIEW DATA PERSONIL DEFECT -->
+                <div id="defectProfileViewData" class="space-y-3">
+                    <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest flex items-center gap-1.5">
+                        <i class="fa-solid fa-address-card"></i> Data Personil Defect List
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Lengkap</p>
+                            <p id="defDisplayNama" class="text-xs font-bold text-slate-700 dark:text-slate-200">Amanda Setyawati</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Managed Role Defect</p>
+                            <p id="defDisplayRoleDefect" class="text-xs font-black text-amber-600 dark:text-amber-400">Anggota</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Jabatan / Role</p>
+                            <p id="defDisplayJabatan" class="text-xs font-bold text-slate-700 dark:text-slate-200">Inspektur Defect List</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Perusahaan / Kontraktor</p>
+                            <p id="defDisplayPerusahaan" class="text-xs font-bold text-slate-700 dark:text-slate-200">PT Hutama Karya Infrastruktur</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Kategori Organisasi</p>
+                            <p id="defDisplayOrgCat" class="text-xs font-bold text-amber-700 dark:text-amber-400">Kontraktor</p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Tim Ke :</p>
+                            <p id="defDisplayTimKe" class="text-xs font-bold text-slate-700 dark:text-slate-200">Tim 1</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-1">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Tim</p>
+                        <p id="defDisplayNamaTim" class="text-xs font-bold text-slate-700 dark:text-slate-200">Tim Inspeksi Defect List</p>
+                    </div>
+
+                    <div class="bg-slate-50 dark:bg-slate-700/30 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-1">
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Nama Kontrak</p>
+                        <p id="defDisplayNamaKontrak" class="text-xs font-bold text-slate-700 dark:text-slate-200 leading-relaxed">
+                            Pekerjaan Pembangunan Jalan Tol Trans Sumatera Ruas Palembang - Betung Seksi 1 Palembang - Rengas (STA 41+513 - STA 64+000) dan Seksi 2 Rengas - Pangkalan Balai (STA 64+000 - STA 97+000)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FORM EDIT DATA PERSONIL DEFECT (HIDDEN DEFAULT) -->
+                <div id="defectProfileEditForm" class="space-y-3 hidden">
+                    <p class="text-[10px] font-black text-amber-600 uppercase tracking-widest flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-pen"></i> Form Sunting Profil Defect List
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap</label>
+                            <input type="text" id="defEditNama" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
+                                <span>Managed Role Defect</span>
+                                <span id="defEditRoleLockNote" class="text-[9px] text-amber-600 italic font-normal hidden">(Hanya Admin)</span>
+                            </label>
+                            <select id="defEditRole" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                                <option value="Anggota">Anggota</option>
+                                <option value="Ketua Tim">Ketua Tim</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Jabatan / Role Inspektur</label>
+                            <input type="text" id="defEditJabatan" placeholder="Contoh: Inspektur Defect List" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
+                            <input type="text" id="defEditPerusahaan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi</label>
+                            <select id="defEditOrgCat" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                                <option value="Kontraktor">Kontraktor (Dapat Update PIC)</option>
+                                <option value="Konsultan">Konsultan (Dapat Update PIC)</option>
+                                <option value="Owner">Owner (Dapat Update PIC)</option>
+                                <option value="ETC">ETC / Lainnya (Hanya Lihat Detail)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke :</label>
+                            <select id="defEditTimKe" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                                <option value="Tim 1">Tim 1</option>
+                                <option value="Tim 2">Tim 2</option>
+                                <option value="Tim 3">Tim 3</option>
+                                <option value="Tim 4">Tim 4</option>
+                                <option value="Tim 5">Tim 5</option>
+                                <option value="Tim 6">Tim 6</option>
+                                <option value="Tim 7">Tim 7</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Tim</label>
+                        <input type="text" id="defEditNamaTim" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                    </div>
+
+                    <div class="space-y-1">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Kontrak</label>
+                        <textarea id="defEditNamaKontrak" rows="3" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+                    </div>
+
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="saveDefectProfile()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3 rounded-xl shadow-md transition text-xs uppercase tracking-wider">
+                            Simpan Profil
+                        </button>
+                        <button onclick="toggleDefectProfileEdit()" class="bg-slate-100 text-slate-600 font-bold px-4 py-3 rounded-xl text-xs">
+                            Batal
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+                    <button onclick="switchToMainApp()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-extrabold py-3.5 rounded-2xl shadow-md transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-house-chimney"></i>
+                        <span>Beralih ke Aplikasi Presensi Utama</span>
+                    </button>
+
+                    <button onclick="logoutDefectUser()" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-3.5 rounded-2xl border border-rose-200 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Keluar dari Akun Defect List</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Version & Copyright -->
     <div class="pt-8 pb-12 text-center space-y-1 opacity-60">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.22</p>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.26</p>
       <p class="text-[10px] text-slate-400 font-medium">Copyright &copy; <span id="copyrightYearFooter">2026</span> PJT Paltung 1-2. All Rights Reserved.</p>
     </div>
 
@@ -2369,6 +2884,14 @@ if (window.__hkGateBlocked) {
         </a>
       </div>
 
+      <!-- Delete Action for Admin (Activity Report) -->
+      <div id="detailDeleteKegiatanContainer" class="pt-3 border-t border-slate-100 dark:border-slate-700 hidden">
+        <button id="btnDeleteKegiatanFromModal" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2.5 rounded-xl border border-rose-200 text-xs transition flex items-center justify-center gap-2">
+          <i class="fa-solid fa-trash-can"></i>
+          <span>Hapus Laporan Kegiatan Ini</span>
+        </button>
+      </div>
+
     </div>
   </div>
 
@@ -2384,31 +2907,41 @@ if (window.__hkGateBlocked) {
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Bagian Masuk -->
-        <div class="space-y-3 bg-slate-50 dark:bg-slate-700/30 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-            <h4 class="text-xs font-black text-emerald-600 uppercase flex items-center gap-2">
-                <i class="fa-solid fa-right-to-bracket"></i> Absen Masuk
-            </h4>
-            <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
-                <img id="adminPhotoMasuk" src="" class="max-w-full max-h-full object-contain">
-                <div id="adminNoPhotoMasuk" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
+        <div class="space-y-3 bg-slate-50 dark:bg-slate-700/30 p-3 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-between">
+            <div class="space-y-3">
+                <h4 class="text-xs font-black text-emerald-600 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-right-to-bracket"></i> Absen Masuk
+                </h4>
+                <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
+                    <img id="adminPhotoMasuk" src="" class="max-w-full max-h-full object-contain">
+                    <div id="adminNoPhotoMasuk" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
+                </div>
+                <div id="adminFieldsMasuk" class="text-[10px] space-y-1">
+                    <!-- Data Masuk -->
+                </div>
             </div>
-            <div id="adminFieldsMasuk" class="text-[10px] space-y-1">
-                <!-- Data Masuk -->
-            </div>
+            <button id="btnDeleteMasukFromTable" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 rounded-xl border border-rose-200 text-[10px] transition flex items-center justify-center gap-1.5 mt-2 hidden">
+                <i class="fa-solid fa-trash-can"></i> Hapus Absen Masuk
+            </button>
         </div>
 
         <!-- Bagian Pulang -->
-        <div class="space-y-3 bg-slate-50 dark:bg-slate-700/30 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
-            <h4 class="text-xs font-black text-rose-600 uppercase flex items-center gap-2">
-                <i class="fa-solid fa-right-from-bracket"></i> Absen Pulang
-            </h4>
-            <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
-                <img id="adminPhotoPulang" src="" class="max-w-full max-h-full object-contain">
-                <div id="adminNoPhotoPulang" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
+        <div class="space-y-3 bg-slate-50 dark:bg-slate-700/30 p-3 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-between">
+            <div class="space-y-3">
+                <h4 class="text-xs font-black text-rose-600 uppercase flex items-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Absen Pulang
+                </h4>
+                <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
+                    <img id="adminPhotoPulang" src="" class="max-w-full max-h-full object-contain">
+                    <div id="adminNoPhotoPulang" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
+                </div>
+                <div id="adminFieldsPulang" class="text-[10px] space-y-1">
+                    <!-- Data Pulang -->
+                </div>
             </div>
-            <div id="adminFieldsPulang" class="text-[10px] space-y-1">
-                <!-- Data Pulang -->
-            </div>
+            <button id="btnDeletePulangFromTable" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold py-2 rounded-xl border border-rose-200 text-[10px] transition flex items-center justify-center gap-1.5 mt-2 hidden">
+                <i class="fa-solid fa-trash-can"></i> Hapus Absen Pulang
+            </button>
         </div>
       </div>
 
@@ -2629,8 +3162,8 @@ if (window.__hkGateBlocked) {
           </label>
           <div class="relative bg-slate-50 dark:bg-slate-700/50 border-2 border-dashed border-slate-200 dark:border-slate-600 rounded-xl p-6 flex flex-col items-center justify-center text-center space-y-2 group hover:border-brand-300 transition-colors">
              <i class="fa-solid fa-file-circle-plus text-3xl text-slate-300 group-hover:text-brand-500 transition-colors"></i>
-             <span id="docFileName" class="text-[10px] text-slate-500 font-bold">Ketuk untuk memilih berkas</span>
-             <input type="file" id="docFileInput" onchange="handleDocFileSelection(event)" class="absolute inset-0 opacity-0 cursor-pointer">
+             <span id="docFileName" class="text-[10px] text-slate-500 font-bold">Ketuk untuk memilih berkas (.pdf, .jpg, .png)</span>
+             <input type="file" id="docFileInput" accept="application/pdf,image/*,.pdf,.jpg,.jpeg,.png" onchange="handleDocFileSelection(event)" class="absolute inset-0 opacity-0 cursor-pointer">
           </div>
         </div>
 
@@ -2784,7 +3317,252 @@ if (window.__hkGateBlocked) {
         </button>
       </div>
       <!-- Hidden File Inputs -->
-      <input type="file" id="chatFileInput" class="hidden" onchange="handleChatFileSelect(event)" accept="image/*,video/*,application/pdf">
+      <input type="file" id="chatFileInput" class="hidden" onchange="handleChatFileSelect(event)" accept="image/*,video/*,application/pdf,.jpg,.jpeg,.png,.pdf">
+    </div>
+  </div>
+
+  <!-- MODAL: DEFECT LIST LOGIN (LUAR TIM) -->
+  <div id="defectLoginModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-3xl shadow-2xl p-6 space-y-4 relative">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+        <h3 class="font-black text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-bug text-amber-500"></i> Login Akun Defect List
+        </h3>
+        <button onclick="closeDefectListLoginModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+      <p class="text-[10px] text-slate-400 leading-relaxed">Login khusus untuk inspeksi temuan cacat (User Eksternal / PIC Lapangan).</p>
+      <div class="space-y-3">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Email User Defect</label>
+          <input type="email" id="defectLoginEmail" placeholder="user.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+        </div>
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Password</label>
+          <input type="password" id="defectLoginPass" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+        </div>
+        <button onclick="loginDefectUser()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+          <i class="fa-solid fa-right-to-bracket"></i>
+          <span>Masuk Akun Defect List</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UPDATE PIC DEFECT (TARGET, FOTO PENYELESAIAN, STATUS, KETERANGAN) -->
+  <div id="updateDefectModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-lg rounded-3xl shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+        <h3 class="font-black text-slate-800 dark:text-slate-100 text-xs uppercase tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-amber-500"></i> Lengkapi Data / Update PIC Defect
+        </h3>
+        <button onclick="closeUpdateDefectModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
+          <input type="date" id="upDefTargetDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500 text-slate-800 dark:text-slate-100">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Status Penanganan</label>
+          <select id="upDefStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <option value="Open">Open (Baru/Belum Ditangani)</option>
+            <option value="In Progress">In Progress (Sedang Dikerjakan)</option>
+            <option value="Resolved">Resolved (Telah Selesai Perbaikan)</option>
+            <option value="Closed">Closed (Selesai & Diverifikasi)</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Keterangan / Catatan Perbaikan PIC</label>
+          <textarea id="upDefKeterangan" rows="3" placeholder="Tambahkan catatan/keterangan penanganan oleh PIC..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+
+        <!-- Foto Penyelesaian dengan Live Camera Preview -->
+        <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex justify-between">
+            <span>Foto Penyelesaian / Hasil Perbaikan (Live Preview)</span>
+            <span class="text-emerald-600 font-bold text-[10px]">Kamera / File</span>
+          </label>
+
+          <div id="upDefCameraContainer" class="relative bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl aspect-[4/3] w-full max-w-[280px] mx-auto overflow-hidden flex flex-col items-center justify-center shadow-lg">
+            <!-- Live Video -->
+            <video id="upDefectVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline muted></video>
+            <!-- Result Canvas (Hidden) -->
+            <canvas id="upDefectCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
+            <!-- Static Preview -->
+            <img id="upDefPhotoPreviewImg" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+
+            <div id="upDefectCameraPlaceholder" class="text-center p-4 z-0">
+              <i class="fa-solid fa-camera text-slate-500 text-3xl mb-1 block"></i>
+              <p class="text-[9px] text-slate-400 font-bold">Membuka Kamera Live...</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2 max-w-[280px] mx-auto">
+            <button type="button" onclick="takeUpDefectSnapshot()" id="btnTakeUpDefectSnap" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2.5 rounded-xl shadow-md transition text-xs flex items-center justify-center gap-1.5 uppercase tracking-wider">
+              <i class="fa-solid fa-camera"></i> <span>Jepret Foto</span>
+            </button>
+            <button type="button" onclick="resetUpDefectCamera()" id="btnResetUpDefectCam" class="hidden bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button type="button" onclick="document.getElementById('upDefFileInput').click()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-600 dark:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
+              <i class="fa-solid fa-folder-open"></i> <span>File</span>
+            </button>
+            <input type="file" id="upDefFileInput" accept="image/*,image/jpeg,image/png,.jpg,.jpeg,.png" class="hidden" onchange="handleDefectFileSelect(event, 'penyelesaian')">
+          </div>
+        </div>
+
+        <div class="pt-3">
+          <button onclick="submitUpdateDefect()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+            <i class="fa-solid fa-check-circle"></i>
+            <span>Simpan Perubahan PIC</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: INPUT DEFECT BARU (WITH LIVE CAMERA PREVIEW) -->
+  <div id="addDefectModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl p-6 space-y-4 max-h-[92vh] overflow-y-auto relative">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+        <h3 class="font-black text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-file-circle-plus text-amber-500"></i> Form Input Temuan Defect Baru
+        </h3>
+        <button onclick="closeAddDefectModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">No. Urut / Kode Item</label>
+            <input type="text" id="defNoUrut" placeholder="Contoh: DEF-001" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">Lingkup Pekerjaan</label>
+            <select id="defLingkup" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+              <option value="Struktur">Struktur (Jembatan/Box)</option>
+              <option value="Perkerasan Jalan">Perkerasan Jalan (Aspal/Rigid)</option>
+              <option value="Drainase & Saluran">Drainase & Saluran</option>
+              <option value="Geoteknik & DPT">Geoteknik & Dinding Penahan</option>
+              <option value="K3 & HSSE">K3 & HSSE Lapangan</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">STA / Lokasi Spesifik</label>
+            <input type="text" id="defSta" placeholder="Contoh: STA 12+500 / Abutment 1" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">Klasifikasi Defect</label>
+            <select id="defKlasifikasi" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+              <option value="Minor">Minor (Kerusakan Kecil)</option>
+              <option value="Mayor">Mayor (Kerusakan Sedang)</option>
+              <option value="Kritis">Kritis (Kerusakan Mendesak)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Deskripsi Temuan Cacat</label>
+          <textarea id="defTemuan" rows="2" placeholder="Uraikan temuan cacat/kerusakan di lapangan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">Hasil Pemeriksaan Lapangan</label>
+            <textarea id="defHasilPemeriksaan" rows="2" placeholder="Hasil pemeriksaan/pengukuran kondisi..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[10px] font-bold text-slate-400 uppercase">Rekomendasi Penanganan</label>
+            <textarea id="defRekomendasi" rows="2" placeholder="Rekomendasi metode perbaikan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+          </div>
+        </div>
+
+        <!-- Foto Pemeriksaan Lapangan dengan Live Camera Preview -->
+        <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex justify-between">
+            <span>Foto Pemeriksaan Lapangan (Live Preview Camera)</span>
+            <span class="text-amber-600 font-bold text-[10px]">Kamera / File</span>
+          </label>
+
+          <div id="defCameraContainer" class="relative bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-2xl aspect-[4/3] w-full max-w-[280px] mx-auto overflow-hidden flex flex-col items-center justify-center shadow-lg">
+            <!-- Live Video -->
+            <video id="defectVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline muted></video>
+            <!-- Result Canvas (Hidden) -->
+            <canvas id="defectCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
+            <!-- Static Preview -->
+            <img id="defectPhotoPreview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+
+            <div id="defectCameraPlaceholder" class="text-center p-4 z-0">
+              <i class="fa-solid fa-camera text-slate-500 text-3xl mb-1 block"></i>
+              <p class="text-[9px] text-slate-400 font-bold">Membuka Kamera Live...</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2 max-w-[280px] mx-auto">
+            <button type="button" onclick="takeDefectSnapshot()" id="btnTakeDefectSnap" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-2.5 rounded-xl shadow-md transition text-xs flex items-center justify-center gap-1.5 uppercase tracking-wider">
+              <i class="fa-solid fa-camera"></i> <span>Jepret Foto</span>
+            </button>
+            <button type="button" onclick="resetDefectCamera()" id="btnResetDefectCam" class="hidden bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+            <button type="button" onclick="document.getElementById('defFotoFileInput').click()" class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-slate-600 dark:text-slate-200 font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
+              <i class="fa-solid fa-folder-open"></i> <span>File</span>
+            </button>
+            <input type="file" id="defFotoFileInput" accept="image/*,image/jpeg,image/png,.jpg,.jpeg,.png" class="hidden" onchange="handleDefectFileSelect(event, 'pemeriksaan')">
+          </div>
+        </div>
+
+        <!-- Peta Lokasi Titik Defect (Live GPS) -->
+        <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex justify-between">
+            <span>Peta Lokasi Titik Defect (GPS Live)</span>
+            <span id="defGpsStatus" class="text-amber-500 font-bold text-[10px] animate-pulse">Mencari Lokasi GPS...</span>
+          </label>
+          <div id="defectInputMap" class="w-full h-36 rounded-2xl border border-slate-200 dark:border-slate-700 z-0 bg-slate-100 dark:bg-slate-900 overflow-hidden"></div>
+          <div class="flex justify-between items-center text-[10px]">
+            <span class="text-slate-400 font-bold">Koordinat GPS:</span>
+            <span id="defCoordsText" class="font-mono font-bold text-slate-700 dark:text-slate-200">-</span>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-slate-400 uppercase">Status Awal</label>
+          <select id="defStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <option value="Open">Open (Baru/Belum Ditangani)</option>
+            <option value="In Progress">In Progress (Sedang Dikerjakan)</option>
+            <option value="Resolved">Resolved (Telah Selesai Perbaikan)</option>
+            <option value="Closed">Closed (Selesai & Diverifikasi)</option>
+          </select>
+        </div>
+
+        <div class="pt-3">
+          <button onclick="submitNewDefect()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+            <i class="fa-solid fa-paper-plane"></i>
+            <span>Simpan Defect List</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DETAIL ITEM DEFECT LENGKAP -->
+  <div id="defectDetailModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[200] flex items-center justify-center hidden p-4">
+    <div class="bg-white dark:bg-slate-800 w-full max-w-2xl rounded-3xl shadow-2xl p-6 space-y-4 max-h-[90vh] overflow-y-auto relative">
+      <div class="flex justify-between items-center border-b border-slate-100 dark:border-slate-700 pb-3">
+        <div>
+          <span id="defDetailHeaderNo" class="text-[10px] font-black uppercase tracking-wider text-amber-600">NO. 1 • STRUKTUR • STA: 120+500</span>
+          <h3 id="defDetailHeaderTitle" class="font-black text-slate-800 dark:text-slate-100 text-sm">Detail Temuan Defect</h3>
+        </div>
+        <button onclick="closeDefectDetailModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+      </div>
+
+      <div id="defDetailContent" class="space-y-4 text-xs">
+        <!-- Content Injected Dynamically -->
+      </div>
     </div>
   </div>
   <!-- MODAL: ADD ACTION PLAN (ADMIN/SUB-ADMIN) -->
@@ -3572,7 +4350,7 @@ if (window.__hkGateBlocked) {
         currentTab = pageId;
 
         // Toggle views
-        const pages = ['beranda', 'kegiatan', 'profil', 'admin', 'tasks', 'monitoring'];
+        const pages = ['beranda', 'kegiatan', 'profil', 'admin', 'tasks', 'monitoring', 'defect-list'];
         pages.forEach(p => {
             const el = document.getElementById('page-' + p);
             if (el) el.classList.add('hidden');
@@ -3580,6 +4358,14 @@ if (window.__hkGateBlocked) {
 
         const targetPage = document.getElementById('page-' + pageId);
         if (targetPage) targetPage.classList.remove('hidden');
+
+        // Jika dalam mode Defect List, sembunyikan semua nav bar presensi utama
+        if (typeof isDefectModeActive !== 'undefined' && (isDefectModeActive || pageId === 'defect-list')) {
+            const bottomNav = document.getElementById('app-nav');
+            if (bottomNav) bottomNav.classList.add('hidden');
+            const desktopNavBtns = document.querySelectorAll('.desktop-nav-btn');
+            desktopNavBtns.forEach(btn => btn.classList.add('hidden'));
+        }
 
         // Update Navigation styling
         const navs = ['home', 'activity', 'profile', 'admin', 'tasks', 'monitoring'];
@@ -3747,7 +4533,9 @@ if (window.__hkGateBlocked) {
     // STATS & GRAPH GENERATION
     // ----------------------------------------------------
     function renderStatsAndCalendar() {
-      const monthSel = parseInt(document.getElementById('rekapBulan').value);
+      const rawVal = document.getElementById('rekapBulan')?.value || "";
+      const isAll = rawVal === "all";
+      const monthSel = isAll ? new Date().getMonth() : parseInt(rawVal);
       const selectedMonthStr = (monthSel + 1).toString().padStart(2, '0');
       const monthYearPrefix = `${CURRENT_YEAR}-${selectedMonthStr}`;
 
@@ -3758,7 +4546,9 @@ if (window.__hkGateBlocked) {
       // Filter all unique dates with attendance or leave
       const uniqueDates = [];
       state.presensi.forEach(p => {
-        if (p.date.startsWith(monthYearPrefix)) {
+        if (!p || !p.date) return;
+        const matchFilter = isAll || p.date.startsWith(monthYearPrefix);
+        if (matchFilter) {
           if (!uniqueDates.includes(p.date)) {
             uniqueDates.push(p.date);
             if (p.type === 'ketidakhadiran') {
@@ -3770,8 +4560,8 @@ if (window.__hkGateBlocked) {
         }
       });
 
-      document.getElementById('totalKerja').textContent = totalWorkDay;
-      document.getElementById('totalAbsen').textContent = totalAbsenceDay;
+      if (document.getElementById('totalKerja')) document.getElementById('totalKerja').textContent = totalWorkDay;
+      if (document.getElementById('totalAbsen')) document.getElementById('totalAbsen').textContent = totalAbsenceDay;
 
       // Refresh calendar & Chart
       renderCalendarDays(monthSel);
@@ -5869,7 +6659,27 @@ if (window.__hkGateBlocked) {
         document.getElementById('app-nav').classList.remove('hidden');
         document.querySelector('header').classList.remove('hidden');
         document.getElementById('btnOpenChat').classList.remove('hidden');
+
+        // Toggle visibilitas kartu Defect List pada Beranda berdasarkan izin akses
+        const defectCard = document.getElementById('defectQuickSwitchCard');
+        if (defectCard) {
+            if (checkUserHasDefectAccess()) {
+                defectCard.classList.remove('hidden');
+            } else {
+                defectCard.classList.add('hidden');
+            }
+        }
+
         renderStatsAndCalendar();
+        if (typeof updateProfileDisplay === 'function') updateProfileDisplay();
+
+        // OTOMATIS TARIK DATA DARI CLOUD FIRESTORE SAAT APLIKASI DIBUKA
+        if (window.Android && window.Android.restoreFromCloud && !window.__autoRestoredOnStart) {
+            window.__autoRestoredOnStart = true;
+            setTimeout(() => {
+                window.Android.restoreFromCloud();
+            }, 500);
+        }
     }
 
     function showRequestAdmin() {
@@ -5890,6 +6700,72 @@ if (window.__hkGateBlocked) {
         document.getElementById('reset-password-form').classList.add('hidden');
     }
 
+    let activeLoginMode = 'presensi'; // 'presensi' or 'defect_only'
+
+    function openDefectLoginPage() {
+        const mainLogin = document.getElementById('page-login');
+        const defectLogin = document.getElementById('page-defect-login');
+        if (mainLogin) mainLogin.classList.add('hidden');
+        if (defectLogin) defectLogin.classList.remove('hidden');
+        activeLoginMode = 'defect_only';
+    }
+
+    function openMainLoginPage() {
+        const mainLogin = document.getElementById('page-login');
+        const defectLogin = document.getElementById('page-defect-login');
+        if (defectLogin) defectLogin.classList.add('hidden');
+        if (mainLogin) mainLogin.classList.remove('hidden');
+        activeLoginMode = 'presensi';
+    }
+
+    function handleDefectPageLogin() {
+        const email = document.getElementById('defectPageLoginEmail')?.value.trim();
+        const pass = document.getElementById('defectPageLoginPass')?.value;
+
+        if (!email || !pass) {
+            showToast("Harap isi email dan password khusus Defect List", "error");
+            return;
+        }
+
+        const btn = document.getElementById('btnDefectLogin');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Autentikasi Defect...`;
+        }
+
+        activeLoginMode = 'defect_only';
+
+        if (window.Android && window.Android.loginWithEmail) {
+            window.Android.loginWithEmail(email, pass);
+        } else {
+            setTimeout(() => onDefectLoginResult(true, "Login Akun Defect List berhasil!"), 1000);
+        }
+    }
+
+    window.onDefectLoginResult = function(success, message) {
+        const btn = document.getElementById('btnDefectLogin');
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span>Masuk ke Defect List</span> <i class="fa-solid fa-arrow-right"></i>`;
+        }
+
+        if (success) {
+            showToast(message, "success");
+            state.profile = {
+                ...state.profile,
+                accountType: 'defect_only'
+            };
+            saveDataToStorage();
+
+            const defectLogin = document.getElementById('page-defect-login');
+            if (defectLogin) defectLogin.classList.add('hidden');
+
+            switchToDefectListMode();
+        } else {
+            showToast(message, "error");
+        }
+    }
+
     function handleLogin() {
         const email = document.getElementById('loginEmail').value;
         const pass = document.getElementById('loginPass').value;
@@ -5899,6 +6775,7 @@ if (window.__hkGateBlocked) {
             return;
         }
 
+        activeLoginMode = 'presensi';
         const btn = document.getElementById('btnLogin');
         btn.disabled = true;
         btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Autentikasi...`;
@@ -5913,12 +6790,34 @@ if (window.__hkGateBlocked) {
 
     function onLoginResult(success, message) {
         const btn = document.getElementById('btnLogin');
-        btn.disabled = false;
-        btn.innerHTML = `<span>Masuk ke Dashboard</span> <i class="fa-solid fa-arrow-right"></i>`;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span>Masuk ke Dashboard</span> <i class="fa-solid fa-arrow-right"></i>`;
+        }
 
         if (success) {
+            // Jika login dari Halaman Defect: alihkan langsung ke Defect List
+            if (activeLoginMode === 'defect_only') {
+                onDefectLoginResult(true, "Login Akun Defect List berhasil!");
+                return;
+            }
+
+            // Jika akun terdaftar sebagai defect_only dan mencoba login di Presensi: blokir!
+            if (state.profile && state.profile.accountType === 'defect_only') {
+                showToast("Akun ini khusus terdaftar untuk Defect List! Silakan beralih ke Halaman Login Defect List.", "error");
+                return;
+            }
+
             showToast(message, "success");
             showAppDashboard();
+
+            // OTOMATIS TARIK DATA DARI CLOUD FIRESTORE SETELAH LOGIN
+            if (window.Android && window.Android.restoreFromCloud) {
+                setTimeout(() => {
+                    showToast("Memuat data Anda secara otomatis dari server...", "info");
+                    window.Android.restoreFromCloud();
+                }, 300);
+            }
         } else {
             showToast(message, "error");
         }
@@ -6695,33 +7594,32 @@ if (window.__hkGateBlocked) {
                     state.profile = { ...state.profile, ...cloudData.profile };
                 }
 
-                // 2. Merge Presensi (Conflict Resolution: Point 5)
-                if (cloudData.presensi) {
-                    cloudData.presensi.forEach(pCloud => {
-                        const localIndex = state.presensi.findIndex(pLocal => pLocal.date === pCloud.date && pLocal.type === pCloud.type);
-                        if (localIndex === -1) {
-                            state.presensi.push(pCloud);
-                        } else {
-                            // Only update if cloud version is newer
-                            if ((pCloud.updatedAt || 0) > (state.presensi[localIndex].updatedAt || 0)) {
-                                state.presensi[localIndex] = pCloud;
-                            }
+                // 2. Smart Merge Presensi
+                if (Array.isArray(cloudData.presensi)) {
+                    const presensiMap = {};
+                    cloudData.presensi.forEach(p => {
+                        if (p && p.date && p.type) presensiMap[`${p.date}_${p.type}`] = p;
+                    });
+                    (state.presensi || []).forEach(p => {
+                        if (p && p.date && p.type && !presensiMap[`${p.date}_${p.type}`]) {
+                            presensiMap[`${p.date}_${p.type}`] = p;
                         }
                     });
+                    state.presensi = Object.values(presensiMap);
                 }
 
-                // 3. Merge Kegiatan
-                if (cloudData.kegiatan) {
-                    cloudData.kegiatan.forEach(kCloud => {
-                        const localIndex = state.kegiatan.findIndex(kLocal => kLocal.id === kCloud.id);
-                        if (localIndex === -1) {
-                            state.kegiatan.push(kCloud);
-                        } else {
-                            if ((kCloud.updatedAt || 0) > (state.kegiatan[localIndex].updatedAt || 0)) {
-                                state.kegiatan[localIndex] = kCloud;
-                            }
+                // 3. Smart Merge Kegiatan
+                if (Array.isArray(cloudData.kegiatan)) {
+                    const kegiatanMap = {};
+                    cloudData.kegiatan.forEach(k => {
+                        if (k && (k.id || k.date)) kegiatanMap[k.id || `${k.date}_${k.sta}`] = k;
+                    });
+                    (state.kegiatan || []).forEach(k => {
+                        if (k && (k.id || k.date) && !kegiatanMap[k.id || `${k.date}_${k.sta}`]) {
+                            kegiatanMap[k.id || `${k.date}_${k.sta}`] = k;
                         }
                     });
+                    state.kegiatan = Object.values(kegiatanMap);
                 }
 
                 saveDataToStorage();
@@ -7343,6 +8241,22 @@ if (window.__hkGateBlocked) {
                 const userName = user.name || p.name || "Unknown";
                 const userJabatan = user.jabatan || p.jabatan || "-";
                 const userPresensi = user.presensi || [];
+                const rawUserRole = p.role || user.managedRole || "Pegawai";
+                const userRole = rawUserRole.toLowerCase();
+                const isAnyAdmin = userRole === 'administrator' || userRole === 'admin' || userRole === 'sub-administrator' || userRole === 'sub-admin' || userRole === 'subadmin';
+                const hasDefectAcc = isAnyAdmin || !!(p.hasDefectAccess);
+
+                const myRole = ((state.profile && state.profile.role) || "Pegawai").trim().toLowerCase();
+                const isMainAdminCaller = myRole === 'administrator' || myRole === 'admin';
+
+                const normalizedUserRole = userRole.includes('admin') && !userRole.includes('sub') ? 'Administrator' : (userRole.includes('sub') ? 'Sub-Administrator' : 'Pegawai');
+
+                const roleSelectHtml = isMainAdminCaller ? `
+                    <select onchange="changeUserRole('${user.id}', this.value)" class="mt-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md px-1.5 py-0.5 text-[8px] font-extrabold text-brand-600 dark:text-sky-400">
+                        <option value="Pegawai" ${normalizedUserRole === 'Pegawai' ? 'selected' : ''}>Role: Pegawai</option>
+                        <option value="Sub-Administrator" ${normalizedUserRole === 'Sub-Administrator' ? 'selected' : ''}>Role: Sub-Admin</option>
+                        <option value="Administrator" ${normalizedUserRole === 'Administrator' ? 'selected' : ''}>Role: Administrator</option>
+                    </select>` : `<p class="text-[8px] font-extrabold text-brand-600 dark:text-sky-400 mt-0.5">${rawUserRole}</p>`;
 
                 // Pre-index attendance by date for O(1) lookup
                 const attendanceByDate = {};
@@ -7353,10 +8267,18 @@ if (window.__hkGateBlocked) {
                     }
                 });
 
+                const defectBtnHtml = `
+                    <button onclick="toggleUserDefectAccess('${user.id}', ${!hasDefectAcc})" class="mt-1.5 px-2 py-0.5 rounded-md text-[8px] font-black border transition flex items-center gap-1 ${hasDefectAcc ? 'bg-amber-100 text-amber-800 border-amber-300 hover:bg-rose-100 hover:text-rose-700' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-amber-100 hover:text-amber-800'}">
+                        <i class="fa-solid fa-bug ${hasDefectAcc ? 'text-amber-600' : 'text-slate-400'}"></i>
+                        <span>${hasDefectAcc ? 'Defect: Ya' : 'Defect: Tidak'}</span>
+                    </button>`;
+
                 let rowHtml = `<tr>
                     <td class="border border-slate-200 dark:border-slate-600 p-3 font-bold bg-white dark:bg-slate-800 sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
                         ${userName}
                         <p class="text-[8px] font-normal text-slate-400 uppercase mt-0.5">${userJabatan}</p>
+                        ${roleSelectHtml}
+                        ${defectBtnHtml}
                     </td>`;
 
                 for (let d = 1; d <= totalDays; d++) {
@@ -7482,7 +8404,31 @@ if (window.__hkGateBlocked) {
             <p class="font-mono text-[8px] truncate"><b>Loc:</b> ${pulang.coords}</p>
         ` : `<p class="text-slate-400 italic">Belum absen pulang</p>`;
 
-        // SETUP REPLY BUTTON FOR ADMIN
+        // SETUP REPLY & DELETE BUTTONS FOR ADMIN
+        const myRole = ((state.profile && state.profile.role) || "Pegawai").trim().toLowerCase();
+        const isAdmin = myRole === 'administrator' || myRole === 'admin' || myRole === 'sub-administrator' || myRole === 'sub-admin' || myRole === 'subadmin';
+
+        const btnDelMasuk = document.getElementById('btnDeleteMasukFromTable');
+        const btnDelPulang = document.getElementById('btnDeletePulangFromTable');
+
+        if (btnDelMasuk) {
+            if (isAdmin && masuk) {
+                btnDelMasuk.classList.remove('hidden');
+                btnDelMasuk.onclick = () => confirmDeleteRemotePresensi(user.id, dateStr, 'masuk');
+            } else {
+                btnDelMasuk.classList.add('hidden');
+            }
+        }
+
+        if (btnDelPulang) {
+            if (isAdmin && pulang) {
+                btnDelPulang.classList.remove('hidden');
+                btnDelPulang.onclick = () => confirmDeleteRemotePresensi(user.id, dateStr, 'pulang');
+            } else {
+                btnDelPulang.classList.add('hidden');
+            }
+        }
+
         const btnReply = document.getElementById('btnReplyFromTable');
         if (btnReply) {
             btnReply.onclick = () => {
@@ -7582,6 +8528,22 @@ if (window.__hkGateBlocked) {
           </div>
         `;
 
+        const myRole = ((state.profile && state.profile.role) || "Pegawai").trim().toLowerCase();
+        const isAdmin = myRole === 'administrator' || myRole === 'admin' || myRole === 'sub-administrator' || myRole === 'sub-admin' || myRole === 'subadmin';
+
+        const delContainer = document.getElementById('detailDeleteKegiatanContainer');
+        const btnDelKegiatan = document.getElementById('btnDeleteKegiatanFromModal');
+        if (delContainer) {
+            if (isAdmin) {
+                delContainer.classList.remove('hidden');
+                if (btnDelKegiatan) {
+                    btnDelKegiatan.onclick = () => confirmDeleteRemoteKegiatan(userId, activityId);
+                }
+            } else {
+                delContainer.classList.add('hidden');
+            }
+        }
+
         document.getElementById('detailModal').classList.remove('hidden');
         document.getElementById('detailLocationMap').classList.remove('hidden');
 
@@ -7594,6 +8556,58 @@ if (window.__hkGateBlocked) {
             L.marker(coords).addTo(mapDetailModal).bindPopup("Lokasi Dilaporkan").openPopup();
         }, 300);
     }
+
+    function confirmDeleteRemotePresensi(targetUid, dateStr, type = "all") {
+        const typeLabel = type === 'masuk' ? 'Absen MASUK' : (type === 'pulang' ? 'Absen PULANG' : 'presensi');
+        if (!confirm("Apakah Anda yakin ingin menghapus data " + typeLabel + " tanggal " + dateStr + " untuk pegawai ini? Data di Cloud Firestore akan terhapus secara permanen.")) {
+            return;
+        }
+
+        if (window.Android && window.Android.deleteUserPresensi) {
+            showToast("Menghapus data " + typeLabel + " dari cloud...", "info");
+            window.Android.deleteUserPresensi(targetUid, dateStr, type);
+        } else {
+            showToast("Akses hapus presensi web diproses", "info");
+            onDeletePresensiResult(true, "Data " + typeLabel + " berhasil dihapus");
+        }
+    }
+
+    function confirmDeleteRemoteKegiatan(targetUid, activityId) {
+        if (!confirm("Apakah Anda yakin ingin menghapus laporan kegiatan ini? Data di Cloud Firestore akan terhapus secara permanen.")) {
+            return;
+        }
+
+        if (window.Android && window.Android.deleteUserKegiatan) {
+            showToast("Menghapus laporan kegiatan dari cloud...", "info");
+            window.Android.deleteUserKegiatan(targetUid, activityId);
+        } else {
+            showToast("Akses hapus kegiatan web diproses", "info");
+            onDeleteKegiatanResult(true, "Laporan kegiatan berhasil dihapus");
+        }
+    }
+
+    window.onDeletePresensiResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            closeAdminDayModal();
+            const detailModal = document.getElementById('detailModal');
+            if (detailModal) detailModal.classList.add('hidden');
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    window.onDeleteKegiatanResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            const modal = document.getElementById('detailModal');
+            if (modal) modal.classList.add('hidden');
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+        } else {
+            showToast(message, "error");
+        }
+    };
 
     function closeAdminDayModal() {
         document.getElementById('adminDayDetailModal').classList.add('hidden');
@@ -9127,6 +10141,1471 @@ if (window.__hkGateBlocked) {
             fetchActionPlans();
         } else {
             showToast("Gagal memperbarui progres", "error");
+        }
+    };
+
+    // ====================================================
+    // DEFECT LIST SYSTEM LOGIC
+    // ====================================================
+    let cachedDefectList = [];
+    let cachedDefectUsers = [];
+    let activeDefectTab = 'main';
+    let capturedDefectPhoto = null;
+    let capturedResolutionPhoto = null;
+    let activeUpdateDefectId = null;
+    let isDefectModeActive = false;
+    let defectStream = null;
+
+    function getDefectRole() {
+        const p = state.profile || {};
+        if (p.managedRoleDefect) return p.managedRoleDefect;
+        const role = (p.role || "Pegawai").trim().toLowerCase();
+        if (role === 'administrator' || role === 'admin') return "Administrator";
+        if (role === 'sub-administrator' || role === 'sub-admin' || role === 'subadmin' || role === 'ketua tim') return "Ketua Tim";
+        return "Anggota";
+    }
+
+    function isDefectAdmin() {
+        return getDefectRole() === "Administrator";
+    }
+
+    function checkUserHasDefectAccess() {
+        if (state.profile && state.profile.hasDefectAccess === false) {
+            return false;
+        }
+        return true;
+    }
+
+    function toggleUserDefectAccess(targetUid, grantAccess) {
+        if (window.Android && window.Android.updateUserDefectAccess) {
+            showToast("Memproses izin Defect List...", "info");
+            window.Android.updateUserDefectAccess(targetUid, grantAccess);
+        } else {
+            onUpdateDefectAccessResult(true, "Izin Defect List berhasil diperbarui!");
+        }
+    }
+
+    window.onUpdateDefectAccessResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function changeUserRole(targetUid, newRole) {
+        if (!confirm("Apakah Anda yakin ingin merubah role pengguna ini menjadi " + newRole + "?")) {
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+            return;
+        }
+
+        if (window.Android && window.Android.updateUserRole) {
+            showToast("Merubah role pengguna...", "info");
+            window.Android.updateUserRole(targetUid, newRole);
+        } else {
+            onUpdateUserRoleResult(true, "Role pengguna berhasil diubah menjadi " + newRole + "!");
+        }
+    }
+
+    window.onUpdateUserRoleResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function openDefectListLoginModal() {
+        openDefectLoginPage();
+    }
+
+    function closeDefectListLoginModal() {
+        openMainLoginPage();
+    }
+
+    function loginDefectUser() {
+        handleDefectPageLogin();
+    }
+
+    function updateDefectTabVisibility() {
+        const btnManageAcc = document.getElementById('defTabBtnManageAcc');
+        if (btnManageAcc) {
+            if (isDefectAdmin()) {
+                btnManageAcc.classList.remove('hidden');
+            } else {
+                btnManageAcc.classList.add('hidden');
+                if (activeDefectTab === 'manage-acc') {
+                    switchDefectTab('main');
+                }
+            }
+        }
+    }
+
+    function switchToDefectListMode() {
+        if (!checkUserHasDefectAccess()) {
+            showToast("Akses Ditolak! Akun Pegawai Anda belum diberi izin akses Defect List oleh Administrator.", "error");
+            return;
+        }
+
+        isDefectModeActive = true;
+
+        // Sembunyikan seluruh bottom nav & desktop header nav presensi utama
+        const bottomNav = document.getElementById('app-nav');
+        if (bottomNav) bottomNav.classList.add('hidden');
+
+        const desktopNavBtns = document.querySelectorAll('.desktop-nav-btn');
+        desktopNavBtns.forEach(btn => btn.classList.add('hidden'));
+
+        updateDefectProfileData();
+
+        // 1. Muat cepat data lokal offline dari penyimpanan HP
+        loadDefectListFromStorage();
+        loadDefectUsersFromStorage();
+        switchPage('defect-list');
+
+        // 2. Otomatis tarik/muat data terbaru dari server Cloud Firestore & sinkronkan antrean luring
+        syncPendingDefects();
+        fetchDefectList();
+        if (isDefectAdmin()) {
+            fetchDefectUsers();
+        }
+    }
+
+    function switchToMainApp() {
+        isDefectModeActive = false;
+
+        // Kembalikan bottom nav & desktop header nav presensi utama
+        const bottomNav = document.getElementById('app-nav');
+        if (bottomNav && window.innerWidth < 1024) bottomNav.classList.remove('hidden');
+
+        if (typeof updateProfileDisplay === 'function') updateProfileDisplay();
+        switchPage('beranda');
+    }
+
+    function updateDefectProfileData() {
+        const p = state.profile || {};
+        const nama = p.name || "Amanda Setyawati";
+        const defectRole = getDefectRole();
+        const jabatan = p.jabatanDefect || p.jabatan || "Inspektur Defect List";
+        const perusahaan = p.perusahaan || "PT Hutama Karya Infrastruktur";
+        const orgCat = p.orgCategoryDefect || p.orgCategory || "Kontraktor";
+        const timKe = p.timKe || "Tim 1";
+        const namaTim = p.namaTim || "Tim Inspeksi Defect List";
+        const kontrak = p.namaKontrak || "Pekerjaan Pembangunan Jalan Tol Trans Sumatera Ruas Palembang - Betung Seksi 1 Palembang - Rengas (STA 41+513 - STA 64+000) dan Seksi 2 Rengas - Pangkalan Balai (STA 64+000 - STA 97+000)";
+
+        if (document.getElementById('defDisplayNamaHeader')) document.getElementById('defDisplayNamaHeader').textContent = nama;
+        if (document.getElementById('defDisplayBadge')) document.getElementById('defDisplayBadge').textContent = `${jabatan} (${defectRole})`;
+        if (document.getElementById('defDisplayNama')) document.getElementById('defDisplayNama').textContent = nama;
+        if (document.getElementById('defDisplayRoleDefect')) document.getElementById('defDisplayRoleDefect').textContent = defectRole;
+        if (document.getElementById('defDisplayJabatan')) document.getElementById('defDisplayJabatan').textContent = jabatan;
+        if (document.getElementById('defDisplayPerusahaan')) document.getElementById('defDisplayPerusahaan').textContent = perusahaan;
+        if (document.getElementById('defDisplayOrgCat')) document.getElementById('defDisplayOrgCat').textContent = orgCat;
+        if (document.getElementById('defDisplayTimKe')) document.getElementById('defDisplayTimKe').textContent = timKe;
+        if (document.getElementById('defDisplayNamaTim')) document.getElementById('defDisplayNamaTim').textContent = namaTim;
+        if (document.getElementById('defDisplayNamaKontrak')) document.getElementById('defDisplayNamaKontrak').textContent = kontrak;
+
+        updateDefectTabVisibility();
+    }
+
+    function toggleDefectProfileEdit() {
+        const viewDiv = document.getElementById('defectProfileViewData');
+        const editDiv = document.getElementById('defectProfileEditForm');
+
+        if (viewDiv && editDiv) {
+            const isEditing = !editDiv.classList.contains('hidden');
+            if (isEditing) {
+                editDiv.classList.add('hidden');
+                viewDiv.classList.remove('hidden');
+            } else {
+                const p = state.profile || {};
+                if (document.getElementById('defEditNama')) document.getElementById('defEditNama').value = p.name || "Amanda Setyawati";
+
+                const roleSelect = document.getElementById('defEditRole');
+                const roleLockNote = document.getElementById('defEditRoleLockNote');
+                if (roleSelect) {
+                    roleSelect.value = p.managedRoleDefect || getDefectRole();
+                    if (isDefectAdmin()) {
+                        roleSelect.disabled = false;
+                        roleSelect.classList.remove('opacity-60', 'cursor-not-allowed', 'bg-slate-200', 'dark:bg-slate-800');
+                        if (roleLockNote) roleLockNote.classList.add('hidden');
+                    } else {
+                        roleSelect.disabled = true;
+                        roleSelect.classList.add('opacity-60', 'cursor-not-allowed', 'bg-slate-200', 'dark:bg-slate-800');
+                        if (roleLockNote) roleLockNote.classList.remove('hidden');
+                    }
+                }
+
+                if (document.getElementById('defEditJabatan')) document.getElementById('defEditJabatan').value = p.jabatanDefect || p.jabatan || "Inspektur Defect List";
+                if (document.getElementById('defEditPerusahaan')) document.getElementById('defEditPerusahaan').value = p.perusahaan || "PT Hutama Karya Infrastruktur";
+                if (document.getElementById('defEditOrgCat')) document.getElementById('defEditOrgCat').value = p.orgCategoryDefect || p.orgCategory || "Kontraktor";
+                if (document.getElementById('defEditTimKe')) document.getElementById('defEditTimKe').value = p.timKe || "Tim 1";
+                if (document.getElementById('defEditNamaTim')) document.getElementById('defEditNamaTim').value = p.namaTim || "Tim Inspeksi Defect List";
+                if (document.getElementById('defEditNamaKontrak')) document.getElementById('defEditNamaKontrak').value = p.namaKontrak || "Pekerjaan Pembangunan Jalan Tol Trans Sumatera Ruas Palembang - Betung Seksi 1 Palembang - Rengas (STA 41+513 - STA 64+000) dan Seksi 2 Rengas - Pangkalan Balai (STA 64+000 - STA 97+000)";
+
+                viewDiv.classList.add('hidden');
+                editDiv.classList.remove('hidden');
+            }
+        }
+    }
+
+    function saveDefectProfile() {
+        const nama = document.getElementById('defEditNama')?.value.trim();
+        const roleSelect = document.getElementById('defEditRole');
+        const roleDefect = isDefectAdmin() ? (roleSelect?.value || getDefectRole()) : (state.profile?.managedRoleDefect || getDefectRole());
+        const jabatan = document.getElementById('defEditJabatan')?.value.trim();
+        const perusahaan = document.getElementById('defEditPerusahaan')?.value.trim();
+        const orgCat = document.getElementById('defEditOrgCat')?.value;
+        const timKe = document.getElementById('defEditTimKe')?.value;
+        const namaTim = document.getElementById('defEditNamaTim')?.value.trim();
+        const namaKontrak = document.getElementById('defEditNamaKontrak')?.value.trim();
+
+        if (!nama) {
+            showToast("Nama lengkap tidak boleh kosong!", "error");
+            return;
+        }
+
+        state.profile = {
+            ...state.profile,
+            name: nama,
+            managedRoleDefect: roleDefect,
+            jabatanDefect: jabatan || "Inspektur Defect List",
+            perusahaan: perusahaan,
+            orgCategoryDefect: orgCat || "Kontraktor",
+            timKe: timKe,
+            namaTim: namaTim,
+            namaKontrak: namaKontrak
+        };
+
+        saveDataToStorage();
+        if (window.Android && window.Android.syncToCloud) {
+            window.Android.syncToCloud(JSON.stringify(state));
+        }
+
+        updateDefectProfileData();
+        toggleDefectProfileEdit();
+        renderDefectList();
+        showToast("Profil Defect berhasil diperbarui!", "success");
+    }
+
+    function syncDefectData() {
+        showToast("Menyinkronkan data defect...", "info");
+        fetchDefectList();
+        if (isDefectAdmin()) fetchDefectUsers();
+        if (window.Android && window.Android.syncToCloud) {
+            window.Android.syncToCloud(JSON.stringify(state));
+        }
+        setTimeout(() => showToast("Sinkronisasi data defect selesai!", "success"), 1200);
+    }
+
+    function logoutDefectUser() {
+        isDefectModeActive = false;
+        showToast("Keluar dari Akun Defect List", "info");
+        switchToMainApp();
+    }
+
+    function switchDefectTab(tabName) {
+        if (tabName === 'manage-acc' && !isDefectAdmin()) {
+            showToast("Hanya Administrator yang dapat mengakses Kelola Akun Defect!", "error");
+            tabName = 'main';
+        }
+
+        activeDefectTab = tabName;
+        const mainSec = document.getElementById('defectTabMainSection');
+        const manageAccSec = document.getElementById('defectTabManageAccSection');
+        const profSec = document.getElementById('defectTabProfileSection');
+
+        const btnMain = document.getElementById('defTabBtnMain');
+        const btnManageAcc = document.getElementById('defTabBtnManageAcc');
+        const btnProf = document.getElementById('defTabBtnProfile');
+
+        const activeClass = "flex-1 min-w-[100px] text-center py-2 px-3 text-xs font-black rounded-xl bg-white dark:bg-slate-700 shadow-md text-amber-600 dark:text-amber-400 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap";
+        const inactiveClass = "flex-1 min-w-[100px] text-center py-2 px-3 text-xs font-black rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all flex items-center justify-center gap-1.5 whitespace-nowrap";
+
+        if (mainSec) mainSec.classList.toggle('hidden', tabName !== 'main');
+        if (manageAccSec) manageAccSec.classList.toggle('hidden', tabName !== 'manage-acc');
+        if (profSec) profSec.classList.toggle('hidden', tabName !== 'profile');
+
+        if (btnMain) btnMain.className = tabName === 'main' ? activeClass : inactiveClass;
+        if (btnManageAcc) btnManageAcc.className = tabName === 'manage-acc' ? activeClass.replace('min-w-[100px]', 'min-w-[110px]') : inactiveClass.replace('min-w-[100px]', 'min-w-[110px]');
+        if (btnProf) btnProf.className = tabName === 'profile' ? activeClass : inactiveClass;
+
+        if (tabName === 'manage-acc') {
+            fetchDefectUsers();
+        }
+    }
+
+    // --- MANAGE DEFECT USERS (SUBTAB 2: ADMIN ONLY) ---
+    function registerDefectUserByAdmin() {
+        if (!isDefectAdmin()) {
+            showToast("Akses Ditolak! Hanya Administrator yang dapat mendaftarkan personil baru.", "error");
+            return;
+        }
+
+        const name = document.getElementById('defRegNama')?.value.trim();
+        const email = document.getElementById('defRegEmail')?.value.trim();
+        const roleDefect = document.getElementById('defRegRole')?.value || "Anggota";
+        const timKe = document.getElementById('defRegTimKe')?.value || "Tim 1";
+        const orgCat = document.getElementById('defRegOrgCat')?.value || "Kontraktor";
+        const perusahaan = document.getElementById('defRegPerusahaan')?.value.trim() || "PT Hutama Karya Infrastruktur";
+
+        if (!name || !email) {
+            showToast("Harap isi Nama Lengkap dan Gmail / Email!", "error");
+            return;
+        }
+
+        const newUser = {
+            id: "def_user_" + Date.now(),
+            name: name,
+            email: email,
+            managedRoleDefect: roleDefect,
+            timKe: timKe,
+            orgCategoryDefect: orgCat,
+            perusahaan: perusahaan,
+            jabatanDefect: "Inspektur Defect List",
+            hasDefectAccess: true,
+            accountType: 'defect_only'
+        };
+
+        if (window.Android && window.Android.saveDefectUserByAdmin) {
+            showToast("Mendaftarkan personil defect...", "info");
+            window.Android.saveDefectUserByAdmin(JSON.stringify(newUser));
+        } else {
+            cachedDefectUsers.unshift(newUser);
+            saveDefectUsersToStorage();
+            onSaveDefectUserResult(true, "Personil Defect Baru Berhasil Didaftarkan!");
+        }
+    }
+
+    window.onSaveDefectUserResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            if (document.getElementById('defRegNama')) document.getElementById('defRegNama').value = "";
+            if (document.getElementById('defRegEmail')) document.getElementById('defRegEmail').value = "";
+            if (document.getElementById('defRegPerusahaan')) document.getElementById('defRegPerusahaan').value = "";
+            fetchDefectUsers();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function saveDefectUsersToStorage() {
+        try {
+            localStorage.setItem('hk_defect_users_cache', JSON.stringify(cachedDefectUsers));
+        } catch (e) { console.error(e); }
+    }
+
+    function loadDefectUsersFromStorage() {
+        try {
+            const raw = localStorage.getItem('hk_defect_users_cache');
+            if (raw) cachedDefectUsers = JSON.parse(raw);
+        } catch (e) { console.error(e); }
+    }
+
+    function ensureDefaultDefectUsers() {
+        if (!cachedDefectUsers || cachedDefectUsers.length === 0) {
+            const list = [];
+            if (state.profile && (state.profile.managedRoleDefect || state.profile.accountType === 'defect_only' || state.profile.hasDefectAccess)) {
+                list.push({
+                    id: "curr_user_" + Date.now(),
+                    name: state.profile.name || "Administrator Defect",
+                    email: state.profile.email || "user.defect@gmail.com",
+                    managedRoleDefect: getDefectRole(),
+                    timKe: state.profile.timKe || "Tim 1",
+                    orgCategoryDefect: state.profile.orgCategoryDefect || state.profile.orgCategory || "Kontraktor",
+                    perusahaan: state.profile.perusahaan || "PT Hutama Karya Infrastruktur"
+                });
+            }
+            if (list.length > 0) {
+                cachedDefectUsers = list;
+                saveDefectUsersToStorage();
+            }
+        }
+    }
+
+    function fetchDefectUsers() {
+        loadDefectUsersFromStorage();
+        if (window.Android && window.Android.fetchDefectUsers) {
+            window.Android.fetchDefectUsers();
+        } else {
+            ensureDefaultDefectUsers();
+            renderDefectUserList();
+        }
+    }
+
+    window.onFetchDefectUsersReceived = function(jsonString) {
+        try {
+            const fetched = JSON.parse(jsonString || "[]");
+            cachedDefectUsers = fetched;
+            saveDefectUsersToStorage();
+            renderDefectUserList();
+        } catch (e) {
+            console.error("Parse defect users error:", e);
+            renderDefectUserList();
+        }
+    };
+
+    let defectUserCurrentPage = 1;
+
+    function renderDefectUserList() {
+        const container = document.getElementById('defectUserListContainer');
+        if (!container) return;
+
+        if (!cachedDefectUsers || cachedDefectUsers.length === 0) {
+            container.innerHTML = `
+                <div class="p-6 text-center text-slate-400 italic text-[11px] bg-slate-50 dark:bg-slate-700/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-700">
+                    Belum ada personil defect terdaftar oleh Administrator. Silakan gunakan form pendaftaran di atas.
+                </div>`;
+            document.getElementById('paginationDefectUserList')?.classList.add('hidden');
+            return;
+        }
+
+        const pageLimit = parseInt(document.getElementById('defectUserPageLimit')?.value || "10");
+        const totalItems = cachedDefectUsers.length;
+        const totalPages = Math.ceil(totalItems / pageLimit);
+
+        if (defectUserCurrentPage > totalPages) defectUserCurrentPage = totalPages;
+        if (defectUserCurrentPage < 1) defectUserCurrentPage = 1;
+
+        const startIndex = (defectUserCurrentPage - 1) * pageLimit;
+        const pageItems = cachedDefectUsers.slice(startIndex, startIndex + pageLimit);
+
+        container.innerHTML = "";
+        pageItems.forEach(u => {
+            const role = u.managedRoleDefect || u.roleDefect || "Anggota";
+            const badgeColor = role === 'Administrator' ? 'bg-amber-100 text-amber-700 border-amber-300' : (role === 'Ketua Tim' ? 'bg-sky-100 text-sky-700 border-sky-300' : 'bg-slate-100 text-slate-700 border-slate-300');
+
+            container.innerHTML += `
+                <div class="p-4 bg-slate-50 dark:bg-slate-700/40 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="text-xs font-black text-slate-800 dark:text-white">${u.name || 'Tanpa Nama'}</h4>
+                                <span class="text-[9px] font-black px-2 py-0.5 rounded-md uppercase border ${badgeColor}">${role}</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-medium">${u.email || '-'} • <span class="font-bold text-brand-600 dark:text-sky-400">${u.timKe || 'Tim 1'}</span> • ${u.perusahaan || 'HKI'}</p>
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-slate-600">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase">Ubah Role:</label>
+                            <select onchange="updateUserDefectRole('${u.id || u.uid}', this.value)" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                                <option value="Anggota" ${role === 'Anggota' ? 'selected' : ''}>Anggota</option>
+                                <option value="Ketua Tim" ${role === 'Ketua Tim' ? 'selected' : ''}>Ketua Tim</option>
+                                <option value="Administrator" ${role === 'Administrator' ? 'selected' : ''}>Administrator</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Render Pagination Controls
+        const pagContainer = document.getElementById('paginationDefectUserList');
+        if (pagContainer) {
+            pagContainer.classList.remove('hidden');
+            pagContainer.innerHTML = `
+                <span class="text-[10px] font-bold text-slate-400">Menampilkan ${startIndex + 1} - ${Math.min(startIndex + pageLimit, totalItems)} dari ${totalItems} personil</span>
+                <div class="flex items-center gap-1">
+                    <button onclick="changeDefectUserPage(-1)" ${defectUserCurrentPage === 1 ? 'disabled' : ''} class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-[10px] font-bold disabled:opacity-40">
+                        <i class="fa-solid fa-chevron-left"></i> Sblm
+                    </button>
+                    <span class="px-3 py-1.5 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 font-black rounded-xl text-[10px]">
+                        Hal ${defectUserCurrentPage} / ${totalPages}
+                    </span>
+                    <button onclick="changeDefectUserPage(1)" ${defectUserCurrentPage === totalPages ? 'disabled' : ''} class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-[10px] font-bold disabled:opacity-40">
+                        Slanj <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+        }
+    }
+
+    function changeDefectUserPage(delta) {
+        defectUserCurrentPage += delta;
+        renderDefectUserList();
+    }
+
+    function updateUserDefectRole(userId, newRole) {
+        if (!isDefectAdmin()) {
+            showToast("Hanya Administrator yang dapat merubah Managed Role Defect!", "error");
+            return;
+        }
+
+        const user = cachedDefectUsers.find(u => (u.id === userId || u.uid === userId));
+        if (user) {
+            user.managedRoleDefect = newRole;
+            saveDefectUsersToStorage();
+        }
+
+        if (window.Android && window.Android.updateUserDefectRole) {
+            showToast("Merubah Managed Role Defect...", "info");
+            window.Android.updateUserDefectRole(userId, newRole);
+        } else {
+            showToast("Managed Role Defect berhasil diubah menjadi " + newRole, "success");
+            renderDefectUserList();
+        }
+    }
+
+    window.onUpdateDefectUserRoleResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            fetchDefectUsers();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function deleteDefectItem(defectId) {
+        if (!isDefectAdmin()) {
+            showToast("Akses Ditolak! Hanya Administrator yang berhak menghapus defect.", "error");
+            return;
+        }
+
+        if (!confirm("Apakah Anda yakin ingin menghapus item defect ini secara permanen?")) return;
+
+        if (window.Android && window.Android.deleteDefectItem) {
+            showToast("Menghapus item defect...", "info");
+            window.Android.deleteDefectItem(defectId);
+        } else {
+            cachedDefectList = cachedDefectList.filter(d => d.id !== defectId);
+            saveDefectListToStorage();
+            onDeleteDefectResult(true, "Item Defect berhasil dihapus!");
+        }
+    }
+
+    window.onDeleteDefectResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            closeDefectDetailModal();
+            fetchDefectList();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    // --- DEFECT LIVE CAMERA & GPS MAP LOGIC ---
+    let defectInputMap = null;
+    let capturedDefectCoords = "";
+
+    function fetchDefectInputGPS() {
+        if (!navigator.geolocation) return;
+
+        const statusEl = document.getElementById('defGpsStatus');
+        const textEl = document.getElementById('defCoordsText');
+
+        navigator.geolocation.getCurrentPosition(pos => {
+            const lat = pos.coords.latitude.toFixed(6);
+            const lng = pos.coords.longitude.toFixed(6);
+            capturedDefectCoords = `${lat}, ${lng}`;
+
+            if (textEl) textEl.textContent = capturedDefectCoords;
+            if (statusEl) {
+                statusEl.textContent = "GPS Terkunci";
+                statusEl.className = "text-emerald-500 font-bold text-[10px]";
+            }
+
+            setTimeout(() => {
+                if (defectInputMap) { defectInputMap.remove(); defectInputMap = null; }
+                const center = [parseFloat(lat), parseFloat(lng)];
+                defectInputMap = L.map('defectInputMap', { zoomControl: false }).setView(center, 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(defectInputMap);
+                L.marker(center).addTo(defectInputMap).bindPopup("Titik Defect").openPopup();
+            }, 300);
+        }, err => {
+            if (statusEl) {
+                statusEl.textContent = "GPS Error / Manual";
+                statusEl.className = "text-rose-500 font-bold text-[10px]";
+            }
+            if (textEl) textEl.textContent = "-2.976074, 104.775430 (Default)";
+            capturedDefectCoords = "-2.976074, 104.775430";
+        }, { enableHighAccuracy: true });
+    }
+
+    function openAddDefectModal() {
+        const modal = document.getElementById('addDefectModal');
+        if (!modal) return;
+
+        if (document.getElementById('defNoUrut')) document.getElementById('defNoUrut').value = "";
+        if (document.getElementById('defSta')) document.getElementById('defSta').value = "";
+        if (document.getElementById('defTemuan')) document.getElementById('defTemuan').value = "";
+        if (document.getElementById('defHasilPemeriksaan')) document.getElementById('defHasilPemeriksaan').value = "";
+        if (document.getElementById('defRekomendasi')) document.getElementById('defRekomendasi').value = "";
+        capturedDefectPhoto = null;
+
+        const preview = document.getElementById('defectPhotoPreview');
+        const btnReset = document.getElementById('btnResetDefectCam');
+        if (preview) preview.classList.add('hidden');
+        if (btnReset) btnReset.classList.add('hidden');
+
+        modal.classList.remove('hidden');
+        startDefectCamera();
+        fetchDefectInputGPS();
+    }
+
+    function closeAddDefectModal() {
+        const modal = document.getElementById('addDefectModal');
+        if (modal) modal.classList.add('hidden');
+        stopDefectCamera();
+    }
+
+    function startDefectCamera() {
+        const video = document.getElementById('defectVideo');
+        const placeholder = document.getElementById('defectCameraPlaceholder');
+        if (!video) return;
+
+        if (capturedDefectPhoto) return; // foto sudah ada
+
+        const constraints = {
+            video: { facingMode: "environment" },
+            audio: false
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(stream => {
+                defectStream = stream;
+                video.srcObject = stream;
+                video.muted = true;
+                video.play().catch(e => console.error("defectVideo play error:", e));
+                video.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            })
+            .catch(err => {
+                console.warn("Gagal kamera environment defect, mencoba fallback video true", err);
+                navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    .then(stream => {
+                        defectStream = stream;
+                        video.srcObject = stream;
+                        video.muted = true;
+                        video.play().catch(e => console.error("defectVideo fallback play error:", e));
+                        video.classList.remove('hidden');
+                        if (placeholder) placeholder.classList.add('hidden');
+                    })
+                    .catch(e2 => {
+                        console.error("Gagal kamera defect total", e2);
+                        if (placeholder) placeholder.classList.remove('hidden');
+                    });
+            });
+    }
+
+    function stopDefectCamera() {
+        if (defectStream) {
+            defectStream.getTracks().forEach(track => track.stop());
+            defectStream = null;
+        }
+    }
+
+    function takeDefectSnapshot() {
+        const video = document.getElementById('defectVideo');
+        const canvas = document.getElementById('defectCanvas');
+        const preview = document.getElementById('defectPhotoPreview');
+        const btnReset = document.getElementById('btnResetDefectCam');
+
+        if (!video || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const settings = getPhotoSettings();
+        const maxDim = settings.maxDim;
+        let w = video.videoWidth || 640;
+        let h = video.videoHeight || 480;
+        if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        ctx.drawImage(video, 0, 0, w, h);
+
+        capturedDefectPhoto = canvas.toDataURL('image/jpeg', settings.quality);
+        if (preview) {
+            preview.src = capturedDefectPhoto;
+            preview.classList.remove('hidden');
+        }
+        video.classList.add('hidden');
+        if (btnReset) btnReset.classList.remove('hidden');
+
+        stopDefectCamera();
+        showToast("Foto defect berhasil diambil!", "info");
+    }
+
+    function resetDefectCamera() {
+        capturedDefectPhoto = null;
+        const preview = document.getElementById('defectPhotoPreview');
+        const btnReset = document.getElementById('btnResetDefectCam');
+        if (preview) preview.classList.add('hidden');
+        if (btnReset) btnReset.classList.add('hidden');
+        startDefectCamera();
+    }
+
+    function triggerDefectCamera(type) {
+        if (type === 'pemeriksaan') {
+            const input = document.getElementById('defFotoFileInput');
+            if (input) input.click();
+        } else {
+            const input = document.getElementById('upDefFileInput');
+            if (input) input.click();
+        }
+    }
+
+    function handleDefectFileSelect(event, type) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        showToast("Memuat & mengompres foto...", "info");
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const rawBase64 = e.target.result;
+            const imgEl = new Image();
+            imgEl.onload = function() {
+                const canvas = document.createElement('canvas');
+                const maxDim = 1024;
+                let w = imgEl.width || 800;
+                let h = imgEl.height || 600;
+
+                if (w > maxDim || h > maxDim) {
+                    if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                    else { w = Math.round(w * maxDim / h); h = maxDim; }
+                }
+
+                canvas.width = w;
+                canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(imgEl, 0, 0, w, h);
+
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+
+                if (type === 'pemeriksaan') {
+                    capturedDefectPhoto = compressedBase64;
+                    const previewImg = document.getElementById('defectPhotoPreview');
+                    const video = document.getElementById('defectVideo');
+                    const btnReset = document.getElementById('btnResetDefectCam');
+                    if (previewImg) { previewImg.src = compressedBase64; previewImg.classList.remove('hidden'); }
+                    if (video) video.classList.add('hidden');
+                    if (btnReset) btnReset.classList.remove('hidden');
+                    stopDefectCamera();
+                } else {
+                    capturedResolutionPhoto = compressedBase64;
+                    const previewImg = document.getElementById('upDefPhotoPreviewImg');
+                    const icon = document.getElementById('upDefPhotoIcon');
+                    if (previewImg) { previewImg.src = compressedBase64; previewImg.classList.remove('hidden'); }
+                    if (icon) icon.classList.add('hidden');
+                }
+                showToast("Foto berhasil dimuat & dioptimalkan!", "success");
+            };
+            imgEl.onerror = function() {
+                showToast("Gagal mengurai gambar", "error");
+            };
+            imgEl.src = rawBase64;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function submitNewDefect() {
+        const noUrut = document.getElementById('defNoUrut')?.value.trim();
+        const lingkupPekerjaan = document.getElementById('defLingkup')?.value;
+        const sta = document.getElementById('defSta')?.value.trim();
+        const klasifikasi = document.getElementById('defKlasifikasi')?.value;
+        const temuan = document.getElementById('defTemuan')?.value.trim();
+        const hasilPemeriksaan = document.getElementById('defHasilPemeriksaan')?.value.trim();
+        const rekomendasi = document.getElementById('defRekomendasi')?.value.trim();
+        const status = document.getElementById('defStatus')?.value;
+
+        if (!noUrut || !sta || !temuan) {
+            showToast("Lengkapi No. Urut, STA/Lokasi, dan Temuan Cacat!", "error");
+            return;
+        }
+
+        const currentTeam = (state.profile && state.profile.timKe) || "Tim 1";
+
+        const defectObj = {
+            noUrut: noUrut,
+            lingkupPekerjaan: lingkupPekerjaan,
+            sta: sta,
+            klasifikasi: klasifikasi,
+            temuan: temuan,
+            hasilPemeriksaan: hasilPemeriksaan,
+            rekomendasi: rekomendasi,
+            photoPemeriksaan: capturedDefectPhoto || "",
+            coords: capturedDefectCoords || "-2.976074, 104.775430",
+            status: status,
+            timKe: currentTeam
+        };
+
+        if (window.Android && window.Android.saveDefectItem) {
+            showToast("Menyimpan data defect...", "info");
+            window.Android.saveDefectItem(JSON.stringify(defectObj));
+        } else {
+            onSaveDefectResult(true, "Data Defect berhasil disimpan!");
+        }
+    }
+
+    window.onSaveDefectResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            closeAddDefectModal();
+            fetchDefectList();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function saveDefectListToStorage() {
+        try {
+            localStorage.setItem('hk_defect_list_cache', JSON.stringify(cachedDefectList));
+        } catch (e) {
+            console.error("saveDefectListToStorage error:", e);
+        }
+    }
+
+    function loadDefectListFromStorage() {
+        try {
+            const raw = localStorage.getItem('hk_defect_list_cache');
+            if (raw) {
+                cachedDefectList = JSON.parse(raw);
+                renderDefectList();
+            }
+        } catch (e) {
+            console.error("loadDefectListFromStorage error:", e);
+        }
+    }
+
+    function syncPendingDefects() {
+        try {
+            const rawPending = localStorage.getItem('hk_pending_defects');
+            if (!rawPending) return;
+
+            const pendingItems = JSON.parse(rawPending || "[]");
+            if (pendingItems.length === 0) return;
+
+            console.log("Auto-syncing " + pendingItems.length + " pending offline defects...");
+            const remaining = [];
+
+            pendingItems.forEach(item => {
+                if (window.Android && window.Android.saveDefectItem) {
+                    window.Android.saveDefectItem(JSON.stringify(item));
+                } else {
+                    remaining.push(item);
+                }
+            });
+
+            localStorage.setItem('hk_pending_defects', JSON.stringify(remaining));
+        } catch (e) {
+            console.error("syncPendingDefects error:", e);
+        }
+    }
+
+    function fetchDefectList() {
+        syncPendingDefects();
+        if (window.Android && window.Android.fetchDefectList) {
+            window.Android.fetchDefectList();
+        }
+    }
+
+    window.onFetchDefectListReceived = function(jsonString) {
+        try {
+            cachedDefectList = JSON.parse(jsonString || "[]");
+            saveDefectListToStorage();
+            renderDefectList();
+        } catch (e) {
+            console.error("Parse Defect List error:", e);
+        }
+    };
+
+    let defectCurrentPage = 1;
+    let adminDefectChartInstance = null;
+    let defectDetailMapInstance = null;
+
+    function renderAdminDefectChart(allDefects) {
+        const container = document.getElementById('adminDefectChartContainer');
+        const ctx = document.getElementById('adminDefectChart');
+        if (!container || !ctx) return;
+
+        container.classList.remove('hidden');
+
+        const teams = ['Tim 1', 'Tim 2', 'Tim 3', 'Tim 4', 'Tim 5', 'Tim 6', 'Tim 7'];
+        const openCounts = [0, 0, 0, 0, 0, 0, 0];
+        const inProgCounts = [0, 0, 0, 0, 0, 0, 0];
+        const resCounts = [0, 0, 0, 0, 0, 0, 0];
+        const closedCounts = [0, 0, 0, 0, 0, 0, 0];
+
+        allDefects.forEach(d => {
+            const team = d.timKe || "Tim 1";
+            let idx = teams.indexOf(team);
+            if (idx === -1) idx = 0;
+
+            const st = (d.status || 'Open').trim();
+            if (st === 'Open') openCounts[idx]++;
+            else if (st === 'In Progress') inProgCounts[idx]++;
+            else if (st === 'Resolved') resCounts[idx]++;
+            else if (st === 'Closed') closedCounts[idx]++;
+            else openCounts[idx]++;
+        });
+
+        if (adminDefectChartInstance) adminDefectChartInstance.destroy();
+
+        adminDefectChartInstance = new Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: teams,
+                datasets: [
+                    { label: 'Open', data: openCounts, backgroundColor: '#f59e0b', borderRadius: 4 },
+                    { label: 'In Progress', data: inProgCounts, backgroundColor: '#0ea5e9', borderRadius: 4 },
+                    { label: 'Resolved', data: resCounts, backgroundColor: '#8b5cf6', borderRadius: 4 },
+                    { label: 'Closed', data: closedCounts, backgroundColor: '#10b981', borderRadius: 4 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: true, position: 'top', labels: { boxWidth: 10, font: { size: 9, weight: 'bold' } } } },
+                scales: {
+                    y: { beginAtZero: true, stacked: true, ticks: { precision: 0, font: { size: 9 } } },
+                    x: { stacked: true, ticks: { font: { size: 9, weight: 'bold' } } }
+                }
+            }
+        });
+    }
+
+    function renderTeamDefectStats(teamName, teamDefects) {
+        const container = document.getElementById('teamDefectStatsContainer');
+        if (!container) return;
+
+        container.classList.remove('hidden');
+        if (document.getElementById('teamDefectTitleLabel')) document.getElementById('teamDefectTitleLabel').textContent = teamName;
+
+        const total = teamDefects.length;
+        const open = teamDefects.filter(d => d.status === 'Open').length;
+        const inProgress = teamDefects.filter(d => d.status === 'In Progress').length;
+        const resolved = teamDefects.filter(d => d.status === 'Resolved').length;
+        const closed = teamDefects.filter(d => d.status === 'Closed').length;
+
+        if (document.getElementById('statTotalDefect')) document.getElementById('statTotalDefect').textContent = total;
+        if (document.getElementById('statOpenDefect')) document.getElementById('statOpenDefect').textContent = open;
+        if (document.getElementById('statInProgressDefect')) document.getElementById('statInProgressDefect').textContent = inProgress;
+        if (document.getElementById('statResolvedDefect')) document.getElementById('statResolvedDefect').textContent = resolved;
+        if (document.getElementById('statClosedDefect')) document.getElementById('statClosedDefect').textContent = closed;
+    }
+
+    function renderDefectList() {
+        const container = document.getElementById('defectListContainer');
+        if (!container) return;
+
+        const isAdmin = isDefectAdmin();
+        const userManagedTeam = (state.profile && state.profile.timKe) || "Tim 1";
+
+        // Cek Hak Akses Update berdasarkan Kategori Organisasi (Kontraktor, Konsultan, Owner BISA. ETC TIDAK BISA)
+        const userOrgCat = (state.profile && (state.profile.orgCategoryDefect || state.profile.orgCategory)) || "Kontraktor";
+        const canUpdateDefect = userOrgCat === "Kontraktor" || userOrgCat === "Konsultan" || userOrgCat === "Owner";
+
+        const filterTim = document.getElementById('defectFilterTim')?.value || "ALL";
+        const pageLimit = parseInt(document.getElementById('defectPageLimit')?.value || "10");
+
+        let filteredList = [...cachedDefectList];
+
+        // Chart / Stats Rendering based on Role
+        if (isAdmin) {
+            document.getElementById('teamDefectStatsContainer')?.classList.add('hidden');
+            renderAdminDefectChart(cachedDefectList);
+            if (document.getElementById('defectFilterTim')) {
+                document.getElementById('defectFilterTim').disabled = false;
+            }
+        } else {
+            document.getElementById('adminDefectChartContainer')?.classList.add('hidden');
+            const teamDefects = cachedDefectList.filter(item => {
+                const itemTeam = (item.timKe || "Tim 1").trim().toLowerCase();
+                const userTeam = userManagedTeam.trim().toLowerCase();
+                return itemTeam === userTeam || itemTeam.includes(userTeam) || userTeam.includes(itemTeam);
+            });
+            renderTeamDefectStats(userManagedTeam, teamDefects);
+            if (document.getElementById('defectFilterTim')) {
+                document.getElementById('defectFilterTim').value = userManagedTeam;
+                document.getElementById('defectFilterTim').disabled = true;
+            }
+        }
+
+        // Filter Tim: Sub-Admin & Anggota Tim hanya melihat defect pada Tim mereka
+        if (!isAdmin) {
+            filteredList = filteredList.filter(item => {
+                const itemTeam = (item.timKe || "Tim 1").trim().toLowerCase();
+                const userTeam = userManagedTeam.trim().toLowerCase();
+                return itemTeam === userTeam || itemTeam.includes(userTeam) || userTeam.includes(itemTeam);
+            });
+        } else if (filterTim !== "ALL") {
+            filteredList = filteredList.filter(item => (item.timKe || "Tim 1").trim().toLowerCase() === filterTim.trim().toLowerCase());
+        }
+
+        if (filteredList.length === 0) {
+            container.innerHTML = `
+                <div class="p-8 text-center text-slate-400 italic text-[11px] bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+                    Belum ada temuan defect diinputkan${!isAdmin ? ' untuk ' + userManagedTeam : ''}.
+                </div>`;
+            document.getElementById('paginationDefectList')?.classList.add('hidden');
+            return;
+        }
+
+        // Pagination Calculations
+        const totalItems = filteredList.length;
+        const totalPages = Math.ceil(totalItems / pageLimit);
+        if (defectCurrentPage > totalPages) defectCurrentPage = totalPages;
+        if (defectCurrentPage < 1) defectCurrentPage = 1;
+
+        const startIndex = (defectCurrentPage - 1) * pageLimit;
+        const pageItems = filteredList.slice(startIndex, startIndex + pageLimit);
+
+        // Render Compact Cards
+        container.innerHTML = "";
+        pageItems.forEach(item => {
+            const klasClass = item.klasifikasi === 'Kritis' ? 'bg-rose-100 text-rose-700' : (item.klasifikasi === 'Mayor' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700');
+            const statusClass = item.status === 'Closed' ? 'bg-emerald-500 text-white' : (item.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'In Progress' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700'));
+
+            container.innerHTML += `
+                <div onclick="openDefectDetailModal('${item.id}')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-amber-400 transition cursor-pointer space-y-1.5">
+                    <div class="flex justify-between items-start">
+                        <p class="text-[9px] font-black uppercase text-amber-600 tracking-wider">NO. ${item.noUrut || '-'} • ${item.lingkupPekerjaan || 'Umum'} • STA: ${item.sta || '-'} • <span class="text-brand-600 dark:text-sky-400 font-extrabold">${item.timKe || 'Tim 1'}</span></p>
+                        <div class="flex items-center gap-1">
+                            <span class="text-[8px] font-black px-2 py-0.5 rounded-md uppercase ${klasClass}">${item.klasifikasi || 'Minor'}</span>
+                            <span class="text-[8px] font-black px-2.5 py-0.5 rounded-full uppercase ${statusClass}">${item.status || 'Open'}</span>
+                            ${isAdmin ? `
+                            <button onclick="event.stopPropagation(); deleteDefectItem('${item.id}')" title="Hapus Defect" class="text-rose-500 hover:text-rose-700 p-1 text-xs">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>` : ''}
+                        </div>
+                    </div>
+                    <h4 class="text-xs font-black text-slate-800 dark:text-white leading-snug">${item.temuan || 'Tanpa deskripsi'}</h4>
+                    <div class="flex items-center justify-between text-[9px] text-slate-400 font-bold pt-1.5 border-t border-slate-50 dark:border-slate-700/50">
+                        <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400"><i class="fa-solid fa-eye"></i> Klik untuk lihat detail lengkap & peta</span>
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </div>
+                </div>
+            `;
+        });
+
+        // Render Pagination Controls
+        const pagContainer = document.getElementById('paginationDefectList');
+        if (pagContainer) {
+            pagContainer.classList.remove('hidden');
+            pagContainer.innerHTML = `
+                <span class="text-[10px] font-bold text-slate-400">Menampilkan ${startIndex + 1} - ${Math.min(startIndex + pageLimit, totalItems)} dari ${totalItems} defect</span>
+                <div class="flex items-center gap-1">
+                    <button onclick="changeDefectPage(-1)" ${defectCurrentPage === 1 ? 'disabled' : ''} class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-[10px] font-bold disabled:opacity-40">
+                        <i class="fa-solid fa-chevron-left"></i> Sblm
+                    </button>
+                    <span class="px-3 py-1.5 bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 font-black rounded-xl text-[10px]">
+                        Hal ${defectCurrentPage} / ${totalPages}
+                    </span>
+                    <button onclick="changeDefectPage(1)" ${defectCurrentPage === totalPages ? 'disabled' : ''} class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-[10px] font-bold disabled:opacity-40">
+                        Slanj <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        // Render Peta Sebaran Defect untuk Admin & Sub-Admin
+        updateDefectDistributionMap(filteredList);
+    }
+
+    function changeDefectPage(delta) {
+        defectCurrentPage += delta;
+        renderDefectList();
+    }
+
+    const customPhotoScales = {};
+
+    function changeCustomPhotoZoom(imgId, indicatorId, delta) {
+        if (!customPhotoScales[imgId]) customPhotoScales[imgId] = 1;
+        customPhotoScales[imgId] = Math.max(0.5, Math.min(3.0, customPhotoScales[imgId] + delta));
+        const img = document.getElementById(imgId);
+        const ind = document.getElementById(indicatorId);
+        if (img) img.style.transform = `scale(${customPhotoScales[imgId]})`;
+        if (ind) ind.textContent = `${Math.round(customPhotoScales[imgId] * 100)}% Zoom`;
+    }
+
+    function resetCustomPhotoZoom(imgId, indicatorId) {
+        customPhotoScales[imgId] = 1;
+        const img = document.getElementById(imgId);
+        const ind = document.getElementById(indicatorId);
+        if (img) img.style.transform = `scale(1)`;
+        if (ind) ind.textContent = `100% Zoom`;
+    }
+
+    function buildPhotoCard(title, photoUrl, imgId, indId) {
+        if (!photoUrl) return "";
+        return '<div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700">' +
+            '<div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">' +
+                '<span>' + title + '</span>' +
+                '<span id="' + indId + '" class="text-amber-600 font-bold text-[10px]">100% Zoom</span>' +
+            '</div>' +
+            '<div class="relative bg-slate-950 rounded-2xl h-60 overflow-hidden border border-slate-200 dark:border-slate-700 flex items-center justify-center">' +
+                '<img id="' + imgId + '" src="' + photoUrl + '" class="max-w-full max-h-full object-contain transition-transform duration-200" style="transform: scale(1);">' +
+                '<div class="absolute bottom-2 right-2 flex space-x-1.5 z-10 bg-black/60 backdrop-blur-md p-1.5 rounded-lg border border-white/10">' +
+                    '<button onclick="changeCustomPhotoZoom(\'' + imgId + '\', \'' + indId + '\', -0.25)" class="w-8 h-8 rounded bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition">' +
+                        '<i class="fa-solid fa-search-minus"></i>' +
+                    '</button>' +
+                    '<button onclick="resetCustomPhotoZoom(\'' + imgId + '\', \'' + indId + '\')" class="w-8 h-8 rounded bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition">' +
+                        '<i class="fa-solid fa-refresh text-xs"></i>' +
+                    '</button>' +
+                    '<button onclick="changeCustomPhotoZoom(\'' + imgId + '\', \'' + indId + '\', 0.25)" class="w-8 h-8 rounded bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition">' +
+                        '<i class="fa-solid fa-search-plus"></i>' +
+                    '</button>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    function openDefectDetailModal(defectId) {
+        const item = cachedDefectList.find(d => d.id === defectId);
+        if (!item) return;
+
+        const modal = document.getElementById('defectDetailModal');
+        const content = document.getElementById('defDetailContent');
+        if (!modal || !content) return;
+
+        const userOrgCat = (state.profile && (state.profile.orgCategoryDefect || state.profile.orgCategory)) || "Kontraktor";
+        const canUpdateDefect = userOrgCat === "Kontraktor" || userOrgCat === "Konsultan" || userOrgCat === "Owner";
+
+        const klasClass = item.klasifikasi === 'Kritis' ? 'bg-rose-100 text-rose-700' : (item.klasifikasi === 'Mayor' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700');
+        const statusClass = item.status === 'Closed' ? 'bg-emerald-500 text-white' : (item.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'In Progress' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700'));
+
+        const updatedBy = item.updatedByName || item.createdEmail || item.createdByName || "PIC Lapangan";
+        const updatedDate = item.updatedAtDate || item.targetDate || "Terbaru";
+
+        document.getElementById('defDetailHeaderNo').textContent = `NO. ${item.noUrut || '-'} • ${item.lingkupPekerjaan || 'Umum'} • STA: ${item.sta || '-'} • ${item.timKe || 'Tim 1'}`;
+
+        const photoOpenCard = buildPhotoCard("1. Foto Status Open (Temuan Awal)", item.photoPemeriksaan, "photoOpenImg", "indOpenPhoto");
+        const photoInProgCard = buildPhotoCard("2. Foto Status In Progress (Penanganan)", item.photoInProgress, "photoInProgImg", "indInProgPhoto");
+        const photoResCard = buildPhotoCard("3. Foto Status Resolved (Hasil Perbaikan)", item.photoResolved || item.photoPenyelesaian, "photoResImg", "indResPhoto");
+        const photoClosedCard = buildPhotoCard("4. Foto Status Closed (Verifikasi Akhir)", item.photoClosed, "photoClosedImg", "indClosedPhoto");
+
+        content.innerHTML = `
+            <div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/60 p-3 rounded-2xl">
+                <span class="text-xs font-black text-slate-800 dark:text-white">${item.temuan || 'Tanpa deskripsi'}</span>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <span class="text-[9px] font-black px-2 py-0.5 rounded-md uppercase ${klasClass}">${item.klasifikasi || 'Minor'}</span>
+                    <span class="text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase ${statusClass}">${item.status || 'Open'}</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-900/60 rounded-2xl text-[10px] space-y-1">
+                <div>
+                    <p class="font-bold text-slate-400 uppercase text-[8px]">Hasil Pemeriksaan Lapangan:</p>
+                    <p class="font-medium text-slate-700 dark:text-slate-200">${item.hasilPemeriksaan || '-'}</p>
+                </div>
+                <div>
+                    <p class="font-bold text-slate-400 uppercase text-[8px]">Rekomendasi Penanganan:</p>
+                    <p class="font-medium text-slate-700 dark:text-slate-200">${item.rekomendasi || '-'}</p>
+                </div>
+            </div>
+
+            <!-- Galeri 4 Foto Status Penanganan (Zoom In/Out & Pan) -->
+            ${photoOpenCard}
+            ${photoInProgCard}
+            ${photoResCard}
+            ${photoClosedCard}
+
+            <!-- Peta Lokasi Titik Defect & Penyelesaian -->
+            ${item.coords ? `
+            <div class="space-y-1.5 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <p class="text-[8px] font-bold text-slate-400 uppercase flex justify-between">
+                    <span>Peta Lokasi Titik Defect & Penyelesaian</span>
+                    <span class="font-mono text-slate-500 dark:text-slate-400">${item.coords}</span>
+                </p>
+                <div id="defectDetailMap" class="w-full h-40 rounded-2xl border border-slate-200 dark:border-slate-700 z-0 bg-slate-100 dark:bg-slate-900 overflow-hidden"></div>
+            </div>` : ''}
+
+            <!-- Rincian Detail Update PIC Defect -->
+            <div class="p-3.5 bg-amber-50/60 dark:bg-amber-950/20 rounded-2xl border border-amber-200 dark:border-amber-900/40 text-[10px] space-y-1.5">
+                <p class="font-black text-amber-800 dark:text-amber-300 uppercase tracking-wider text-[9px] flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-check"></i> Rincian Update PIC Defect
+                </p>
+                <div class="grid grid-cols-2 gap-2 text-[10px]">
+                    <div><b>Status:</b> <span class="font-bold text-amber-700">${item.status || 'Open'}</span></div>
+                    <div><b>Target Selesai:</b> <span class="font-bold">${item.targetDate || 'Belum diisi'}</span></div>
+                    <div><b>Diupdate Oleh:</b> <span class="font-bold text-brand-600">${updatedBy}</span></div>
+                    <div><b>Tgl Update:</b> <span class="font-bold">${updatedDate}</span></div>
+                </div>
+                <div class="pt-1 border-t border-amber-200/50">
+                    <p class="text-slate-700 dark:text-slate-300 italic"><b>Keterangan / Catatan Perbaikan PIC:</b> ${item.keterangan || '-'}</p>
+                </div>
+            </div>
+
+            ${canUpdateDefect ? `
+            <button onclick="closeDefectDetailModal(); openUpdateDefectModal('${item.id}')" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Lengkapi / Update Data PIC</span>
+            </button>` : `
+            <div class="p-2.5 bg-slate-100 dark:bg-slate-700/50 rounded-2xl text-center text-[10px] font-bold text-slate-400 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-eye text-amber-500"></i>
+                <span>Kategori ETC: Mode Hanya Lihat Detail</span>
+            </div>`}
+
+            ${isDefectAdmin() ? `
+            <button onclick="deleteDefectItem('${item.id}')" class="w-full bg-rose-50 hover:bg-rose-100 text-rose-600 font-extrabold py-3 rounded-2xl border border-rose-200 transition text-xs uppercase tracking-widest flex items-center justify-center gap-2 mt-2">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Hapus Item Defect</span>
+            </button>` : ''}
+        `;
+
+        modal.classList.remove('hidden');
+
+        // Render Leaflet Detail Map in Modal
+        if (item.coords && item.coords.includes(',')) {
+            setTimeout(() => {
+                if (defectDetailMapInstance) {
+                    defectDetailMapInstance.remove();
+                    defectDetailMapInstance = null;
+                }
+                const parts = item.coords.split(',').map(Number);
+                if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                    defectDetailMapInstance = L.map('defectDetailMap', { zoomControl: false }).setView(parts, 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(defectDetailMapInstance);
+                    L.marker(parts).addTo(defectDetailMapInstance).bindPopup(`Defect No. ${item.noUrut || '-'}`).openPopup();
+                }
+            }, 300);
+        }
+    }
+
+    function closeDefectDetailModal() {
+        const modal = document.getElementById('defectDetailModal');
+        if (modal) modal.classList.add('hidden');
+        if (defectDetailMapInstance) {
+            defectDetailMapInstance.remove();
+            defectDetailMapInstance = null;
+        }
+    }
+
+    let defectDistributionMapInstance = null;
+
+    function updateDefectDistributionMap(filteredList) {
+        const mapContainer = document.getElementById('defectDistributionMap');
+        if (!mapContainer) return;
+
+        setTimeout(() => {
+            if (defectDistributionMapInstance) {
+                defectDistributionMapInstance.remove();
+                defectDistributionMapInstance = null;
+            }
+
+            const points = [];
+            const markers = [];
+
+            filteredList.forEach(item => {
+                if (item.coords && item.coords.includes(',')) {
+                    const parts = item.coords.split(',').map(Number);
+                    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                        points.push(parts);
+
+                        let colorHex = '#3b82f6'; // Sky Blue Minor
+                        if (item.status === 'Closed') colorHex = '#10b981'; // Emerald Green
+                        else if (item.klasifikasi === 'Kritis') colorHex = '#ef4444'; // Rose Red
+                        else if (item.klasifikasi === 'Mayor') colorHex = '#f59e0b'; // Amber
+
+                        const customIcon = L.divIcon({
+                            className: 'custom-defect-marker',
+                            html: `<div style="background-color: ${colorHex}; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"></div>`,
+                            iconSize: [14, 14],
+                            iconAnchor: [7, 7]
+                        });
+
+                        const popupText = `
+                            <div style="font-size: 10px; font-weight: bold; line-height: 1.4;">
+                                <b>No. ${item.noUrut || '-'}</b> (${item.timKe || 'Tim 1'})<br>
+                                STA: ${item.sta || '-'}<br>
+                                Klasifikasi: ${item.klasifikasi || 'Minor'}<br>
+                                Status: ${item.status || 'Open'}<br>
+                                <i>${item.temuan || ''}</i>
+                            </div>
+                        `;
+
+                        markers.push({ point: parts, icon: customIcon, popup: popupText });
+                    }
+                }
+            });
+
+            const center = points.length > 0 ? points[0] : [-2.976074, 104.775430];
+            defectDistributionMapInstance = L.map('defectDistributionMap', { zoomControl: false }).setView(center, 12);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(defectDistributionMapInstance);
+
+            const featureGroup = L.featureGroup();
+            markers.forEach(m => {
+                const marker = L.marker(m.point, { icon: m.icon }).bindPopup(m.popup);
+                marker.addTo(defectDistributionMapInstance);
+                featureGroup.addLayer(marker);
+            });
+
+            if (points.length > 1) {
+                defectDistributionMapInstance.fitBounds(featureGroup.getBounds(), { padding: [30, 30] });
+            }
+        }, 350);
+    }
+
+    let upDefectStream = null;
+
+    function openUpdateDefectModal(defectId) {
+        activeUpdateDefectId = defectId;
+        const item = cachedDefectList.find(d => d.id === defectId);
+        if (!item) return;
+
+        if (document.getElementById('upDefTargetDate')) document.getElementById('upDefTargetDate').value = item.targetDate || getTodayDateString();
+        if (document.getElementById('upDefStatus')) document.getElementById('upDefStatus').value = item.status || 'Open';
+        if (document.getElementById('upDefKeterangan')) document.getElementById('upDefKeterangan').value = item.keterangan || '';
+        capturedResolutionPhoto = item.photoPenyelesaian || null;
+
+        const img = document.getElementById('upDefPhotoPreviewImg');
+        const video = document.getElementById('upDefectVideo');
+        const btnReset = document.getElementById('btnResetUpDefectCam');
+        if (capturedResolutionPhoto) {
+            if (img) { img.src = capturedResolutionPhoto; img.classList.remove('hidden'); }
+            if (video) video.classList.add('hidden');
+            if (btnReset) btnReset.classList.remove('hidden');
+        } else {
+            if (img) img.classList.add('hidden');
+            if (btnReset) btnReset.classList.add('hidden');
+        }
+
+        const modal = document.getElementById('updateDefectModal');
+        if (modal) modal.classList.remove('hidden');
+        startUpDefectCamera();
+    }
+
+    function closeUpdateDefectModal() {
+        const modal = document.getElementById('updateDefectModal');
+        if (modal) modal.classList.add('hidden');
+        stopUpDefectCamera();
+    }
+
+    function startUpDefectCamera() {
+        const video = document.getElementById('upDefectVideo');
+        const placeholder = document.getElementById('upDefectCameraPlaceholder');
+        if (!video) return;
+
+        if (capturedResolutionPhoto) return;
+
+        const constraints = {
+            video: { facingMode: "environment" },
+            audio: false
+        };
+
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(stream => {
+                upDefectStream = stream;
+                video.srcObject = stream;
+                video.muted = true;
+                video.play().catch(e => console.error("upDefectVideo play error:", e));
+                video.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            })
+            .catch(err => {
+                console.warn("Gagal kamera environment penyelesaian, mencoba fallback video true", err);
+                navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                    .then(stream => {
+                        upDefectStream = stream;
+                        video.srcObject = stream;
+                        video.muted = true;
+                        video.play().catch(e => console.error("upDefectVideo fallback play error:", e));
+                        video.classList.remove('hidden');
+                        if (placeholder) placeholder.classList.add('hidden');
+                    })
+                    .catch(e2 => {
+                        console.error("Gagal kamera penyelesaian total", e2);
+                        if (placeholder) placeholder.classList.remove('hidden');
+                    });
+            });
+    }
+
+    function stopUpDefectCamera() {
+        if (upDefectStream) {
+            upDefectStream.getTracks().forEach(track => track.stop());
+            upDefectStream = null;
+        }
+    }
+
+    function takeUpDefectSnapshot() {
+        const video = document.getElementById('upDefectVideo');
+        const canvas = document.getElementById('upDefectCanvas');
+        const preview = document.getElementById('upDefPhotoPreviewImg');
+        const btnReset = document.getElementById('btnResetUpDefectCam');
+
+        if (!video || !canvas) return;
+
+        const ctx = canvas.getContext('2d');
+        const settings = getPhotoSettings();
+        const maxDim = settings.maxDim;
+        let w = video.videoWidth || 640;
+        let h = video.videoHeight || 480;
+        if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+            else { w = Math.round(w * maxDim / h); h = maxDim; }
+        }
+
+        canvas.width = w;
+        canvas.height = h;
+        ctx.drawImage(video, 0, 0, w, h);
+
+        capturedResolutionPhoto = canvas.toDataURL('image/jpeg', settings.quality);
+        if (preview) {
+            preview.src = capturedResolutionPhoto;
+            preview.classList.remove('hidden');
+        }
+        video.classList.add('hidden');
+        if (btnReset) btnReset.classList.remove('hidden');
+
+        stopUpDefectCamera();
+        showToast("Foto penyelesaian berhasil diambil!", "info");
+    }
+
+    function resetUpDefectCamera() {
+        capturedResolutionPhoto = null;
+        const preview = document.getElementById('upDefPhotoPreviewImg');
+        const btnReset = document.getElementById('btnResetUpDefectCam');
+        if (preview) preview.classList.add('hidden');
+        if (btnReset) btnReset.classList.add('hidden');
+        startUpDefectCamera();
+    }
+
+    function submitUpdateDefect() {
+        if (!activeUpdateDefectId) return;
+
+        const targetDate = document.getElementById('upDefTargetDate')?.value || '';
+        const status = document.getElementById('upDefStatus')?.value || 'Open';
+        const keterangan = document.getElementById('upDefKeterangan')?.value.trim() || '';
+
+        const myName = (state.profile && state.profile.name) || "PIC Lapangan";
+
+        const updates = {
+            targetDate: targetDate,
+            status: status,
+            keterangan: keterangan,
+            updatedByName: myName,
+            updatedAtDate: getTodayDateString()
+        };
+
+        if (capturedResolutionPhoto) {
+            updates.photoPenyelesaian = capturedResolutionPhoto;
+            if (status === 'In Progress') {
+                updates.photoInProgress = capturedResolutionPhoto;
+            } else if (status === 'Resolved') {
+                updates.photoResolved = capturedResolutionPhoto;
+            } else if (status === 'Closed') {
+                updates.photoClosed = capturedResolutionPhoto;
+            }
+        }
+
+        if (window.Android && window.Android.updateDefectItem) {
+            showToast("Meng-update data PIC...", "info");
+            window.Android.updateDefectItem(activeUpdateDefectId, JSON.stringify(updates));
+        } else {
+            onUpdateDefectResult(true, "Data Defect berhasil diperbarui!");
+        }
+    }
+
+    window.onUpdateDefectResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            closeUpdateDefectModal();
+            fetchDefectList();
+        } else {
+            showToast(message, "error");
         }
     };
 
