@@ -45,7 +45,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
 
   <!-- Automatic Firebase Config (Only works on Firebase Hosting) -->
-  
+  <!--  -->
+
   <style>
     /* Custom Scrollbar */
     ::-webkit-scrollbar {
@@ -1012,17 +1013,17 @@ if (window.__hkGateBlocked) {
     <!-- Login Form -->
     <div id="login-form" class="w-full max-w-sm lg:max-w-md bg-white dark:bg-slate-800 p-8 lg:p-10 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-700 space-y-6">
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-slate-400 uppercase">Alamat Email (Gmail)</label>
+        <label for="loginEmail" class="text-[10px] font-bold text-slate-400 uppercase">Alamat Email (Gmail)</label>
         <div class="relative">
           <i class="fa-solid fa-envelope absolute left-3 top-3 text-slate-300"></i>
-          <input type="email" id="loginEmail" placeholder="nama@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <input type="email" id="loginEmail" aria-label="Alamat Email" placeholder="nama@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
       </div>
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-slate-400 uppercase">Kata Sandi</label>
+        <label for="loginPass" class="text-[10px] font-bold text-slate-400 uppercase">Kata Sandi</label>
         <div class="relative">
           <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-300"></i>
-          <input type="password" id="loginPass" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <input type="password" id="loginPass" aria-label="Kata Sandi" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
       </div>
       <button onclick="handleLogin()" id="btnLogin" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-black py-4 lg:py-5 rounded-2xl shadow-xl shadow-brand-500/25 transition flex items-center justify-center space-x-3 text-sm uppercase tracking-widest">
@@ -1055,8 +1056,8 @@ if (window.__hkGateBlocked) {
       <p class="text-[10px] text-slate-400">Masukkan alamat Gmail Anda. Sistem akan mengirimkan User & Password jika disetujui.</p>
 
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-slate-400 uppercase">Gmail Anda</label>
-        <input type="email" id="reqAdminGmail" placeholder="anda@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <label for="reqAdminGmail" class="text-[10px] font-bold text-slate-400 uppercase">Gmail Anda</label>
+        <input type="email" id="reqAdminGmail" aria-label="Gmail Anda" placeholder="anda@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
       </div>
 
       <button onclick="handleRequestAdmin()" id="btnSubmitReq" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow-md shadow-emerald-500/20 transition text-xs">
@@ -1074,8 +1075,8 @@ if (window.__hkGateBlocked) {
       <p class="text-[10px] text-slate-400">Masukkan email Anda untuk menerima link pembuatan password baru via email.</p>
 
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-slate-400 uppercase">Email Terdaftar</label>
-        <input type="email" id="resetEmail" placeholder="pegawai@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <label for="resetEmail" class="text-[10px] font-bold text-slate-400 uppercase">Email Terdaftar</label>
+        <input type="email" id="resetEmail" aria-label="Email Terdaftar" placeholder="pegawai@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
       </div>
 
       <button onclick="handleResetPassword()" id="btnSubmitReset" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 rounded-xl shadow-md transition text-xs">
@@ -1101,17 +1102,17 @@ if (window.__hkGateBlocked) {
     <!-- Defect Login Form -->
     <div class="w-full max-w-sm lg:max-w-md bg-slate-800 p-8 lg:p-10 rounded-3xl shadow-2xl border border-slate-700 space-y-6">
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-amber-400 uppercase">Alamat Email (Gmail)</label>
+        <label for="defectPageLoginEmail" class="text-[10px] font-bold text-amber-400 uppercase">Alamat Email (Gmail)</label>
         <div class="relative">
           <i class="fa-solid fa-envelope absolute left-3 top-3 text-slate-400"></i>
-          <input type="email" id="defectPageLoginEmail" placeholder="user.defect@gmail.com" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+          <input type="email" id="defectPageLoginEmail" aria-label="Email Defect List" placeholder="user.defect@gmail.com" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
         </div>
       </div>
       <div class="space-y-2">
-        <label class="text-[10px] font-bold text-amber-400 uppercase">Kata Sandi</label>
+        <label for="defectPageLoginPass" class="text-[10px] font-bold text-amber-400 uppercase">Kata Sandi</label>
         <div class="relative">
           <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-400"></i>
-          <input type="password" id="defectPageLoginPass" placeholder="••••••••" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+          <input type="password" id="defectPageLoginPass" aria-label="Kata Sandi Defect List" placeholder="••••••••" class="w-full bg-slate-700 border border-slate-600 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
         </div>
       </div>
 
@@ -1205,23 +1206,23 @@ if (window.__hkGateBlocked) {
           </div>
           <div class="grid grid-cols-3 gap-2 sm:gap-3">
               <button id="btnAbsenMasuk" onclick="openAbsenModal('masuk')" class="flex flex-col items-center justify-center p-3 sm:p-4 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-200 transition-all group/btn">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
+                  <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
                       <i class="fa-solid fa-sign-in-alt text-lg sm:text-xl"></i>
-                  </div>
+                  </span>
                   <span class="text-[10px] sm:text-[11px] font-black text-slate-700 dark:text-slate-200">MASUK</span>
                   <span id="labelAbsenMasukTime" class="text-[8px] text-slate-400 mt-1 font-bold">--:--</span>
               </button>
               <button id="btnAbsenPulang" onclick="openAbsenModal('pulang')" class="flex flex-col items-center justify-center p-3 sm:p-4 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:border-rose-200 transition-all group/btn">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
+                  <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shadow-rose-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
                       <i class="fa-solid fa-sign-out-alt text-lg sm:text-xl"></i>
-                  </div>
+                  </span>
                   <span class="text-[10px] sm:text-[11px] font-black text-slate-700 dark:text-slate-200">PULANG</span>
                   <span id="labelAbsenPulangTime" class="text-[8px] text-slate-400 mt-1 font-bold">--:--</span>
               </button>
               <button onclick="openKetidakhadiranModal()" class="flex flex-col items-center justify-center p-3 sm:p-4 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-amber-950/20 hover:border-amber-200 transition-all group/btn">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
+                  <span class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/20 mb-2 sm:mb-3 group-hover/btn:scale-110 transition-transform">
                       <i class="fa-solid fa-envelope-open-text text-lg sm:text-xl"></i>
-                  </div>
+                  </span>
                   <span class="text-[10px] sm:text-[11px] font-black text-slate-700 dark:text-slate-200">IZIN</span>
                   <span class="text-[8px] text-slate-400 mt-1 font-bold">FORM</span>
               </button>
@@ -1269,7 +1270,7 @@ if (window.__hkGateBlocked) {
                     <h3 class="text-base sm:text-lg font-black text-slate-800 dark:text-white tracking-tight">Analitik Jam Kerja</h3>
                     <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Waktu produktif harian dalam 1 bulan</p>
                 </div>
-                <select id="rekapBulan" onchange="renderStatsAndCalendar()" class="bg-slate-50 dark:bg-slate-900 border-none text-[11px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-2xl focus:ring-2 focus:ring-brand-500 cursor-pointer shadow-inner transition-all max-w-full sm:max-w-xs truncate">
+                <select id="rekapBulan" aria-label="Pilih Bulan Rekap" onchange="renderStatsAndCalendar()" class="bg-slate-50 dark:bg-slate-900 border-none text-[11px] font-black uppercase tracking-wider px-3.5 py-2.5 rounded-2xl focus:ring-2 focus:ring-brand-500 cursor-pointer shadow-inner transition-all max-w-full sm:max-w-xs truncate">
                     <option value="all">Semua Bulan</option>
                     <option value="0">Januari 2026</option>
                     <option value="1">Februari 2026</option>
@@ -1374,7 +1375,7 @@ if (window.__hkGateBlocked) {
               <!-- Result Canvas (Hidden) -->
               <canvas id="kegiatanCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
               <!-- Static Preview -->
-              <img id="kegiatanPhotoPreview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+              <img id="kegiatanPhotoPreview" alt="Preview Foto Kegiatan" class="absolute inset-0 w-full h-full object-cover hidden z-10">
 
               <!-- Frame Overlay -->
               <div class="absolute inset-6 border border-white/20 rounded-lg pointer-events-none z-0"></div>
@@ -1398,13 +1399,13 @@ if (window.__hkGateBlocked) {
 
           <!-- Kategori Kegiatan dengan Add Category Option -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-500 dark:text-slate-400 flex justify-between items-center">
+            <label for="kegiatanKategori" class="text-xs font-bold text-slate-500 dark:text-slate-400 flex justify-between items-center">
               <span>Kategori Kegiatan</span>
               <button onclick="addNewKegiatanCategory()" class="text-[10px] text-brand-600 dark:text-sky-400 hover:underline">
                 <i class="fa-solid fa-plus-circle"></i> Tambah Baru
               </button>
             </label>
-            <select id="kegiatanKategori" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <select id="kegiatanKategori" aria-label="Kategori Kegiatan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
               <option value="Pengawasan Sipil">Pengawasan Sipil</option>
               <option value="Uji Laboratorium">Uji Laboratorium</option>
               <option value="Inspeksi Mutu">Inspeksi Mutu</option>
@@ -1414,8 +1415,8 @@ if (window.__hkGateBlocked) {
 
           <!-- STA (Stasiun Pekerjaan) -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-500 dark:text-slate-400">Stasiun Pekerjaan (STA)</label>
-            <input type="text" id="kegiatanSTA" placeholder="Contoh: STA 12+450 atau STA 05+100" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="kegiatanSTA" class="text-xs font-bold text-slate-500 dark:text-slate-400">Stasiun Pekerjaan (STA)</label>
+            <input type="text" id="kegiatanSTA" aria-label="Stasiun Pekerjaan (STA)" placeholder="Contoh: STA 12+450 atau STA 05+100" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
 
           <!-- Live Koordinat Track & Live Map Preview -->
@@ -1426,7 +1427,7 @@ if (window.__hkGateBlocked) {
                 <i class="fa-solid fa-arrows-rotate animate-spin-hover"></i> Refresh GPS
               </button>
             </label>
-            <input type="text" id="kegiatanCoords" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono px-3 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 cursor-not-allowed">
+            <input type="text" id="kegiatanCoords" aria-label="Koordinat & Posisi Peta" readonly class="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono px-3 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 cursor-not-allowed">
 
             <!-- Live Preview Map -->
             <div id="liveActivityMap" class="w-full h-32 rounded-xl border border-slate-200 dark:border-slate-700 mt-2 z-0"></div>
@@ -1434,8 +1435,8 @@ if (window.__hkGateBlocked) {
 
           <!-- Deskripsi Kegiatan -->
           <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-500 dark:text-slate-400">Deskripsi Kegiatan</label>
-            <textarea id="kegiatanDeskripsi" rows="3" placeholder="Tulis rincian aktivitas pekerjaan di lapangan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <label for="kegiatanDeskripsi" class="text-xs font-bold text-slate-500 dark:text-slate-400">Deskripsi Kegiatan</label>
+            <textarea id="kegiatanDeskripsi" aria-label="Deskripsi Kegiatan" rows="3" placeholder="Tulis rincian aktivitas pekerjaan di lapangan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
 
           <button onclick="submitKegiatan()" class="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-brand-500/25 transition flex items-center justify-center space-x-2 text-xs">
@@ -1458,7 +1459,7 @@ if (window.__hkGateBlocked) {
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-5 shadow-md border border-slate-100 dark:border-slate-700 space-y-3">
           <div class="flex items-center justify-between">
             <h3 class="text-xs font-bold text-slate-400 dark:text-slate-300 uppercase tracking-wider">Pilih Tanggal Kegiatan</h3>
-            <select id="arsipBulan" onchange="changeArsipMonth()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <select id="arsipBulan" aria-label="Bulan Arsip Kegiatan" onchange="changeArsipMonth()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
               <option value="0">Januari</option>
               <option value="1">Februari</option>
               <option value="2">Maret</option>
@@ -1498,13 +1499,13 @@ if (window.__hkGateBlocked) {
 
         <!-- Export Kegiatan Excel Shortcut -->
         <button onclick="exportKegiatanToExcel()" class="w-full bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-400 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-sky-100 transition shadow-sm group">
-          <div class="w-8 h-8 bg-sky-600 text-white rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition">
+          <span class="w-8 h-8 bg-sky-600 text-white rounded-lg flex items-center justify-center shadow-sm group-hover:scale-110 transition">
             <i class="fa-solid fa-file-excel"></i>
-          </div>
-          <div class="text-left">
-            <p class="text-xs font-bold">Ekspor Laporan Kegiatan Lapangan</p>
-            <p class="text-[10px] opacity-70">Format Excel (.xlsx)</p>
-          </div>
+          </span>
+          <span class="text-left block">
+            <span class="text-xs font-bold block">Ekspor Laporan Kegiatan Lapangan</span>
+            <span class="text-[10px] opacity-70 block">Format Excel (.xlsx)</span>
+          </span>
         </button>
       </div>
 
@@ -1586,39 +1587,39 @@ if (window.__hkGateBlocked) {
 
           <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1">
-              <label class="text-[10px] font-extrabold text-slate-400 uppercase">Nama Lengkap</label>
-              <input type="text" id="profileNameInput" value="Amanda Setyawati" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="profileNameInput" class="text-[10px] font-extrabold text-slate-400 uppercase">Nama Lengkap</label>
+              <input type="text" id="profileNameInput" aria-label="Nama Lengkap" value="Amanda Setyawati" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-extrabold text-slate-400 uppercase">Jabatan</label>
-              <input type="text" id="profileJabatanInput" value="Pengawas Sipil Utama" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="profileJabatanInput" class="text-[10px] font-extrabold text-slate-400 uppercase">Jabatan</label>
+              <input type="text" id="profileJabatanInput" aria-label="Jabatan" value="Pengawas Sipil Utama" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1">
-              <label class="text-[10px] font-extrabold text-slate-400 uppercase">Tgl Mobilisasi</label>
-              <input type="date" id="profileTglMob" value="2026-01-10" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="profileTglMob" class="text-[10px] font-extrabold text-slate-400 uppercase">Tgl Mobilisasi</label>
+              <input type="date" id="profileTglMob" aria-label="Tanggal Mobilisasi" value="2026-01-10" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
             <div class="space-y-1">
-              <label class="text-[10px] font-extrabold text-slate-400 uppercase">Tgl Demobilisasi</label>
-              <input type="date" id="profileTglDeMob" value="2026-12-31" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="profileTglDeMob" class="text-[10px] font-extrabold text-slate-400 uppercase">Tgl Demobilisasi</label>
+              <input type="date" id="profileTglDeMob" aria-label="Tanggal Demobilisasi" value="2026-12-31" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
           </div>
 
           <div class="space-y-1">
-            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
-            <input type="text" id="profilePerusahaan" value="PT Hutama Karya Infrastruktur" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="profilePerusahaan" class="text-[10px] font-extrabold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
+            <input type="text" id="profilePerusahaan" aria-label="Perusahaan / Kontraktor" value="PT Hutama Karya Infrastruktur" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
 
           <div class="space-y-1">
-            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Seksi Pengawasan</label>
-            <input type="text" id="profileSeksi" value="Seksi III Pengawasan Mutu Jembatan & Jalan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="profileSeksi" class="text-[10px] font-extrabold text-slate-400 uppercase">Seksi Pengawasan</label>
+            <input type="text" id="profileSeksi" aria-label="Seksi Pengawasan" value="Seksi III Pengawasan Mutu Jembatan & Jalan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
 
           <div id="profileRoleContainer" class="space-y-1">
-            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Managed Role</label>
-            <select id="profileRoleInput" onchange="toggleProfileManagedRole()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="profileRoleInput" class="text-[10px] font-extrabold text-slate-400 uppercase">Managed Role</label>
+            <select id="profileRoleInput" aria-label="Managed Role" onchange="toggleProfileManagedRole()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
               <option value="Administrator">Administrator</option>
               <option value="Sub-Administrator">Sub-Administrator</option>
               <option value="Pegawai">Pegawai</option>
@@ -1626,8 +1627,8 @@ if (window.__hkGateBlocked) {
           </div>
 
           <div id="profileCategoryContainer" class="space-y-1">
-            <label class="text-[10px] font-extrabold text-slate-400 uppercase">Team Category</label>
-            <select id="profileKonsultan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="profileKonsultan" class="text-[10px] font-extrabold text-slate-400 uppercase">Team Category</label>
+            <select id="profileKonsultan" aria-label="Team Category" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-2 rounded-lg font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500">
               <option id="optOwner" value="Owner">Owner (Pusat)</option>
               <option value="Konsultan Field Team">Konsultan Field Team</option>
               <option value="Konsultan Core Team">Konsultan Core Team</option>
@@ -1698,7 +1699,7 @@ if (window.__hkGateBlocked) {
                   <p class="text-[10px] text-slate-400">Sesuaikan dengan sinyal GPS/Internet</p>
                 </div>
               </div>
-              <select id="photoQualitySelect" onchange="setPhotoQuality()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <select id="photoQualitySelect" aria-label="Kualitas Foto & Upload" onchange="setPhotoQuality()" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="Low">Low (Sinyal Lemah)</option>
                 <option value="Medium">Medium (Normal)</option>
                 <option value="High">High (HD)</option>
@@ -1721,6 +1722,24 @@ if (window.__hkGateBlocked) {
             </div>
           </div>
 
+          <!-- Pengingat Absen Harian (08:00 & 17:00) -->
+          <div class="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-800 transition hover:border-brand-200 dark:hover:border-brand-900/50">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 rounded-xl flex items-center justify-center shadow-inner">
+                <i class="fa-solid fa-bell text-lg"></i>
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-700 dark:text-slate-200">Pengingat Absen Harian</p>
+                <p class="text-[10px] text-slate-400">Alarm 08:00 & 17:00 (Senin - Jumat, 45 detik)</p>
+              </div>
+            </div>
+            <!-- Toggle Switch -->
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="reminderSwitch" class="sr-only peer" onchange="toggleAttendanceReminder()">
+              <span class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amber-500"></span>
+            </label>
+          </div>
+
           <div class="flex items-center justify-between p-3.5 bg-slate-50 dark:bg-slate-700/50 rounded-2xl border border-slate-100 dark:border-slate-800 transition hover:border-brand-200 dark:hover:border-brand-900/50">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 rounded-xl flex items-center justify-center shadow-inner">
@@ -1734,7 +1753,7 @@ if (window.__hkGateBlocked) {
             <!-- Toggle Switch -->
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" id="biometricSwitch" class="sr-only peer" onchange="toggleBiometric()">
-              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600"></div>
+              <span class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-brand-600"></span>
             </label>
           </div>
 
@@ -1845,26 +1864,26 @@ if (window.__hkGateBlocked) {
 
         <div class="space-y-3">
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap Pegawai</label>
-            <input type="text" id="regEmpName" placeholder="Contoh: Budi Sudarsono" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="regEmpName" class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap Pegawai</label>
+            <input type="text" id="regEmpName" aria-label="Nama Lengkap Pegawai" placeholder="Contoh: Budi Sudarsono" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Alamat Email (Gmail)</label>
-            <input type="email" id="regEmpEmail" placeholder="pegawai@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <label for="regEmpEmail" class="text-[10px] font-bold text-slate-400 uppercase">Alamat Email (Gmail)</label>
+            <input type="email" id="regEmpEmail" aria-label="Alamat Email Pegawai" placeholder="pegawai@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div id="regRoleContainer" class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-400 uppercase">Role Akses</label>
-              <select id="regEmpRole" onchange="toggleRegManagedRole()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="regEmpRole" class="text-[10px] font-bold text-slate-400 uppercase">Role Akses</label>
+              <select id="regEmpRole" aria-label="Role Akses" onchange="toggleRegManagedRole()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="Administrator">Administrator</option>
                 <option value="Sub-Administrator">Sub-Administrator</option>
                 <option value="Pegawai">Pegawai</option>
               </select>
             </div>
             <div id="regManagedRoleContainer" class="space-y-1">
-              <label class="text-[10px] font-bold text-slate-400 uppercase">Team Category</label>
-              <select id="regEmpManagedRole" onchange="checkRegOwnerVisibility()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <label for="regEmpManagedRole" class="text-[10px] font-bold text-slate-400 uppercase">Team Category</label>
+              <select id="regEmpManagedRole" aria-label="Team Category" onchange="checkRegOwnerVisibility()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option id="regOptOwner" value="Owner">Owner (Pusat)</option>
                 <option value="Konsultan Field Team">Konsultan Field Team</option>
                 <option value="Konsultan Core Team">Konsultan Core Team</option>
@@ -1899,7 +1918,7 @@ if (window.__hkGateBlocked) {
               <i class="fa-solid fa-list-check"></i> Update Kegiatan Lapangan Terbaru
             </h3>
             <div id="recentRoleFilterContainer" class="flex items-center gap-2">
-                <select id="recentFilterRole" onchange="renderAdminTeamList()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[9px] font-bold px-1.5 py-1 rounded focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <select id="recentFilterRole" aria-label="Filter Kategori Tim" onchange="renderAdminTeamList()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[9px] font-bold px-1.5 py-1 rounded focus:outline-none focus:ring-1 focus:ring-brand-500">
                     <option value="all">Semua Category</option>
                     <option value="Owner">Owner</option>
                     <option value="Konsultan Field Team">Konsultan Field Team</option>
@@ -1932,7 +1951,7 @@ if (window.__hkGateBlocked) {
           </div>
           <div class="flex items-center gap-2">
               <div id="adminRoleFilterContainer">
-                <select id="adminFilterRole" onchange="renderAdminTeamList()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <select id="adminFilterRole" aria-label="Filter Kategori Tim" onchange="renderAdminTeamList()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
                   <option value="all">Semua Category</option>
                   <option value="Owner">Owner</option>
                   <option value="Konsultan Field Team">Konsultan Field Team</option>
@@ -1940,7 +1959,7 @@ if (window.__hkGateBlocked) {
                   <option value="Konsultan PMI">Konsultan PMI</option>
                 </select>
               </div>
-              <select id="adminFilterBulan" onchange="handleAdminMonthChange()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
+              <select id="adminFilterBulan" aria-label="Filter Bulan Monitoring" onchange="handleAdminMonthChange()" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-[10px] font-bold px-2 py-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500">
                 <option value="0">Januari</option>
                 <option value="1">Februari</option>
                 <option value="2">Maret</option>
@@ -1962,7 +1981,7 @@ if (window.__hkGateBlocked) {
 
         <!-- Search Bar for Team List -->
         <div class="relative mt-2">
-            <input type="text" id="searchAdminTeamInput" oninput="handleAdminTeamSearch()" placeholder="Cari nama pegawai..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            <input type="text" id="searchAdminTeamInput" aria-label="Cari nama pegawai" oninput="handleAdminTeamSearch()" placeholder="Cari nama pegawai..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
         </div>
 
@@ -2028,8 +2047,8 @@ if (window.__hkGateBlocked) {
         <!-- Document Filters -->
         <div id="docFilterContainer" class="grid grid-cols-2 gap-2 mt-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-700">
             <div id="docTeamFilterContainer" class="space-y-1">
-                <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Tim/Unit</label>
-                <select id="filterDocTeam" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <label for="filterDocTeam" class="text-[8px] font-bold text-slate-400 uppercase ml-1">Tim/Unit</label>
+                <select id="filterDocTeam" aria-label="Filter Tim/Unit Dokumen" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
                     <option value="all">Semua Tim</option>
                     <option value="Owner">Owner (Pusat)</option>
                     <option value="Konsultan Field Team">Field Team</option>
@@ -2038,8 +2057,8 @@ if (window.__hkGateBlocked) {
                 </select>
             </div>
             <div class="space-y-1">
-                <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
-                <select id="filterDocCat" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <label for="filterDocCat" class="text-[8px] font-bold text-slate-400 uppercase ml-1">Kategori</label>
+                <select id="filterDocCat" aria-label="Filter Kategori Dokumen" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
                     <option value="all">Semua Kategori</option>
                     <option value="Laporan">Laporan</option>
                     <option value="Invoice">Invoice</option>
@@ -2048,8 +2067,8 @@ if (window.__hkGateBlocked) {
                 </select>
             </div>
             <div class="space-y-1">
-                <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Bulan</label>
-                <select id="filterDocMonth" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <label for="filterDocMonth" class="text-[8px] font-bold text-slate-400 uppercase ml-1">Bulan</label>
+                <select id="filterDocMonth" aria-label="Filter Bulan Dokumen" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
                     <option value="-1">Semua Bulan</option>
                     <option value="0">Januari</option>
                     <option value="1">Februari</option>
@@ -2066,8 +2085,8 @@ if (window.__hkGateBlocked) {
                 </select>
             </div>
             <div class="space-y-1">
-                <label class="text-[8px] font-bold text-slate-400 uppercase ml-1">Tahun</label>
-                <select id="filterDocYear" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
+                <label for="filterDocYear" class="text-[8px] font-bold text-slate-400 uppercase ml-1">Tahun</label>
+                <select id="filterDocYear" aria-label="Filter Tahun Dokumen" onchange="fetchTeamDocuments()" class="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-bold px-2 py-1.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-500">
                     <option value="-1">Semua Tahun</option>
                     <option value="2025">2025</option>
                     <option value="2026">2026</option>
@@ -2077,7 +2096,7 @@ if (window.__hkGateBlocked) {
 
         <!-- Search Bar -->
         <div class="relative mt-2">
-            <input type="text" id="searchDocInput" oninput="handleDocSearch()" placeholder="Cari nama berkas atau catatan..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            <input type="text" id="searchDocInput" aria-label="Cari nama berkas atau catatan" oninput="handleDocSearch()" placeholder="Cari nama berkas atau catatan..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
         </div>
 
@@ -2287,15 +2306,15 @@ if (window.__hkGateBlocked) {
 
                     <!-- Controls: Limit (10, 20, 30) & Filter Tim -->
                     <div class="flex items-center gap-2 flex-wrap">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
-                        <select id="defectPageLimit" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
+                        <label for="defectPageLimit" class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
+                        <select id="defectPageLimit" aria-label="Batas Jumlah Tampilan Defect" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
                             <option value="10">10 / Hal</option>
                             <option value="20">20 / Hal</option>
                             <option value="30">30 / Hal</option>
                         </select>
 
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tim:</label>
-                        <select id="defectFilterTim" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold">
+                        <label for="defectFilterTim" class="text-[10px] font-bold text-slate-400 uppercase">Tim:</label>
+                        <select id="defectFilterTim" aria-label="Filter Tim Inspeksi Defect" onchange="defectCurrentPage=1; renderDefectList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-1.5 rounded-xl font-bold">
                             <option value="ALL">Semua Tim (Tim 1 - 7)</option>
                             <option value="Tim 1">Tim 1</option>
                             <option value="Tim 2">Tim 2</option>
@@ -2338,18 +2357,18 @@ if (window.__hkGateBlocked) {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap <span class="text-rose-500">*</span></label>
-                        <input type="text" id="defRegNama" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegNama" class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap <span class="text-rose-500">*</span></label>
+                        <input type="text" id="defRegNama" aria-label="Nama Lengkap" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Gmail / Email <span class="text-rose-500">*</span></label>
-                        <input type="email" id="defRegEmail" placeholder="budi.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegEmail" class="text-[10px] font-bold text-slate-400 uppercase">Gmail / Email <span class="text-rose-500">*</span></label>
+                        <input type="email" id="defRegEmail" aria-label="Gmail / Email" placeholder="budi.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Managed Role Defect <span class="text-rose-500">*</span></label>
-                        <select id="defRegRole" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegRole" class="text-[10px] font-bold text-slate-400 uppercase">Managed Role Defect <span class="text-rose-500">*</span></label>
+                        <select id="defRegRole" aria-label="Managed Role Defect" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                             <option value="Anggota">Anggota</option>
                             <option value="Ketua Tim">Ketua Tim</option>
                             <option value="Administrator">Administrator</option>
@@ -2357,8 +2376,8 @@ if (window.__hkGateBlocked) {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke : <span class="text-rose-500">*</span></label>
-                        <select id="defRegTimKe" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegTimKe" class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke : <span class="text-rose-500">*</span></label>
+                        <select id="defRegTimKe" aria-label="Tim Ke" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                             <option value="Tim 1">Tim 1</option>
                             <option value="Tim 2">Tim 2</option>
                             <option value="Tim 3">Tim 3</option>
@@ -2370,8 +2389,8 @@ if (window.__hkGateBlocked) {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi <span class="text-rose-500">*</span></label>
-                        <select id="defRegOrgCat" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegOrgCat" class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi <span class="text-rose-500">*</span></label>
+                        <select id="defRegOrgCat" aria-label="Kategori Organisasi" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                             <option value="Kontraktor">Kontraktor</option>
                             <option value="Konsultan">Konsultan</option>
                             <option value="Owner">Owner</option>
@@ -2380,8 +2399,8 @@ if (window.__hkGateBlocked) {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
-                        <input type="text" id="defRegPerusahaan" placeholder="PT Hutama Karya Infrastruktur" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defRegPerusahaan" class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
+                        <input type="text" id="defRegPerusahaan" aria-label="Perusahaan / Kontraktor" placeholder="PT Hutama Karya Infrastruktur" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                     </div>
                 </div>
 
@@ -2406,8 +2425,8 @@ if (window.__hkGateBlocked) {
 
                     <!-- Limit (10, 20, 30) & Refresh Button -->
                     <div class="flex items-center gap-2 flex-wrap">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
-                        <select id="defectUserPageLimit" onchange="defectUserCurrentPage=1; renderDefectUserList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
+                        <label for="defectUserPageLimit" class="text-[10px] font-bold text-slate-400 uppercase">Tampil:</label>
+                        <select id="defectUserPageLimit" aria-label="Batas Jumlah Tampilan Personil" onchange="defectUserCurrentPage=1; renderDefectUserList();" class="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold">
                             <option value="10">10 / Hal</option>
                             <option value="20">20 / Hal</option>
                             <option value="30">30 / Hal</option>
@@ -2509,15 +2528,15 @@ if (window.__hkGateBlocked) {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap</label>
-                            <input type="text" id="defEditNama" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <label for="defEditNama" class="text-[10px] font-bold text-slate-400 uppercase">Nama Lengkap</label>
+                            <input type="text" id="defEditNama" aria-label="Nama Lengkap" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
+                            <label for="defEditRole" class="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
                                 <span>Managed Role Defect</span>
                                 <span id="defEditRoleLockNote" class="text-[9px] text-amber-600 italic font-normal hidden">(Hanya Admin)</span>
                             </label>
-                            <select id="defEditRole" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <select id="defEditRole" aria-label="Managed Role Defect" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                                 <option value="Anggota">Anggota</option>
                                 <option value="Ketua Tim">Ketua Tim</option>
                                 <option value="Administrator">Administrator</option>
@@ -2527,19 +2546,19 @@ if (window.__hkGateBlocked) {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Jabatan / Role Inspektur</label>
-                            <input type="text" id="defEditJabatan" placeholder="Contoh: Inspektur Defect List" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <label for="defEditJabatan" class="text-[10px] font-bold text-slate-400 uppercase">Jabatan / Role Inspektur</label>
+                            <input type="text" id="defEditJabatan" aria-label="Jabatan / Role Inspektur" placeholder="Contoh: Inspektur Defect List" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
-                            <input type="text" id="defEditPerusahaan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <label for="defEditPerusahaan" class="text-[10px] font-bold text-slate-400 uppercase">Perusahaan / Kontraktor</label>
+                            <input type="text" id="defEditPerusahaan" aria-label="Perusahaan / Kontraktor" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi</label>
-                            <select id="defEditOrgCat" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <label for="defEditOrgCat" class="text-[10px] font-bold text-slate-400 uppercase">Kategori Organisasi</label>
+                            <select id="defEditOrgCat" aria-label="Kategori Organisasi" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                                 <option value="Kontraktor">Kontraktor (Dapat Update PIC)</option>
                                 <option value="Konsultan">Konsultan (Dapat Update PIC)</option>
                                 <option value="Owner">Owner (Dapat Update PIC)</option>
@@ -2547,8 +2566,8 @@ if (window.__hkGateBlocked) {
                             </select>
                         </div>
                         <div class="space-y-1">
-                            <label class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke :</label>
-                            <select id="defEditTimKe" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                            <label for="defEditTimKe" class="text-[10px] font-bold text-slate-400 uppercase">Tim Ke :</label>
+                            <select id="defEditTimKe" aria-label="Tim Ke" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                                 <option value="Tim 1">Tim 1</option>
                                 <option value="Tim 2">Tim 2</option>
                                 <option value="Tim 3">Tim 3</option>
@@ -2561,13 +2580,13 @@ if (window.__hkGateBlocked) {
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Tim</label>
-                        <input type="text" id="defEditNamaTim" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+                        <label for="defEditNamaTim" class="text-[10px] font-bold text-slate-400 uppercase">Nama Tim</label>
+                        <input type="text" id="defEditNamaTim" aria-label="Nama Tim" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase">Nama Kontrak</label>
-                        <textarea id="defEditNamaKontrak" rows="3" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+                        <label for="defEditNamaKontrak" class="text-[10px] font-bold text-slate-400 uppercase">Nama Kontrak</label>
+                        <textarea id="defEditNamaKontrak" aria-label="Nama Kontrak" rows="3" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
                     </div>
 
                     <div class="flex gap-2 pt-2">
@@ -2597,7 +2616,7 @@ if (window.__hkGateBlocked) {
 
     <!-- Version & Copyright -->
     <div class="pt-8 pb-12 text-center space-y-1 opacity-60">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.27</p>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.30</p>
       <p class="text-[10px] text-slate-400 font-medium">Copyright &copy; <span id="copyrightYearFooter">2026</span> PJT Paltung 1-2. All Rights Reserved.</p>
     </div>
 
@@ -2662,7 +2681,7 @@ if (window.__hkGateBlocked) {
           <video id="cameraVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
           <!-- Snapshot Canvas Fallback / Result -->
           <canvas id="cameraCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
-          <img id="cameraFallbackImage" class="hidden absolute inset-0 w-full h-full object-cover">
+          <img id="cameraFallbackImage" alt="Kamera Fallback" class="hidden absolute inset-0 w-full h-full object-cover">
 
           <!-- Frame Overlay -->
           <div class="absolute inset-4 border-2 border-dashed border-white/60 rounded-lg pointer-events-none flex items-center justify-center">
@@ -2726,19 +2745,19 @@ if (window.__hkGateBlocked) {
       <!-- Date Range -->
       <div class="grid grid-cols-2 gap-3">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tanggal Mulai</label>
-          <input type="date" id="khTglMulai" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
+          <label for="khTglMulai" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tanggal Mulai</label>
+          <input type="date" id="khTglMulai" aria-label="Tanggal Mulai" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tanggal Selesai</label>
-          <input type="date" id="khTglSelesai" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
+          <label for="khTglSelesai" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tanggal Selesai</label>
+          <input type="date" id="khTglSelesai" aria-label="Tanggal Selesai" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
         </div>
       </div>
 
       <!-- Kategori Dropdown -->
       <div class="space-y-1">
-        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Kategori Absen</label>
-        <select id="khKategori" onchange="handleKategoriAbsenChange()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+        <label for="khKategori" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Kategori Absen</label>
+        <select id="khKategori" aria-label="Kategori Absen" onchange="handleKategoriAbsenChange()" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           <option value="Izin">Izin</option>
           <option value="Cuti">Cuti / Libur Tahunan</option>
           <option value="Sakit">Sakit</option>
@@ -2747,8 +2766,8 @@ if (window.__hkGateBlocked) {
 
       <!-- Tipe Cuti (Conditional) -->
       <div id="tipeCutiContainer" class="hidden space-y-1">
-          <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tipe Cuti</label>
-          <select id="khTipeCuti" class="w-full bg-slate-50 dark:bg-slate-700 border border-brand-200 dark:border-brand-800 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="khTipeCuti" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Tipe Cuti</label>
+          <select id="khTipeCuti" aria-label="Tipe Cuti" class="w-full bg-slate-50 dark:bg-slate-700 border border-brand-200 dark:border-brand-800 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
             <option value="Cuti Tahunan">Cuti Tahunan</option>
             <option value="Cuti Melahirkan">Cuti Melahirkan</option>
             <option value="Cuti Alasan Penting">Cuti Alasan Penting</option>
@@ -2758,8 +2777,8 @@ if (window.__hkGateBlocked) {
 
       <!-- Deskripsi Ketidakhadiran -->
       <div class="space-y-1">
-        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Alasan / Deskripsi Lengkap</label>
-        <textarea id="khDeskripsi" rows="3" placeholder="Tuliskan keterangan detail alasan ketidakhadiran Anda..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+        <label for="khDeskripsi" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase">Alasan / Deskripsi Lengkap</label>
+        <textarea id="khDeskripsi" aria-label="Alasan / Deskripsi Lengkap" rows="3" placeholder="Tuliskan keterangan detail alasan ketidakhadiran Anda..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
       </div>
 
       <!-- Foto Scan Surat -->
@@ -2768,7 +2787,7 @@ if (window.__hkGateBlocked) {
         <div id="scanSuratPhotoContainer" class="relative bg-slate-900 border-2 border-slate-200 dark:border-slate-700 rounded-xl aspect-[4/3] w-full overflow-hidden flex flex-col items-center justify-center shadow-lg">
           <video id="scanSuratVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
           <canvas id="scanSuratCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
-          <img id="scanSuratPhotoPreview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+          <img id="scanSuratPhotoPreview" alt="Preview Scan Surat" class="absolute inset-0 w-full h-full object-cover hidden z-10">
 
           <!-- Camera Controls -->
           <div class="absolute bottom-3 inset-x-0 flex justify-center items-center space-x-3 z-20">
@@ -2913,7 +2932,7 @@ if (window.__hkGateBlocked) {
                     <i class="fa-solid fa-right-to-bracket"></i> Absen Masuk
                 </h4>
                 <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
-                    <img id="adminPhotoMasuk" src="" class="max-w-full max-h-full object-contain">
+                    <img id="adminPhotoMasuk" src="" alt="Foto Masuk" class="max-w-full max-h-full object-contain">
                     <div id="adminNoPhotoMasuk" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
                 </div>
                 <div id="adminFieldsMasuk" class="text-[10px] space-y-1">
@@ -2932,7 +2951,7 @@ if (window.__hkGateBlocked) {
                     <i class="fa-solid fa-right-from-bracket"></i> Absen Pulang
                 </h4>
                 <div class="relative bg-black rounded-lg h-40 overflow-hidden border border-slate-200 dark:border-slate-600 flex items-center justify-center">
-                    <img id="adminPhotoPulang" src="" class="max-w-full max-h-full object-contain">
+                    <img id="adminPhotoPulang" src="" alt="Foto Pulang" class="max-w-full max-h-full object-contain">
                     <div id="adminNoPhotoPulang" class="hidden text-slate-500 text-[10px] italic">Tidak ada foto</div>
                 </div>
                 <div id="adminFieldsPulang" class="text-[10px] space-y-1">
@@ -2991,18 +3010,18 @@ if (window.__hkGateBlocked) {
       <div class="pt-4 border-t border-slate-100 dark:border-slate-700 grid grid-cols-1 gap-3">
         <button onclick="handleExportLocalBackup()" class="w-full bg-brand-50 dark:bg-brand-950/40 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-900/50 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-brand-100 transition shadow-sm group">
             <i class="fa-solid fa-file-export"></i>
-            <div class="text-left">
-                <p class="text-[10px] font-black uppercase">Ekspor Backup Lokal</p>
-                <p class="text-[8px] opacity-70">Simpan database ke perangkat (.json)</p>
-            </div>
+            <span class="text-left block">
+                <span class="text-[10px] font-black uppercase block">Ekspor Backup Lokal</span>
+                <span class="text-[8px] opacity-70 block">Simpan database ke perangkat (.json)</span>
+            </span>
         </button>
 
         <button onclick="handleImportLocalBackup()" class="w-full bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-900/50 py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-amber-100 transition shadow-sm group">
             <i class="fa-solid fa-file-import"></i>
-            <div class="text-left">
-                <p class="text-[10px] font-black uppercase">Impor Backup Lokal</p>
-                <p class="text-[8px] opacity-70">Pulihkan database dari file (.json)</p>
-            </div>
+            <span class="text-left block">
+                <span class="text-[10px] font-black uppercase block">Impor Backup Lokal</span>
+                <span class="text-[8px] opacity-70 block">Pulihkan database dari file (.json)</span>
+            </span>
         </button>
       </div>
     </div>
@@ -3022,17 +3041,17 @@ if (window.__hkGateBlocked) {
 
       <div class="space-y-4">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Kata Sandi Baru</label>
+          <label for="newPasswordInput" class="text-[10px] font-bold text-slate-400 uppercase">Kata Sandi Baru</label>
           <div class="relative">
             <i class="fa-solid fa-lock absolute left-3 top-3 text-slate-300"></i>
-            <input type="password" id="newPasswordInput" placeholder="Minimal 6 karakter" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="password" id="newPasswordInput" aria-label="Kata Sandi Baru" placeholder="Minimal 6 karakter" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Konfirmasi Kata Sandi</label>
+          <label for="confirmPasswordInput" class="text-[10px] font-bold text-slate-400 uppercase">Konfirmasi Kata Sandi</label>
           <div class="relative">
             <i class="fa-solid fa-shield-check absolute left-3 top-3 text-slate-300"></i>
-            <input type="password" id="confirmPasswordInput" placeholder="Ulangi kata sandi baru" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="password" id="confirmPasswordInput" aria-label="Konfirmasi Kata Sandi" placeholder="Ulangi kata sandi baru" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs pl-10 pr-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
         </div>
 
@@ -3127,8 +3146,8 @@ if (window.__hkGateBlocked) {
 
       <div class="space-y-4">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Berkas</label>
-          <select id="docCategory" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
+          <label for="docCategory" class="text-[10px] font-bold text-slate-400 uppercase">Kategori Berkas</label>
+          <select id="docCategory" aria-label="Kategori Berkas" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-semibold">
             <option value="Site Instruksi">Site Instruksi</option>
             <option value="Dokumen Quality">Dokumen Quality</option>
             <option value="Back Up MC">Back Up MC</option>
@@ -3141,18 +3160,18 @@ if (window.__hkGateBlocked) {
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Dokumen</label>
-          <input type="date" id="docDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="docDate" class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Dokumen</label>
+          <input type="date" id="docDate" aria-label="Tanggal Dokumen" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Judul Dokumen</label>
-          <input type="text" id="docTitle" placeholder="Misal: Laporan Mingguan ke-12" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="docTitle" class="text-[10px] font-bold text-slate-400 uppercase">Judul Dokumen</label>
+          <input type="text" id="docTitle" aria-label="Judul Dokumen" placeholder="Misal: Laporan Mingguan ke-12" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Nomor Dokumen</label>
-          <input type="text" id="docNote" placeholder="Misal: 015/HKA/IX/2024" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="docNote" class="text-[10px] font-bold text-slate-400 uppercase">Nomor Dokumen</label>
+          <input type="text" id="docNote" aria-label="Nomor Dokumen" placeholder="Misal: 015/HKA/IX/2024" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
 
         <div class="space-y-1">
@@ -3190,16 +3209,16 @@ if (window.__hkGateBlocked) {
       <input type="hidden" id="editDocId">
       <div class="space-y-3">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Judul Dokumen</label>
-          <input type="text" id="editDocTitle" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="editDocTitle" class="text-[10px] font-bold text-slate-400 uppercase">Judul Dokumen</label>
+          <input type="text" id="editDocTitle" aria-label="Judul Dokumen" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Nomor Dokumen</label>
-          <input type="text" id="editDocNote" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="editDocNote" class="text-[10px] font-bold text-slate-400 uppercase">Nomor Dokumen</label>
+          <input type="text" id="editDocNote" aria-label="Nomor Dokumen" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Dokumen</label>
-          <input type="date" id="editDocDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <label for="editDocDate" class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Dokumen</label>
+          <input type="date" id="editDocDate" aria-label="Tanggal Dokumen" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
         </div>
       </div>
 
@@ -3274,7 +3293,7 @@ if (window.__hkGateBlocked) {
             <p id="chatOnlineCount" class="text-[8px] text-emerald-400 font-black animate-pulse hidden">0 Personil Online</p>
             <!-- Admin Room Selector -->
             <div id="chatAdminSelector" class="hidden mt-1">
-                <select id="adminChatSelect" onchange="switchChatRoom(this.value)" class="bg-white/20 text-white border-none text-[8px] font-bold py-0.5 px-2 rounded focus:outline-none">
+                <select id="adminChatSelect" aria-label="Pilih Ruang Chat Tim" onchange="switchChatRoom(this.value)" class="bg-white/20 text-white border-none text-[8px] font-bold py-0.5 px-2 rounded focus:outline-none">
                     <option value="Konsultan Field Team" class="text-slate-800">Field Team</option>
                     <option value="Konsultan Core Team" class="text-slate-800">Core Team</option>
                     <option value="Konsultan PMI" class="text-slate-800">PMI</option>
@@ -3302,7 +3321,7 @@ if (window.__hkGateBlocked) {
             <i class="fa-solid fa-paperclip"></i>
         </button>
         <div class="relative flex-1">
-            <textarea id="chatInput" rows="1" oninput="handleChatInput(event)" placeholder="Tulis pesan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none max-h-[100px] text-slate-800 dark:text-slate-100"></textarea>
+            <textarea id="chatInput" aria-label="Tulis pesan..." rows="1" oninput="handleChatInput(event)" placeholder="Tulis pesan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500 resize-none max-h-[100px] text-slate-800 dark:text-slate-100"></textarea>
             <!-- Mention Dropdown -->
             <div id="mentionDropdown" class="absolute bottom-full left-0 w-full bg-white dark:bg-slate-800 rounded-t-xl border border-slate-200 dark:border-slate-700 shadow-2xl hidden mb-1 max-h-40 overflow-y-auto z-[60]"></div>
         </div>
@@ -3333,12 +3352,12 @@ if (window.__hkGateBlocked) {
       <p class="text-[10px] text-slate-400 leading-relaxed">Login khusus untuk inspeksi temuan cacat (User Eksternal / PIC Lapangan).</p>
       <div class="space-y-3">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Email User Defect</label>
-          <input type="email" id="defectLoginEmail" placeholder="user.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+          <label for="defectLoginEmail" class="text-[10px] font-bold text-slate-400 uppercase">Email User Defect</label>
+          <input type="email" id="defectLoginEmail" aria-label="Email User Defect" placeholder="user.defect@gmail.com" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
         </div>
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Password</label>
-          <input type="password" id="defectLoginPass" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
+          <label for="defectLoginPass" class="text-[10px] font-bold text-slate-400 uppercase">Password</label>
+          <input type="password" id="defectLoginPass" aria-label="Password Defect List" placeholder="••••••••" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 font-bold">
         </div>
         <button onclick="loginDefectUser()" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-amber-500/20 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
           <i class="fa-solid fa-right-to-bracket"></i>
@@ -3360,13 +3379,13 @@ if (window.__hkGateBlocked) {
 
       <div class="space-y-3 text-xs">
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
-          <input type="date" id="upDefTargetDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500 text-slate-800 dark:text-slate-100">
+          <label for="upDefTargetDate" class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
+          <input type="date" id="upDefTargetDate" aria-label="Target Penyelesaian" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500 text-slate-800 dark:text-slate-100">
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Status Penanganan</label>
-          <select id="upDefStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+          <label for="upDefStatus" class="text-[10px] font-bold text-slate-400 uppercase">Status Penanganan</label>
+          <select id="upDefStatus" aria-label="Status Penanganan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
             <option value="Open">Open (Baru/Belum Ditangani)</option>
             <option value="In Progress">In Progress (Sedang Dikerjakan)</option>
             <option value="Resolved">Resolved (Telah Selesai Perbaikan)</option>
@@ -3375,8 +3394,8 @@ if (window.__hkGateBlocked) {
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Keterangan / Catatan Perbaikan PIC</label>
-          <textarea id="upDefKeterangan" rows="3" placeholder="Tambahkan catatan/keterangan penanganan oleh PIC..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+          <label for="upDefKeterangan" class="text-[10px] font-bold text-slate-400 uppercase">Keterangan / Catatan Perbaikan PIC</label>
+          <textarea id="upDefKeterangan" aria-label="Keterangan / Catatan Perbaikan PIC" rows="3" placeholder="Tambahkan catatan/keterangan penanganan oleh PIC..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
         </div>
 
         <!-- Foto Penyelesaian dengan Live Camera Preview -->
@@ -3392,7 +3411,7 @@ if (window.__hkGateBlocked) {
             <!-- Result Canvas (Hidden) -->
             <canvas id="upDefectCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
             <!-- Static Preview -->
-            <img id="upDefPhotoPreviewImg" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+            <img id="upDefPhotoPreviewImg" alt="Preview Foto Penanganan Defect" class="absolute inset-0 w-full h-full object-cover hidden z-10">
 
             <div id="upDefectCameraPlaceholder" class="text-center p-4 z-0">
               <i class="fa-solid fa-camera text-slate-500 text-3xl mb-1 block"></i>
@@ -3437,12 +3456,12 @@ if (window.__hkGateBlocked) {
       <div class="space-y-4 text-xs">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">No. Urut / Kode Item</label>
-            <input type="text" id="defNoUrut" placeholder="Contoh: DEF-001" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <label for="defNoUrut" class="text-[10px] font-bold text-slate-400 uppercase">No. Urut / Kode Item</label>
+            <input type="text" id="defNoUrut" aria-label="No. Urut / Kode Item" placeholder="Contoh: DEF-001" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
           </div>
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Lingkup Pekerjaan</label>
-            <select id="defLingkup" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <label for="defLingkup" class="text-[10px] font-bold text-slate-400 uppercase">Lingkup Pekerjaan</label>
+            <select id="defLingkup" aria-label="Lingkup Pekerjaan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
               <option value="Struktur">Struktur (Jembatan/Box)</option>
               <option value="Perkerasan Jalan">Perkerasan Jalan (Aspal/Rigid)</option>
               <option value="Drainase & Saluran">Drainase & Saluran</option>
@@ -3452,12 +3471,12 @@ if (window.__hkGateBlocked) {
             </select>
           </div>
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">STA / Lokasi Spesifik</label>
-            <input type="text" id="defSta" placeholder="Contoh: STA 12+500 / Abutment 1" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <label for="defSta" class="text-[10px] font-bold text-slate-400 uppercase">STA / Lokasi Spesifik</label>
+            <input type="text" id="defSta" aria-label="STA / Lokasi Spesifik" placeholder="Contoh: STA 12+500 / Abutment 1" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
           </div>
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Klasifikasi Defect</label>
-            <select id="defKlasifikasi" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+            <label for="defKlasifikasi" class="text-[10px] font-bold text-slate-400 uppercase">Klasifikasi Defect</label>
+            <select id="defKlasifikasi" aria-label="Klasifikasi Defect" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
               <option value="Minor">Minor (Kerusakan Kecil)</option>
               <option value="Mayor">Mayor (Kerusakan Sedang)</option>
               <option value="Kritis">Kritis (Kerusakan Mendesak)</option>
@@ -3466,18 +3485,18 @@ if (window.__hkGateBlocked) {
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Deskripsi Temuan Cacat</label>
-          <textarea id="defTemuan" rows="2" placeholder="Uraikan temuan cacat/kerusakan di lapangan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+          <label for="defTemuan" class="text-[10px] font-bold text-slate-400 uppercase">Deskripsi Temuan Cacat</label>
+          <textarea id="defTemuan" aria-label="Deskripsi Temuan Cacat" rows="2" placeholder="Uraikan temuan cacat/kerusakan di lapangan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Hasil Pemeriksaan Lapangan</label>
-            <textarea id="defHasilPemeriksaan" rows="2" placeholder="Hasil pemeriksaan/pengukuran kondisi..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+            <label for="defHasilPemeriksaan" class="text-[10px] font-bold text-slate-400 uppercase">Hasil Pemeriksaan Lapangan</label>
+            <textarea id="defHasilPemeriksaan" aria-label="Hasil Pemeriksaan Lapangan" rows="2" placeholder="Hasil pemeriksaan/pengukuran kondisi..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
           </div>
           <div class="space-y-1">
-            <label class="text-[10px] font-bold text-slate-400 uppercase">Rekomendasi Penanganan</label>
-            <textarea id="defRekomendasi" rows="2" placeholder="Rekomendasi metode perbaikan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
+            <label for="defRekomendasi" class="text-[10px] font-bold text-slate-400 uppercase">Rekomendasi Penanganan</label>
+            <textarea id="defRekomendasi" aria-label="Rekomendasi Penanganan" rows="2" placeholder="Rekomendasi metode perbaikan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-medium focus:ring-2 focus:ring-amber-500"></textarea>
           </div>
         </div>
 
@@ -3494,7 +3513,7 @@ if (window.__hkGateBlocked) {
             <!-- Result Canvas (Hidden) -->
             <canvas id="defectCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
             <!-- Static Preview -->
-            <img id="defectPhotoPreview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+            <img id="defectPhotoPreview" alt="Preview Foto Temuan Defect" class="absolute inset-0 w-full h-full object-cover hidden z-10">
 
             <div id="defectCameraPlaceholder" class="text-center p-4 z-0">
               <i class="fa-solid fa-camera text-slate-500 text-3xl mb-1 block"></i>
@@ -3530,8 +3549,8 @@ if (window.__hkGateBlocked) {
         </div>
 
         <div class="space-y-1">
-          <label class="text-[10px] font-bold text-slate-400 uppercase">Status Awal</label>
-          <select id="defStatus" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
+          <label for="defStatus" class="text-[10px] font-bold text-slate-400 uppercase">Status Awal</label>
+          <select id="defStatus" aria-label="Status Awal" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
             <option value="Open">Open (Baru/Belum Ditangani)</option>
             <option value="In Progress">In Progress (Sedang Dikerjakan)</option>
             <option value="Resolved">Resolved (Telah Selesai Perbaikan)</option>
@@ -3585,8 +3604,8 @@ if (window.__hkGateBlocked) {
             <!-- Global Config -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Kategori Tim</label>
-                    <select id="apCategory" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
+                    <label for="apCategory" class="text-[10px] font-bold text-slate-400 uppercase">Kategori Tim</label>
+                    <select id="apCategory" aria-label="Kategori Tim" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
                         <option value="Owner">Owner (Pusat)</option>
                         <option value="Konsultan Field Team">Field Team</option>
                         <option value="Konsultan Core Team">Core Team</option>
@@ -3594,8 +3613,8 @@ if (window.__hkGateBlocked) {
                     </select>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
-                    <input type="date" id="apGlobalTargetDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800 dark:text-slate-100">
+                    <label for="apGlobalTargetDate" class="text-[10px] font-bold text-slate-400 uppercase">Target Penyelesaian</label>
+                    <input type="date" id="apGlobalTargetDate" aria-label="Target Penyelesaian" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl font-bold focus:outline-none focus:ring-2 focus:ring-brand-500 text-slate-800 dark:text-slate-100">
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] font-bold text-slate-400 uppercase flex justify-between">
@@ -3650,7 +3669,7 @@ if (window.__hkGateBlocked) {
 
         <!-- PIC Search Bar -->
         <div class="relative">
-            <input type="text" id="searchRowPicInput" oninput="filterRowPicList()" placeholder="Cari nama PIC..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
+            <input type="text" id="searchRowPicInput" aria-label="Cari nama PIC" oninput="filterRowPicList()" placeholder="Cari nama PIC..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] pl-8 pr-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 transition-all">
             <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px]"></i>
         </div>
 
@@ -3684,7 +3703,8 @@ if (window.__hkGateBlocked) {
                 <div class="relative bg-slate-900 rounded-2xl aspect-[4/3] w-full overflow-hidden flex flex-col items-center justify-center shadow-lg border-2 border-slate-200 dark:border-slate-700">
                     <video id="trVideo" class="absolute inset-0 w-full h-full object-cover" autoplay playsinline></video>
                     <canvas id="trCanvas" class="hidden absolute inset-0 w-full h-full object-cover"></canvas>
-                    <img id="trPhotoPreview" class="absolute inset-0 w-full h-full object-cover hidden z-10">
+                    <!-- Static Preview -->
+                    <img id="trPhotoPreview" alt="Preview Foto Realisasi Task" class="absolute inset-0 w-full h-full object-cover hidden z-10">
 
                     <!-- Camera Controls -->
                     <div class="absolute bottom-3 inset-x-0 flex justify-center items-center space-x-3 z-20">
@@ -3699,29 +3719,29 @@ if (window.__hkGateBlocked) {
             </div>
 
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-400 uppercase">Stasiun Pekerjaan (STA)</label>
-                <input type="text" id="trSTA" placeholder="Contoh: STA 12+450" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
+                <label for="trSTA" class="text-[10px] font-bold text-slate-400 uppercase">Stasiun Pekerjaan (STA)</label>
+                <input type="text" id="trSTA" aria-label="Stasiun Pekerjaan (STA)" placeholder="Contoh: STA 12+450" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
             </div>
 
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Realisasi Pekerjaan</label>
-                <input type="date" id="trRealizationDate" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
+                <label for="trRealizationDate" class="text-[10px] font-bold text-slate-400 uppercase">Tanggal Realisasi Pekerjaan</label>
+                <input type="date" id="trRealizationDate" aria-label="Tanggal Realisasi Pekerjaan" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 font-bold">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Volume (Opsional)</label>
-                    <input type="number" id="trVolume" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm font-black px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <label for="trVolume" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Volume (Opsional)</label>
+                    <input type="number" id="trVolume" aria-label="Volume (Opsional)" placeholder="0" class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm font-black px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Satuan (Unit)</label>
-                    <input type="text" id="trUnit" placeholder="m3 / kg / m'" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-xs font-bold px-3 py-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-500">
+                    <label for="trUnit" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Satuan (Unit)</label>
+                    <input type="text" id="trUnit" aria-label="Satuan (Unit)" placeholder="m3 / kg / m'" class="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 text-xs font-bold px-3 py-2.5 rounded-xl focus:outline-none focus:ring-1 focus:ring-brand-500">
                 </div>
             </div>
 
             <div class="space-y-1">
-                <label class="text-[10px] font-bold text-slate-400 uppercase">Keterangan / Deskripsi Pekerjaan</label>
-                <textarea id="trNotes" rows="2" placeholder="Tulis rincian hasil pekerjaan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                <label for="trNotes" class="text-[10px] font-bold text-slate-400 uppercase">Keterangan / Deskripsi Pekerjaan</label>
+                <textarea id="trNotes" aria-label="Keterangan / Deskripsi Pekerjaan" rows="2" placeholder="Tulis rincian hasil pekerjaan..." class="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
             </div>
 
             <!-- GPS Tracking Display -->
@@ -3761,6 +3781,35 @@ if (window.__hkGateBlocked) {
     </div>
   </div>
 
+
+  <!-- MODAL: PEMBARUAN APLIKASI TERSEDIA -->
+  <div id="appUpdateModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-md z-[250] flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-sm w-full space-y-4 shadow-2xl border border-slate-100 dark:border-slate-700 animate-fade-in text-center">
+      <div class="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
+        <i class="fa-solid fa-cloud-arrow-down text-3xl animate-bounce"></i>
+      </div>
+      <div>
+        <h3 class="font-black text-slate-800 dark:text-slate-100 text-base">Pembaruan Aplikasi Tersedia!</h3>
+        <p id="appUpdateVersionBadge" class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-1">Versi Terbaru</p>
+      </div>
+      <div class="bg-slate-50 dark:bg-slate-900/60 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-700 text-left text-xs space-y-1 max-h-36 overflow-y-auto">
+        <p class="font-bold text-slate-500 dark:text-slate-400 text-[10px] uppercase">Catatan Perubahan:</p>
+        <p id="appUpdateChangelog" class="text-slate-700 dark:text-slate-300 text-[11px] whitespace-pre-line font-medium leading-relaxed">
+          - Pembaruan sistem dan peningkatan keamanan.
+          - Fitur penghapusan akun permanen oleh Administrator.
+        </p>
+      </div>
+      <div class="space-y-2 pt-1">
+        <button id="btnDownloadAppUpdate" onclick="downloadAppUpdate()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-2xl shadow-lg shadow-emerald-500/20 transition text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+          <i class="fa-solid fa-download"></i>
+          <span>Unduh & Perbarui Sekarang</span>
+        </button>
+        <button id="btnDismissAppUpdate" onclick="closeAppUpdateModal()" class="w-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold py-2.5 rounded-2xl text-xs hover:bg-slate-200 transition">
+          Nanti Saja
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- CUSTOM GLOBAL MESSENGER BANNER (No alert/confirm as rule) -->
   <div id="toastBanner" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transition-all duration-300 opacity-0 scale-90 pointer-events-none text-xs font-semibold max-w-xs">
@@ -4334,6 +4383,16 @@ if (window.__hkGateBlocked) {
     // ----------------------------------------------------
     function switchPage(pageId) {
       try {
+        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
+        const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
+            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
+            || (typeof activeLoginMode !== 'undefined' && activeLoginMode === 'defect_only');
+
+        if (isDefectAcc && pageId !== 'defect-list' && pageId !== 'profil' && pageId !== 'defect-profile') {
+            pageId = 'defect-list';
+            isDefectModeActive = true;
+        }
+
         const role = ((state.profile && state.profile.role) || "Pegawai").trim().toLowerCase();
         const userCat = normalizeCategory((state.profile && (state.profile.managedRole || state.profile.konsultan)) || "");
         const isPegawai = role === 'pegawai';
@@ -6042,6 +6101,22 @@ if (window.__hkGateBlocked) {
       }
     }
 
+    function toggleAttendanceReminder() {
+      const isEnabled = document.getElementById('reminderSwitch').checked;
+      state.profile.reminderEnabled = isEnabled;
+      saveDataToStorage();
+
+      if (window.Android && window.Android.setAttendanceReminderEnabled) {
+        window.Android.setAttendanceReminderEnabled(isEnabled);
+      }
+
+      if (isEnabled) {
+        showToast("Pengingat absen harian diaktifkan (08:00 & 17:00)!", "success");
+      } else {
+        showToast("Pengingat absen harian dinonaktifkan.", "info");
+      }
+    }
+
     function updateProfileDisplay() {
       try {
         const p = state.profile || {};
@@ -6303,6 +6378,15 @@ if (window.__hkGateBlocked) {
 
         // Set switch state
         if (document.getElementById('biometricSwitch')) document.getElementById('biometricSwitch').checked = p.biometricEnabled || false;
+        if (document.getElementById('reminderSwitch')) {
+          let isRemOn = false;
+          if (window.Android && window.Android.getAttendanceReminderEnabled) {
+            isRemOn = window.Android.getAttendanceReminderEnabled();
+          } else {
+            isRemOn = !!p.reminderEnabled;
+          }
+          document.getElementById('reminderSwitch').checked = isRemOn;
+        }
         if (document.getElementById('photoQualitySelect')) document.getElementById('photoQualitySelect').value = p.photoQuality || "Medium";
 
       } catch (err) {
@@ -6653,6 +6737,20 @@ if (window.__hkGateBlocked) {
     }
 
     function showAppDashboard() {
+        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
+        const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
+            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
+            || (typeof activeLoginMode !== 'undefined' && activeLoginMode === 'defect_only');
+
+        if (isDefectAcc) {
+            document.getElementById('page-login')?.classList.add('hidden');
+            document.getElementById('page-defect-login')?.classList.add('hidden');
+            document.getElementById('app-main')?.classList.remove('hidden');
+            document.querySelector('header')?.classList.remove('hidden');
+            switchToDefectListMode();
+            return;
+        }
+
         isAppInitialized = true;
         document.getElementById('page-login').classList.add('hidden');
         document.getElementById('app-main').classList.remove('hidden');
@@ -6735,7 +6833,9 @@ if (window.__hkGateBlocked) {
 
         activeLoginMode = 'defect_only';
 
-        if (window.Android && window.Android.loginWithEmail) {
+        if (window.Android && window.Android.loginDefect) {
+            window.Android.loginDefect(email, pass);
+        } else if (window.Android && window.Android.loginWithEmail) {
             window.Android.loginWithEmail(email, pass);
         } else {
             setTimeout(() => onDefectLoginResult(true, "Login Akun Defect List berhasil!"), 1000);
@@ -6757,10 +6857,26 @@ if (window.__hkGateBlocked) {
             };
             saveDataToStorage();
 
+            const pageLogin = document.getElementById('page-login');
+            if (pageLogin) pageLogin.classList.add('hidden');
+
             const defectLogin = document.getElementById('page-defect-login');
             if (defectLogin) defectLogin.classList.add('hidden');
 
+            const appMain = document.getElementById('app-main');
+            if (appMain) appMain.classList.remove('hidden');
+
+            const header = document.querySelector('header');
+            if (header) header.classList.remove('hidden');
+
             switchToDefectListMode();
+
+            // OTOMATIS TARIK DATA PROFIL DARI CLOUD FIRESTORE SETELAH LOGIN DEFECT
+            if (window.Android && window.Android.restoreFromCloud) {
+                setTimeout(() => {
+                    window.Android.restoreFromCloud();
+                }, 300);
+            }
         } else {
             showToast(message, "error");
         }
@@ -6803,8 +6919,16 @@ if (window.__hkGateBlocked) {
             }
 
             // Jika akun terdaftar sebagai defect_only dan mencoba login di Presensi: blokir!
-            if (state.profile && state.profile.accountType === 'defect_only') {
+            const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
+            const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
+                || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc';
+
+            if (isDefectAcc) {
                 showToast("Akun ini khusus terdaftar untuk Defect List! Silakan beralih ke Halaman Login Defect List.", "error");
+                if (window.Android && window.Android.logoutFirebase) {
+                    window.Android.logoutFirebase();
+                }
+                showLoginPage();
                 return;
             }
 
@@ -6888,12 +7012,26 @@ if (window.__hkGateBlocked) {
     function onCheckLoginStatus(isLoggedIn, email) {
         if (isLoggedIn) {
             activeUserEmail = email;
-            showAppDashboard();
             console.log("Logged in as: " + email);
 
             // Fetch dynamic role from Firebase
             if (window.Android && window.Android.fetchRole) {
                 window.Android.fetchRole();
+            }
+
+            const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
+            const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
+                || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
+                || activeLoginMode === 'defect_only';
+
+            if (isDefectAcc) {
+                document.getElementById('page-login')?.classList.add('hidden');
+                document.getElementById('page-defect-login')?.classList.add('hidden');
+                document.getElementById('app-main')?.classList.remove('hidden');
+                document.querySelector('header')?.classList.remove('hidden');
+                switchToDefectListMode();
+            } else {
+                showAppDashboard();
             }
 
             // Auto Restore Data from Cloud
@@ -7625,6 +7763,7 @@ if (window.__hkGateBlocked) {
                 saveDataToStorage();
                 renderStatsAndCalendar();
                 updateProfileDisplay();
+                if (typeof updateDefectProfileData === 'function') updateDefectProfileData();
 
                 // 4. Trigger Download for Missing Photos
                 const allPhotos = new Set();
@@ -8273,12 +8412,19 @@ if (window.__hkGateBlocked) {
                         <span>${hasDefectAcc ? 'Defect: Ya' : 'Defect: Tidak'}</span>
                     </button>`;
 
+                const deleteBtnHtml = isMainAdminCaller && user.id !== 'self' && user.email !== activeUserEmail ? `
+                    <button onclick="confirmDeleteUserPermanently('${user.id}', '${(userName || user.id).replace(/'/g, "\\'")}')" class="mt-1 px-2 py-0.5 rounded-md text-[8px] font-black bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition flex items-center gap-1">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Hapus Permanen</span>
+                    </button>` : '';
+
                 let rowHtml = `<tr>
                     <td class="border border-slate-200 dark:border-slate-600 p-3 font-bold bg-white dark:bg-slate-800 sticky left-0 z-10 shadow-[2px_0_5px_rgba(0,0,0,0.05)]">
                         ${userName}
                         <p class="text-[8px] font-normal text-slate-400 uppercase mt-0.5">${userJabatan}</p>
                         ${roleSelectHtml}
                         ${defectBtnHtml}
+                        ${deleteBtnHtml}
                     </td>`;
 
                 for (let d = 1; d <= totalDays; d++) {
@@ -10144,6 +10290,64 @@ if (window.__hkGateBlocked) {
         }
     };
 
+    function confirmDeleteUserPermanently(targetUid, userName) {
+        if (!targetUid) return;
+        if (confirm(`Apakah Anda yakin ingin menghapus akun [${userName || targetUid}] secara PERMANEN?\n\nPerhatian: Pengguna yang dihapus tidak akan dapat login kembali ke aplikasi.`)) {
+            showToast("Menghapus akun pengguna secara permanen...", "info");
+            if (window.Android && window.Android.deleteUserByAdmin) {
+                window.Android.deleteUserByAdmin(targetUid, false);
+            } else {
+                onDeleteUserByAdminResult(true, "Akun pengguna berhasil dihapus secara permanen.");
+            }
+        }
+    }
+
+    window.onDeleteUserByAdminResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+            if (typeof fetchDefectUsers === 'function') fetchDefectUsers();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    let pendingAppUpdateUrl = "https://github.com/civilwave/hk-oversee/releases";
+
+    window.onAppUpdateAvailable = function(latestVersionName, downloadUrl, changelog, isForceUpdate) {
+        pendingAppUpdateUrl = downloadUrl || "https://github.com/civilwave/hk-oversee/releases";
+
+        if (document.getElementById('appUpdateVersionBadge')) {
+            document.getElementById('appUpdateVersionBadge').textContent = "Versi Terbaru: v" + latestVersionName;
+        }
+        if (document.getElementById('appUpdateChangelog')) {
+            document.getElementById('appUpdateChangelog').textContent = changelog || "Pembaruan performa dan perbaikan sistem.";
+        }
+
+        const btnDismiss = document.getElementById('btnDismissAppUpdate');
+        if (btnDismiss) {
+            btnDismiss.style.display = isForceUpdate ? 'none' : 'block';
+        }
+
+        const updateModal = document.getElementById('appUpdateModal');
+        if (updateModal) {
+            updateModal.classList.remove('hidden');
+        }
+    };
+
+    function downloadAppUpdate() {
+        if (pendingAppUpdateUrl) {
+            window.open(pendingAppUpdateUrl, '_blank');
+        }
+    }
+
+    function closeAppUpdateModal() {
+        const updateModal = document.getElementById('appUpdateModal');
+        if (updateModal) {
+            updateModal.classList.add('hidden');
+        }
+    }
+
     // ====================================================
     // DEFECT LIST SYSTEM LOGIC
     // ====================================================
@@ -10170,10 +10374,19 @@ if (window.__hkGateBlocked) {
     }
 
     function checkUserHasDefectAccess() {
-        if (state.profile && state.profile.hasDefectAccess === false) {
-            return false;
-        }
-        return true;
+        const p = state.profile || {};
+        // 1. Akun defect_only / Kontraktor / ETC selalu memiliki akses ke modul Defect
+        if (p.accountType === 'defect_only' || p.account_type === 'defect_only') return true;
+        const orgCat = String(p.orgCategoryDefect || p.defect_organization || "").toLowerCase();
+        if (orgCat === 'kontraktor' || orgCat === 'etc') return true;
+
+        // 2. Administrator selalu memiliki akses
+        const role = String(p.role || "").toLowerCase();
+        if (role === 'admin' || role === 'administrator' || role === 'sub-administrator' || role === 'sub-admin') return true;
+        if (typeof isDefectAdmin === 'function' && isDefectAdmin()) return true;
+
+        // 3. Akun Presensi (baru maupun lama): Default TIDAK Memiliki Akses kecuali disetujui Admin (hasDefectAccess == true)
+        return p.hasDefectAccess === true || p.has_defect_access === true;
     }
 
     function toggleUserDefectAccess(targetUid, grantAccess) {
@@ -10244,6 +10457,18 @@ if (window.__hkGateBlocked) {
     }
 
     function switchToDefectListMode() {
+        const pageLogin = document.getElementById('page-login');
+        if (pageLogin) pageLogin.classList.add('hidden');
+
+        const defectLogin = document.getElementById('page-defect-login');
+        if (defectLogin) defectLogin.classList.add('hidden');
+
+        const appMain = document.getElementById('app-main');
+        if (appMain) appMain.classList.remove('hidden');
+
+        const header = document.querySelector('header');
+        if (header) header.classList.remove('hidden');
+
         if (!checkUserHasDefectAccess()) {
             showToast("Akses Ditolak! Akun Pegawai Anda belum diberi izin akses Defect List oleh Administrator.", "error");
             return;
@@ -10271,9 +10496,22 @@ if (window.__hkGateBlocked) {
         if (isDefectAdmin()) {
             fetchDefectUsers();
         }
+
+        if (typeof defectDistributionMapInstance !== 'undefined' && defectDistributionMapInstance) {
+            setTimeout(() => defectDistributionMapInstance.invalidateSize(), 500);
+        }
     }
 
     function switchToMainApp() {
+        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
+        const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
+            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc';
+
+        if (isDefectAcc) {
+            showToast("Akun Anda hanya terdaftar khusus untuk modul Defect List.", "warning");
+            return;
+        }
+
         isDefectModeActive = false;
 
         // Kembalikan bottom nav & desktop header nav presensi utama
@@ -10401,8 +10639,9 @@ if (window.__hkGateBlocked) {
 
     function logoutDefectUser() {
         isDefectModeActive = false;
-        showToast("Keluar dari Akun Defect List", "info");
-        switchToMainApp();
+        activeLoginMode = 'presensi';
+        showToast("Keluar dari Akun Defect List...", "info");
+        handleLogout();
     }
 
     function switchDefectTab(tabName) {
@@ -10587,13 +10826,17 @@ if (window.__hkGateBlocked) {
                             <p class="text-[10px] text-slate-400 font-medium">${u.email || '-'} • <span class="font-bold text-brand-600 dark:text-sky-400">${u.timKe || 'Tim 1'}</span> • ${u.perusahaan || 'HKI'}</p>
                         </div>
 
-                        <div class="flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-slate-600">
+                        <div class="flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200 dark:border-slate-600 flex-wrap">
                             <label class="text-[9px] font-bold text-slate-400 uppercase">Ubah Role:</label>
                             <select onchange="updateUserDefectRole('${u.id || u.uid}', this.value)" class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-xs px-2.5 py-1.5 rounded-xl font-bold focus:ring-2 focus:ring-amber-500">
                                 <option value="Anggota" ${role === 'Anggota' ? 'selected' : ''}>Anggota</option>
                                 <option value="Ketua Tim" ${role === 'Ketua Tim' ? 'selected' : ''}>Ketua Tim</option>
                                 <option value="Administrator" ${role === 'Administrator' ? 'selected' : ''}>Administrator</option>
                             </select>
+                            <button onclick="confirmDeleteUserPermanently('${u.id || u.uid}', '${(u.name || u.email || 'Personil').replace(/'/g, "\\'")}')" class="px-2 py-1 rounded-xl text-[10px] font-bold bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition flex items-center gap-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Hapus Permanen</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -10644,6 +10887,75 @@ if (window.__hkGateBlocked) {
         } else {
             showToast("Managed Role Defect berhasil diubah menjadi " + newRole, "success");
             renderDefectUserList();
+        }
+    }
+
+    window.onUpdateDefectUserRoleResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            fetchDefectUsers();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function deleteUserAccount(targetUid, userName) {
+        const myRole = ((state.profile && state.profile.role) || "Pegawai").trim().toLowerCase();
+        if (myRole !== 'administrator' && myRole !== 'admin') {
+            showToast("Akses Ditolak! Hanya Administrator yang dapat menghapus akun pegawai.", "error");
+            return;
+        }
+
+        if (!targetUid || targetUid === 'self') {
+            showToast("ID akun pegawai tidak valid.", "error");
+            return;
+        }
+
+        if (!confirm("Apakah Anda yakin ingin menghapus akun pegawai " + (userName || "") + "? Data akun ini di server akan dihapus secara permanen.")) {
+            return;
+        }
+
+        if (window.Android && window.Android.deleteUserAccount) {
+            showToast("Menghapus akun pegawai...", "info");
+            window.Android.deleteUserAccount(targetUid);
+        } else {
+            onDeleteUserAccountResult(true, "Akun pegawai " + userName + " berhasil dihapus!");
+        }
+    }
+
+    window.onDeleteUserAccountResult = function(success, message) {
+        if (success) {
+            showToast(message, "success");
+            if (typeof refreshTeamData === 'function') refreshTeamData();
+        } else {
+            showToast(message, "error");
+        }
+    };
+
+    function deleteDefectUserAccount(userId, userName) {
+        if (!isDefectAdmin()) {
+            showToast("Akses Ditolak! Hanya Administrator Defect yang dapat menghapus akun personil.", "error");
+            return;
+        }
+
+        if (!userId) {
+            showToast("ID personil defect tidak valid.", "error");
+            return;
+        }
+
+        if (!confirm("Apakah Anda yakin ingin menghapus akun personil defect " + (userName || "") + "?")) {
+            return;
+        }
+
+        cachedDefectUsers = cachedDefectUsers.filter(u => (u.id !== userId && u.uid !== userId));
+        saveDefectUsersToStorage();
+        renderDefectUserList();
+
+        if (window.Android && window.Android.deleteDefectUserAccount) {
+            showToast("Menghapus akun personil defect...", "info");
+            window.Android.deleteDefectUserAccount(userId);
+        } else {
+            onDeleteDefectUserAccountResult(true, "Akun personil defect berhasil dihapus!");
         }
     }
 
@@ -10722,11 +11034,26 @@ if (window.__hkGateBlocked) {
         }, { enableHighAccuracy: true });
     }
 
+    function generateAutoDefectNo() {
+        const currentTeam = (state.profile && state.profile.timKe) || "Tim 1";
+        const teamDigits = currentTeam.replace(/[^0-9]/g, '') || "1";
+
+        const teamDefects = (cachedDefectList || []).filter(item => {
+            const itemTeam = (item.timKe || "Tim 1").trim().toLowerCase();
+            const myTeam = currentTeam.trim().toLowerCase();
+            return itemTeam === myTeam || itemTeam.includes(myTeam) || myTeam.includes(itemTeam);
+        });
+
+        const nextIndex = teamDefects.length + 1;
+        const formattedNum = nextIndex.toString().padStart(3, '0');
+        return `DEF-T${teamDigits}-${formattedNum}`;
+    }
+
     function openAddDefectModal() {
         const modal = document.getElementById('addDefectModal');
         if (!modal) return;
 
-        if (document.getElementById('defNoUrut')) document.getElementById('defNoUrut').value = "";
+        if (document.getElementById('defNoUrut')) document.getElementById('defNoUrut').value = generateAutoDefectNo();
         if (document.getElementById('defSta')) document.getElementById('defSta').value = "";
         if (document.getElementById('defTemuan')) document.getElementById('defTemuan').value = "";
         if (document.getElementById('defHasilPemeriksaan')) document.getElementById('defHasilPemeriksaan').value = "";
@@ -10902,7 +11229,11 @@ if (window.__hkGateBlocked) {
     }
 
     function submitNewDefect() {
-        const noUrut = document.getElementById('defNoUrut')?.value.trim();
+        let noUrut = document.getElementById('defNoUrut')?.value.trim();
+        if (!noUrut) {
+            noUrut = generateAutoDefectNo();
+        }
+
         const lingkupPekerjaan = document.getElementById('defLingkup')?.value;
         const sta = document.getElementById('defSta')?.value.trim();
         const klasifikasi = document.getElementById('defKlasifikasi')?.value;
@@ -10911,12 +11242,15 @@ if (window.__hkGateBlocked) {
         const rekomendasi = document.getElementById('defRekomendasi')?.value.trim();
         const status = document.getElementById('defStatus')?.value;
 
-        if (!noUrut || !sta || !temuan) {
-            showToast("Lengkapi No. Urut, STA/Lokasi, dan Temuan Cacat!", "error");
+        if (!sta || !temuan) {
+            showToast("Lengkapi STA/Lokasi dan Temuan Cacat!", "error");
             return;
         }
 
         const currentTeam = (state.profile && state.profile.timKe) || "Tim 1";
+        const now = new Date();
+        const takenAt = now.getTime();
+        const takenAtFormatted = now.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) + ", " + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
         const defectObj = {
             noUrut: noUrut,
@@ -10929,13 +11263,20 @@ if (window.__hkGateBlocked) {
             photoPemeriksaan: capturedDefectPhoto || "",
             coords: capturedDefectCoords || "-2.976074, 104.775430",
             status: status,
-            timKe: currentTeam
+            timKe: currentTeam,
+            takenAt: takenAt,
+            takenAtFormatted: takenAtFormatted
         };
 
         if (window.Android && window.Android.saveDefectItem) {
             showToast("Menyimpan data defect...", "info");
             window.Android.saveDefectItem(JSON.stringify(defectObj));
         } else {
+            cachedDefectList.unshift({
+                ...defectObj,
+                id: "def_" + takenAt
+            });
+            saveDefectListToStorage();
             onSaveDefectResult(true, "Data Defect berhasil disimpan!");
         }
     }
@@ -11135,6 +11476,20 @@ if (window.__hkGateBlocked) {
             filteredList = filteredList.filter(item => (item.timKe || "Tim 1").trim().toLowerCase() === filterTim.trim().toLowerCase());
         }
 
+        // SORTING OTOMATIS: BERDASARKAN WAKTU PENGAMBILAN ITEM DEFECT (takenAt / capturedAt), BUKAN WAKTU SINKRONISASI DATABASE
+        filteredList.sort((a, b) => {
+            const getTakenTime = (d) => {
+                if (d.takenAt) return Number(d.takenAt);
+                if (d.createdAt) return Number(d.createdAt);
+                if (d.timestamp) {
+                    if (typeof d.timestamp === 'number') return d.timestamp;
+                    if (d.timestamp.seconds) return d.timestamp.seconds * 1000;
+                }
+                return 0;
+            };
+            return getTakenTime(b) - getTakenTime(a); // Urutan waktu pengambilan terbaru di paling atas
+        });
+
         if (filteredList.length === 0) {
             container.innerHTML = `
                 <div class="p-8 text-center text-slate-400 italic text-[11px] bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
@@ -11159,6 +11514,8 @@ if (window.__hkGateBlocked) {
             const klasClass = item.klasifikasi === 'Kritis' ? 'bg-rose-100 text-rose-700' : (item.klasifikasi === 'Mayor' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700');
             const statusClass = item.status === 'Closed' ? 'bg-emerald-500 text-white' : (item.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : (item.status === 'In Progress' ? 'bg-sky-100 text-sky-700' : 'bg-amber-100 text-amber-700'));
 
+            const timeLabel = item.takenAtFormatted || (item.takenAt ? new Date(item.takenAt).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Terbaru');
+
             container.innerHTML += `
                 <div onclick="openDefectDetailModal('${item.id}')" class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm hover:border-amber-400 transition cursor-pointer space-y-1.5">
                     <div class="flex justify-between items-start">
@@ -11174,8 +11531,12 @@ if (window.__hkGateBlocked) {
                     </div>
                     <h4 class="text-xs font-black text-slate-800 dark:text-white leading-snug">${item.temuan || 'Tanpa deskripsi'}</h4>
                     <div class="flex items-center justify-between text-[9px] text-slate-400 font-bold pt-1.5 border-t border-slate-50 dark:border-slate-700/50">
-                        <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400"><i class="fa-solid fa-eye"></i> Klik untuk lihat detail lengkap & peta</span>
-                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                        <span class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
+                            <i class="fa-solid fa-clock text-amber-500"></i> Pengambilan: ${timeLabel}
+                        </span>
+                        <span class="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                            <i class="fa-solid fa-eye"></i> Detail & Peta
+                        </span>
                     </div>
                 </div>
             `;
