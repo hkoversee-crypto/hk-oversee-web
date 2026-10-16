@@ -255,6 +255,79 @@ if (!window.__hkGateBlocked) {
       async function hkDB() { const x = await fb(); return x.db; }
   
       if (typeof window.Android === 'undefined') {
+          // [HK-SYNC] Helper sinkronisasi foto. Firestore membatasi 1 dokumen = 1.048.576 byte
+          // (1 MiB); foto base64 dipindahkan ke Firebase Storage dan dokumen hanya menyimpan
+          // nama berkasnya. Indeks hash mencegah foto yang sama diunggah berulang kali.
+          window.__hkSyncHelpers = (function () {
+              const IDX_KEY = 'hk_photo_storage_index_v1';
+              const B64_MIN = 8192;
+              let idx = null;
+              const loadIdx = function () {
+                  if (idx) return idx;
+                  try { idx = JSON.parse(window.localStorage.getItem(IDX_KEY) || '{}') || {}; }
+                  catch (e) { idx = {}; }
+                  return idx;
+              };
+              const saveIdx = function () {
+                  try { window.localStorage.setItem(IDX_KEY, JSON.stringify(idx)); } catch (e) {}
+              };
+              const hash = function (s) {
+                  let h = 5381;
+                  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+                  return h.toString(36) + '_' + s.length;
+              };
+              const isImgB64 = function (v) {
+                  return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:image/') === 0;
+              };
+              const isBigB64 = function (v) {
+                  return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:') === 0;
+              };
+              const byteLen = function (s) {
+                  try { return new TextEncoder().encode(s).length; } catch (e) { return s.length; }
+              };
+              const upload = async function (dataUrl, uid, st, storage, stat) {
+                  const key = uid + '|' + hash(dataUrl);
+                  const known = loadIdx()[key];
+                  if (known) return known;
+                  try {
+                      const blob = await fetch(dataUrl).then(function (r) { return r.blob(); });
+                      const name = 'sync_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.jpg';
+                      await st.uploadBytes(st.ref(storage, 'photos/' + uid + '/' + name), blob);
+                      loadIdx()[key] = name;
+                      saveIdx();
+                      if (stat) stat.ok++;
+                      return name;
+                  } catch (e) {
+                      if (stat) stat.fail++;
+                      console.warn('[HK-SYNC] foto gagal dipindah ke Storage:', e);
+                      return null;
+                  }
+              };
+              const offload = async function (node, uid, st, storage, stat) {
+                  if (Array.isArray(node)) {
+                      for (let i = 0; i < node.length; i++) node[i] = await offload(node[i], uid, st, storage, stat);
+                      return node;
+                  }
+                  if (node && typeof node === 'object') {
+                      for (const k of Object.keys(node)) node[k] = await offload(node[k], uid, st, storage, stat);
+                      return node;
+                  }
+                  if (!isImgB64(node)) return node;
+                  const name = await upload(node, uid, st, storage, stat);
+                  return name || node;
+              };
+              const strip = function (node) {
+                  let n = 0;
+                  if (Array.isArray(node)) { for (let i = 0; i < node.length; i++) n += strip(node[i]); return n; }
+                  if (node && typeof node === 'object') {
+                      for (const k of Object.keys(node)) {
+                          if (isBigB64(node[k])) { node[k] = null; n++; } else n += strip(node[k]);
+                      }
+                  }
+                  return n;
+              };
+              return { upload: upload, offload: offload, strip: strip, byteLen: byteLen, isImgB64: isImgB64 };
+          })();
           window.Android = {
               isBrowser: true,
               checkLoginStatus: async () => {
@@ -341,25 +414,68 @@ if (!window.__hkGateBlocked) {
                   } catch (e) {}
               },
               syncToCloud: async (jsonData) => {
+                  // [HK-SYNC] Tulis state ke users/{uid} tanpa melampaui batas 1 MiB Firestore.
+                  const helpers = window.__hkSyncHelpers;
+                  const LIMIT = 1048576;
+                  const STRIP_AT = 940000;
+                  const stat = { ok: 0, fail: 0 };
                   try {
-                      const { fs, db, auth } = await fb();
+                      if (!helpers) throw new Error('[HK-SYNC] helper sinkronisasi belum terpasang');
+                      const { fs, db, auth, st, storage } = await fb();
                       const user = auth.currentUser;
                       if (!user) {
-                          if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, "Sesi berakhir");
+                          if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, 'Sesi berakhir');
                           return;
                       }
                       const data = JSON.parse(jsonData);
-                      await fs.setDoc(fs.doc(db, 'users', user.uid), data, { merge: true });
-                      if (typeof window.onSyncComplete === 'function') window.onSyncComplete(true, "Sinkronisasi Web Berhasil");
-                  } catch (e) { if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, e.message); }
+                      await helpers.offload(data, user.uid, st, storage, stat);
+                      const ref = fs.doc(db, 'users', user.uid);
+                      let payload = data;
+                      const legacy = { ok: 0, fail: 0 };
+                      try {
+                          const cur = await fs.getDoc(ref);
+                          if (cur.exists()) {
+                              const old = cur.data() || {};
+                              // [HK-SYNC] bersihkan base64 lama yang menumpuk di dokumen (hasil merge
+                              // bertahun-tahun): dipindahkan ke Storage, tidak dibuang. Unggahan diindeks
+                              // hash, sehingga sinkron berikutnya tidak mengunggah foto yang sama lagi.
+                              await helpers.offload(old, user.uid, st, storage, legacy);
+                              payload = Object.assign({}, old, data);
+                          }
+                      } catch (e) { console.warn('[HK-SYNC] dokumen lama tidak terbaca:', e); }
+                      if (helpers.byteLen(JSON.stringify(payload)) > STRIP_AT) helpers.strip(payload);
+                      const size = helpers.byteLen(JSON.stringify(payload));
+                      if (size > LIMIT) {
+                          throw new Error('Data sinkronisasi masih terlalu besar (' + size +
+                              ' byte, batas 1.048.576 byte). Kurangi riwayat absen/kegiatan lalu coba lagi.');
+                      }
+                      await fs.setDoc(ref, payload, { merge: true });
+                      let note = '';
+                      if (legacy.ok > 0) note += ' - ' + legacy.ok + ' foto lama dipindah ke awan';
+                      const failed = stat.fail + legacy.fail;
+                      if (failed > 0) note += ' - ' + failed + ' foto tidak dapat dipindah ke awan';
+                      if (typeof window.onSyncComplete === 'function') window.onSyncComplete(true, 'Sinkronisasi Web Berhasil' + note);
+                  } catch (e) {
+                      let msg = (e && e.message) ? e.message : String(e);
+                      if (/cannot be written because its size/i.test(msg)) {
+                          msg = 'Data sinkronisasi melebihi batas 1 MB di Firestore. Foto sudah dipindah ke awan - coba Sinkron ulang; jika masih gagal, kurangi riwayat absen/kegiatan lama.';
+                      }
+                      if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, msg);
+                  }
               },
               getUserId: () => _fbCache?.auth?.currentUser?.uid || "",
               savePresensi: async (json) => {
                   try {
-                      const { fs, db, auth } = await fb();
+                      const { fs, db, auth, st, storage } = await fb();
                       const user = auth.currentUser;
                       if (!user) return;
                       const item = JSON.parse(json);
+                      // [HK-SYNC] pindahkan foto ke Storage lebih dulu agar tulisan incremental
+                      // tidak menaikkan ukuran dokumen user melebihi batas 1 MiB.
+                      if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
+                          const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
+                          if (name) item.photo = name;
+                      }
                       await fs.updateDoc(fs.doc(db, 'users', user.uid), {
                           presensi: fs.arrayUnion(item)
                       });
@@ -367,10 +483,15 @@ if (!window.__hkGateBlocked) {
               },
               saveKegiatan: async (json) => {
                   try {
-                      const { fs, db, auth } = await fb();
+                      const { fs, db, auth, st, storage } = await fb();
                       const user = auth.currentUser;
                       if (!user) return;
                       const item = JSON.parse(json);
+                      // [HK-SYNC] pindahkan foto ke Storage sebelum ditulis ke dokumen user.
+                      if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
+                          const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
+                          if (name) item.photo = name;
+                      }
                       await fs.updateDoc(fs.doc(db, 'users', user.uid), {
                           kegiatan: fs.arrayUnion(item)
                       });
@@ -419,11 +540,30 @@ if (!window.__hkGateBlocked) {
                   } catch (e) { if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(false, e.message); }
               },
               getCloudPhotoUrl: async (uid, photo, elementId) => {
+                  // [HK-SYNC] Foto kini tersimpan di Storage; sekali ambil lalu di-cache sebagai base64
+                  // agar render berikutnya dan export Excel/PDF (via getImageBase64) tetap mendapat foto.
                   try {
                       const { st, storage } = await fb();
-                      const url = await st.getDownloadURL(st.ref(storage, `photos/${uid}/${photo}`));
-                      document.getElementById(elementId).src = url;
+                      const el = document.getElementById(elementId);
+                      const cache = window.__hkPhotoCache || (window.__hkPhotoCache = {});
+                      if (cache[photo]) { if (el) el.src = 'data:image/jpeg;base64,' + cache[photo]; return; }
+                      const url = await st.getDownloadURL(st.ref(storage, 'photos/' + uid + '/' + photo));
+                      try {
+                          const blob = await fetch(url).then((r) => r.blob());
+                          const b64 = await new Promise((res, rej) => {
+                              const rd = new FileReader();
+                              rd.onload = () => res(String(rd.result).split(',')[1] || '');
+                              rd.onerror = rej;
+                              rd.readAsDataURL(blob);
+                          });
+                          if (b64) cache[photo] = b64;
+                          if (el) el.src = b64 ? 'data:image/jpeg;base64,' + b64 : url;
+                      } catch (e) { if (el) el.src = url; }
                   } catch (e) { /* skip */ }
+              },
+              getImageBase64: (fileName) => {
+                  const c = window.__hkPhotoCache;
+                  return (c && typeof c[fileName] === 'string') ? c[fileName] : '';
               },
               downloadJsonBackup: (json) => {
                   const blob = new Blob([json], {type: "application/json"});
