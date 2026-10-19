@@ -2756,7 +2756,7 @@ if (window.__hkGateBlocked) {
 
     <!-- Version & Copyright -->
     <div class="pt-8 pb-12 text-center space-y-1 opacity-60">
-      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.30</p>
+      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">HK Oversee Pro v0.10.33</p>
       <p class="text-[10px] text-slate-400 font-medium">Copyright &copy; <span id="copyrightYearFooter">2026</span> PJT Paltung 1-2. All Rights Reserved.</p>
     </div>
 
@@ -3570,6 +3570,10 @@ if (window.__hkGateBlocked) {
               <i class="fa-solid fa-folder-open"></i> <span>File</span>
             </button>
             <input type="file" id="upDefFileInput" accept="image/*,image/jpeg,image/png,.jpg,.jpeg,.png" class="hidden" onchange="handleDefectFileSelect(event, 'penyelesaian')">
+          </div>
+          <div id="upDefCoordsContainer" class="hidden flex justify-between items-center text-[10px] bg-slate-50 dark:bg-slate-700/50 p-2.5 rounded-xl border border-slate-200 dark:border-slate-600 max-w-[280px] mx-auto mt-2">
+            <span class="text-slate-400 font-bold">Koordinat Foto:</span>
+            <span id="upDefCoordsText" class="font-mono font-bold text-emerald-600 dark:text-emerald-400">-</span>
           </div>
         </div>
 
@@ -4523,9 +4527,7 @@ if (window.__hkGateBlocked) {
     // ----------------------------------------------------
     function switchPage(pageId) {
       try {
-        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
         const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
-            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
             || (typeof activeLoginMode !== 'undefined' && activeLoginMode === 'defect_only');
 
         if (isDefectAcc && pageId !== 'defect-list' && pageId !== 'profil' && pageId !== 'defect-profile') {
@@ -6877,9 +6879,7 @@ if (window.__hkGateBlocked) {
     }
 
     function showAppDashboard() {
-        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
         const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
-            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
             || (typeof activeLoginMode !== 'undefined' && activeLoginMode === 'defect_only');
 
         if (isDefectAcc) {
@@ -7059,9 +7059,7 @@ if (window.__hkGateBlocked) {
             }
 
             // Jika akun terdaftar sebagai defect_only dan mencoba login di Presensi: blokir!
-            const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
-            const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
-                || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc';
+            const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'));
 
             if (isDefectAcc) {
                 showToast("Akun ini khusus terdaftar untuk Defect List! Silakan beralih ke Halaman Login Defect List.", "error");
@@ -7159,9 +7157,7 @@ if (window.__hkGateBlocked) {
                 window.Android.fetchRole();
             }
 
-            const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
             const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
-                || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc'
                 || activeLoginMode === 'defect_only';
 
             if (isDefectAcc) {
@@ -10515,10 +10511,8 @@ if (window.__hkGateBlocked) {
 
     function checkUserHasDefectAccess() {
         const p = state.profile || {};
-        // 1. Akun defect_only / Kontraktor / ETC selalu memiliki akses ke modul Defect
+        // 1. Akun defect_only murni selalu memiliki akses ke modul Defect
         if (p.accountType === 'defect_only' || p.account_type === 'defect_only') return true;
-        const orgCat = String(p.orgCategoryDefect || p.defect_organization || "").toLowerCase();
-        if (orgCat === 'kontraktor' || orgCat === 'etc') return true;
 
         // 2. Administrator selalu memiliki akses
         const role = String(p.role || "").toLowerCase();
@@ -10643,9 +10637,7 @@ if (window.__hkGateBlocked) {
     }
 
     function switchToMainApp() {
-        const userOrg = (state.profile && (state.profile.orgCategoryDefect || state.profile.defect_organization)) || "";
-        const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'))
-            || userOrg.toLowerCase() === 'kontraktor' || userOrg.toLowerCase() === 'etc';
+        const isDefectAcc = (state.profile && (state.profile.accountType === 'defect_only' || state.profile.account_type === 'defect_only'));
 
         if (isDefectAcc) {
             showToast("Akun Anda hanya terdaftar khusus untuk modul Defect List.", "warning");
@@ -10662,13 +10654,42 @@ if (window.__hkGateBlocked) {
         switchPage('beranda');
     }
 
+    function getResolvedDefectOrg() {
+        const p = state.profile || {};
+        const accountType = String(p.accountType || p.account_type || "").toLowerCase();
+        const isDefectOnly = accountType === 'defect_only';
+
+        // Jika akun defect_only murni: gunakan kategori terdaftarnya ("Kontraktor" / "ETC")
+        if (isDefectOnly) {
+            return p.orgCategoryDefect || p.defect_organization || p.orgCategory || "Kontraktor";
+        }
+
+        // Akun Presensi
+        const managedRole = String(p.managedRole || p.konsultan || p.presensi_team_category || "").trim();
+        const role = String(p.role || "").trim();
+
+        // 1. Jika pengguna adalah Pegawai Owner (managedRole == "Owner" / role == "Administrator") -> "Owner"
+        if (managedRole.toLowerCase() === "owner" || role.toLowerCase() === "administrator" || role.toLowerCase() === "admin") {
+            return "Owner";
+        }
+
+        // 2. Jika pengguna adalah Tim Konsultan (Field Team, Core Team, PMI) -> "Konsultan"
+        const managedLower = managedRole.toLowerCase();
+        if (managedLower.includes("field team") || managedLower.includes("core team") || managedLower.includes("pmi") || managedLower.includes("konsultan") || managedLower.includes("field") || managedLower.includes("core")) {
+            return "Konsultan";
+        }
+
+        // Default fallback untuk presensi user jika ada orgCategoryDefect eksplisit atau default "Konsultan"
+        return p.orgCategoryDefect || p.defect_organization || p.orgCategory || "Konsultan";
+    }
+
     function updateDefectProfileData() {
         const p = state.profile || {};
         const nama = p.name || "Amanda Setyawati";
         const defectRole = getDefectRole();
         const jabatan = p.jabatanDefect || p.jabatan || "Inspektur Defect List";
         const perusahaan = p.perusahaan || "PT Hutama Karya Infrastruktur";
-        const orgCat = p.orgCategoryDefect || p.orgCategory || "Kontraktor";
+        const orgCat = getResolvedDefectOrg();
         const timKe = p.timKe || "Tim 1";
         const namaTim = p.namaTim || "Tim Inspeksi Defect List";
         const kontrak = p.namaKontrak || "Pekerjaan Pembangunan Jalan Tol Trans Sumatera Ruas Palembang - Betung Seksi 1 Palembang - Rengas (STA 41+513 - STA 64+000) dan Seksi 2 Rengas - Pangkalan Balai (STA 64+000 - STA 97+000)";
@@ -10717,7 +10738,7 @@ if (window.__hkGateBlocked) {
 
                 if (document.getElementById('defEditJabatan')) document.getElementById('defEditJabatan').value = p.jabatanDefect || p.jabatan || "Inspektur Defect List";
                 if (document.getElementById('defEditPerusahaan')) document.getElementById('defEditPerusahaan').value = p.perusahaan || "PT Hutama Karya Infrastruktur";
-                if (document.getElementById('defEditOrgCat')) document.getElementById('defEditOrgCat').value = p.orgCategoryDefect || p.orgCategory || "Kontraktor";
+                if (document.getElementById('defEditOrgCat')) document.getElementById('defEditOrgCat').value = getResolvedDefectOrg();
                 if (document.getElementById('defEditTimKe')) document.getElementById('defEditTimKe').value = p.timKe || "Tim 1";
                 if (document.getElementById('defEditNamaTim')) document.getElementById('defEditNamaTim').value = p.namaTim || "Tim Inspeksi Defect List";
                 if (document.getElementById('defEditNamaKontrak')) document.getElementById('defEditNamaKontrak').value = p.namaKontrak || "Pekerjaan Pembangunan Jalan Tol Trans Sumatera Ruas Palembang - Betung Seksi 1 Palembang - Rengas (STA 41+513 - STA 64+000) dan Seksi 2 Rengas - Pangkalan Balai (STA 64+000 - STA 97+000)";
@@ -10734,7 +10755,9 @@ if (window.__hkGateBlocked) {
         const roleDefect = isDefectAdmin() ? (roleSelect?.value || getDefectRole()) : (state.profile?.managedRoleDefect || getDefectRole());
         const jabatan = document.getElementById('defEditJabatan')?.value.trim();
         const perusahaan = document.getElementById('defEditPerusahaan')?.value.trim();
-        const orgCat = document.getElementById('defEditOrgCat')?.value;
+        const pAccType = String(state.profile?.accountType || state.profile?.account_type || "").toLowerCase();
+        const isDefectOnlyAcc = pAccType === 'defect_only';
+        const orgCat = isDefectOnlyAcc ? (document.getElementById('defEditOrgCat')?.value || getResolvedDefectOrg()) : getResolvedDefectOrg();
         const timKe = document.getElementById('defEditTimKe')?.value;
         const namaTim = document.getElementById('defEditNamaTim')?.value.trim();
         const namaKontrak = document.getElementById('defEditNamaKontrak')?.value.trim();
@@ -10892,7 +10915,7 @@ if (window.__hkGateBlocked) {
                     email: state.profile.email || "user.defect@gmail.com",
                     managedRoleDefect: getDefectRole(),
                     timKe: state.profile.timKe || "Tim 1",
-                    orgCategoryDefect: state.profile.orgCategoryDefect || state.profile.orgCategory || "Kontraktor",
+                    orgCategoryDefect: getResolvedDefectOrg(),
                     perusahaan: state.profile.perusahaan || "PT Hutama Karya Infrastruktur"
                 });
             }
@@ -11139,6 +11162,175 @@ if (window.__hkGateBlocked) {
     // --- DEFECT LIVE CAMERA & GPS MAP LOGIC ---
     let defectInputMap = null;
     let capturedDefectCoords = "";
+    let capturedUpdateDefectCoords = "";
+
+    // --- EXIF METADATA GPS PARSER FOR GALLERY PHOTOS ---
+    function readGpsFromExif(file, callback) {
+        if (!file) {
+            callback(null);
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const buffer = e.target.result;
+                const view = new DataView(buffer);
+
+                if (view.byteLength < 12) {
+                    callback(null);
+                    return;
+                }
+
+                // Check JPEG SOI (0xFFD8)
+                if (view.getUint16(0, false) !== 0xFFD8) {
+                    callback(null);
+                    return;
+                }
+
+                let length = view.byteLength;
+                let offset = 2;
+
+                while (offset < length - 4) {
+                    if (view.getUint8(offset) !== 0xFF) {
+                        break;
+                    }
+
+                    const marker = view.getUint8(offset + 1);
+
+                    // APP1 Marker (0xFFE1)
+                    if (marker === 0xE1) {
+                        const exifOffset = offset + 4;
+                        if (exifOffset + 6 > length) break;
+
+                        // Check "Exif\0\0" header (0x45786966 0x0000)
+                        if (view.getUint32(exifOffset, false) === 0x45786966 && view.getUint16(exifOffset + 4, false) === 0) {
+                            const tiffOffset = exifOffset + 6;
+                            const isLittle = view.getUint16(tiffOffset, false) === 0x4949; // "II"
+
+                            if (view.getUint16(tiffOffset + 2, isLittle) !== 0x002A) {
+                                callback(null);
+                                return;
+                            }
+
+                            const firstIfdOffset = view.getUint32(tiffOffset + 4, isLittle);
+                            if (firstIfdOffset < 8) {
+                                callback(null);
+                                return;
+                            }
+
+                            // Search IFD0 for GPSInfo tag (0x8825)
+                            const gpsIfdRel = findExifTagOffset(view, tiffOffset, tiffOffset + firstIfdOffset, 0x8825, isLittle);
+                            if (gpsIfdRel === null) {
+                                callback(null);
+                                return;
+                            }
+
+                            const gpsData = parseGpsIfd(view, tiffOffset, tiffOffset + gpsIfdRel, isLittle);
+                            if (gpsData && gpsData.lat && gpsData.lng) {
+                                callback(gpsData);
+                                return;
+                            }
+                        }
+                        break;
+                    } else if ((marker & 0xF0) === 0xE0 || marker === 0xDB || marker === 0xC0 || marker === 0xC4) {
+                        const markerLength = view.getUint16(offset + 2, false);
+                        offset += 2 + markerLength;
+                    } else {
+                        break;
+                    }
+                }
+                callback(null);
+            } catch (err) {
+                console.warn("EXIF GPS parsing error:", err);
+                callback(null);
+            }
+        };
+        reader.onerror = function() { callback(null); };
+        // Slice first 128KB to read EXIF quickly
+        reader.readAsArrayBuffer(file.slice(0, 128 * 1024));
+    }
+
+    function findExifTagOffset(view, tiffOffset, dirOffset, targetTag, isLittle) {
+        try {
+            if (dirOffset + 2 > view.byteLength) return null;
+            const entries = view.getUint16(dirOffset, isLittle);
+            for (let i = 0; i < entries; i++) {
+                const entryOffset = dirOffset + 2 + (i * 12);
+                if (entryOffset + 12 > view.byteLength) break;
+                const tag = view.getUint16(entryOffset, isLittle);
+                if (tag === targetTag) {
+                    return view.getUint32(entryOffset + 8, isLittle);
+                }
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    function parseGpsIfd(view, tiffOffset, dirOffset, isLittle) {
+        try {
+            if (dirOffset + 2 > view.byteLength) return null;
+            const entries = view.getUint16(dirOffset, isLittle);
+            let latRef = 'N', lngRef = 'E';
+            let latDeg = null, lngDeg = null;
+
+            for (let i = 0; i < entries; i++) {
+                const entryOffset = dirOffset + 2 + (i * 12);
+                if (entryOffset + 12 > view.byteLength) break;
+                const tag = view.getUint16(entryOffset, isLittle);
+                const valuePtr = entryOffset + 8;
+
+                if (tag === 0x0001) { // GPSLatitudeRef
+                    latRef = String.fromCharCode(view.getUint8(valuePtr));
+                } else if (tag === 0x0002) { // GPSLatitude
+                    const p = tiffOffset + view.getUint32(valuePtr, isLittle);
+                    latDeg = readExifRational3(view, p, isLittle);
+                } else if (tag === 0x0003) { // GPSLongitudeRef
+                    lngRef = String.fromCharCode(view.getUint8(valuePtr));
+                } else if (tag === 0x0004) { // GPSLongitude
+                    const p = tiffOffset + view.getUint32(valuePtr, isLittle);
+                    lngDeg = readExifRational3(view, p, isLittle);
+                }
+            }
+
+            if (latDeg !== null && lngDeg !== null) {
+                let lat = latDeg[0] + (latDeg[1] / 60) + (latDeg[2] / 3600);
+                if (latRef === 'S' || latRef === 's') lat = -lat;
+
+                let lng = lngDeg[0] + (lngDeg[1] / 60) + (lngDeg[2] / 3600);
+                if (lngRef === 'W' || lngRef === 'w') lng = -lng;
+
+                if (!isNaN(lat) && !isNaN(lng) && Math.abs(lat) <= 90 && Math.abs(lng) <= 180 && (lat !== 0 || lng !== 0)) {
+                    return {
+                        lat: lat,
+                        lng: lng,
+                        formatted: `${lat.toFixed(6)}, ${lng.toFixed(6)}`
+                    };
+                }
+            }
+        } catch (e) {}
+        return null;
+    }
+
+    function readExifRational3(view, ptr, isLittle) {
+        try {
+            if (ptr + 24 > view.byteLength) return null;
+            const dNum = view.getUint32(ptr, isLittle);
+            const dDen = view.getUint32(ptr + 4, isLittle);
+            const mNum = view.getUint32(ptr + 8, isLittle);
+            const mDen = view.getUint32(ptr + 12, isLittle);
+            const sNum = view.getUint32(ptr + 16, isLittle);
+            const sDen = view.getUint32(ptr + 20, isLittle);
+
+            const deg = dDen ? dNum / dDen : 0;
+            const min = mDen ? mNum / mDen : 0;
+            const sec = sDen ? sNum / sDen : 0;
+
+            return [deg, min, sec];
+        } catch (e) {
+            return null;
+        }
+    }
 
     function fetchDefectInputGPS() {
         if (!navigator.geolocation) return;
@@ -11319,7 +11511,78 @@ if (window.__hkGateBlocked) {
         const file = event.target.files[0];
         if (!file) return;
 
-        showToast("Memuat & mengompres foto...", "info");
+        showToast("Memuat & membaca foto...", "info");
+
+        // 1. Ekstraksi Metadata EXIF GPS dari Foto Galeri
+        readGpsFromExif(file, function(gpsData) {
+            if (gpsData && gpsData.formatted) {
+                const coordsStr = gpsData.formatted;
+                if (type === 'pemeriksaan') {
+                    capturedDefectCoords = coordsStr;
+                    const textEl = document.getElementById('defCoordsText');
+                    const statusEl = document.getElementById('defGpsStatus');
+                    if (textEl) textEl.textContent = coordsStr;
+                    if (statusEl) {
+                        statusEl.textContent = "GPS EXIF Foto";
+                        statusEl.className = "text-emerald-500 font-bold text-[10px]";
+                    }
+                    if (defectInputMap) {
+                        try {
+                            const center = [gpsData.lat, gpsData.lng];
+                            defectInputMap.setView(center, 16);
+                            L.marker(center).addTo(defectInputMap).bindPopup("Titik Defect (EXIF Foto)").openPopup();
+                        } catch (e) { console.error("Map update error:", e); }
+                    }
+                } else {
+                    capturedUpdateDefectCoords = coordsStr;
+                    const textEl = document.getElementById('upDefCoordsText');
+                    const container = document.getElementById('upDefCoordsContainer');
+                    if (textEl) textEl.textContent = coordsStr;
+                    if (container) container.classList.remove('hidden');
+                }
+
+                showToast(`Koordinat GPS berhasil dibaca dari Metadata Foto Galeri (${coordsStr})!`, "success");
+            } else {
+                // Fallback jika foto galeri tidak memiliki metadata GPS
+                showToast("Foto galeri tidak memiliki metadata GPS. Menggunakan lokasi GPS HP saat ini.", "warning");
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(pos => {
+                        const lat = pos.coords.latitude.toFixed(6);
+                        const lng = pos.coords.longitude.toFixed(6);
+                        const coordsStr = `${lat}, ${lng}`;
+
+                        if (type === 'pemeriksaan') {
+                            capturedDefectCoords = coordsStr;
+                            const textEl = document.getElementById('defCoordsText');
+                            const statusEl = document.getElementById('defGpsStatus');
+                            if (textEl) textEl.textContent = coordsStr;
+                            if (statusEl) {
+                                statusEl.textContent = "GPS HP Saat Ini";
+                                statusEl.className = "text-amber-500 font-bold text-[10px]";
+                            }
+                            if (defectInputMap) {
+                                try {
+                                    const center = [parseFloat(lat), parseFloat(lng)];
+                                    defectInputMap.setView(center, 15);
+                                    L.marker(center).addTo(defectInputMap).bindPopup("Titik Defect (GPS HP)").openPopup();
+                                } catch (e) { console.error("Map update error:", e); }
+                            }
+                        } else {
+                            capturedUpdateDefectCoords = coordsStr;
+                            const textEl = document.getElementById('upDefCoordsText');
+                            const container = document.getElementById('upDefCoordsContainer');
+                            if (textEl) textEl.textContent = coordsStr;
+                            if (container) container.classList.remove('hidden');
+                        }
+                    }, err => {
+                        console.warn("Fallback GPS error", err);
+                    }, { enableHighAccuracy: true });
+                }
+            }
+        });
+
+        // 2. Kompresi & Display Foto
         const reader = new FileReader();
         reader.onload = function(e) {
             const rawBase64 = e.target.result;
@@ -11358,7 +11621,6 @@ if (window.__hkGateBlocked) {
                     if (previewImg) { previewImg.src = compressedBase64; previewImg.classList.remove('hidden'); }
                     if (icon) icon.classList.add('hidden');
                 }
-                showToast("Foto berhasil dimuat & dioptimalkan!", "success");
             };
             imgEl.onerror = function() {
                 showToast("Gagal mengurai gambar", "error");
@@ -11576,7 +11838,7 @@ if (window.__hkGateBlocked) {
         const userManagedTeam = (state.profile && state.profile.timKe) || "Tim 1";
 
         // Cek Hak Akses Update berdasarkan Kategori Organisasi (Kontraktor, Konsultan, Owner BISA. ETC TIDAK BISA)
-        const userOrgCat = (state.profile && (state.profile.orgCategoryDefect || state.profile.orgCategory)) || "Kontraktor";
+        const userOrgCat = getResolvedDefectOrg();
         const canUpdateDefect = userOrgCat === "Kontraktor" || userOrgCat === "Konsultan" || userOrgCat === "Owner";
 
         const filterTim = document.getElementById('defectFilterTim')?.value || "ALL";
@@ -11762,7 +12024,7 @@ if (window.__hkGateBlocked) {
         const content = document.getElementById('defDetailContent');
         if (!modal || !content) return;
 
-        const userOrgCat = (state.profile && (state.profile.orgCategoryDefect || state.profile.orgCategory)) || "Kontraktor";
+        const userOrgCat = getResolvedDefectOrg();
         const canUpdateDefect = userOrgCat === "Kontraktor" || userOrgCat === "Konsultan" || userOrgCat === "Owner";
 
         const klasClass = item.klasifikasi === 'Kritis' ? 'bg-rose-100 text-rose-700' : (item.klasifikasi === 'Mayor' ? 'bg-amber-100 text-amber-700' : 'bg-sky-100 text-sky-700');
@@ -11944,6 +12206,10 @@ if (window.__hkGateBlocked) {
 
     function openUpdateDefectModal(defectId) {
         activeUpdateDefectId = defectId;
+        capturedUpdateDefectCoords = "";
+        const upDefCoordsContainer = document.getElementById('upDefCoordsContainer');
+        if (upDefCoordsContainer) upDefCoordsContainer.classList.add('hidden');
+
         const item = cachedDefectList.find(d => d.id === defectId);
         if (!item) return;
 
@@ -12090,6 +12356,10 @@ if (window.__hkGateBlocked) {
             } else if (status === 'Closed') {
                 updates.photoClosed = capturedResolutionPhoto;
             }
+        }
+
+        if (capturedUpdateDefectCoords) {
+            updates.coordsPenyelesaian = capturedUpdateDefectCoords;
         }
 
         if (window.Android && window.Android.updateDefectItem) {
