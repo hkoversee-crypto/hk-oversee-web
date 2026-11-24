@@ -4387,6 +4387,12 @@ if (window.__hkGateBlocked) {
     let mapDashboard = null;
     let mapDetailModal = null;
     let activeMarkers = [];
+
+    // Gate Safari menghapus global L dan menutup UI. Hentikan inisialisasi peta
+    // sebelum Leaflet disentuh agar tidak memicu TypeError saat browser diblokir.
+    function hkCanInitMaps() {
+      return window.__hkGateBlocked !== true && typeof L !== 'undefined' && !!L;
+    }
     let performancePieChart = null;
     let currentZoomScale = 1.0;
     let streamScanSurat = null;
@@ -6024,6 +6030,7 @@ if (window.__hkGateBlocked) {
     // MAP INTEGRATIONS & INTERACTION MANAGEMENT
     // ----------------------------------------------------
     function initActivityInputMap() {
+      if (!hkCanInitMaps()) return;
       // Point 2: Check offline status for map
       const warning = document.getElementById('mapOfflineWarning');
       if (!navigator.onLine) {
@@ -6239,6 +6246,7 @@ if (window.__hkGateBlocked) {
     // ACTIVITY ARCHIVES & MULTI-PINS WORK MAPS
     // ----------------------------------------------------
     function initDashboardMap() {
+      if (!hkCanInitMaps()) return;
       const mapContainer = document.getElementById('dashboardActivityMap');
       if (!mapContainer) return;
 
@@ -6291,6 +6299,7 @@ if (window.__hkGateBlocked) {
     }
 
     function initActivityArchiveMap() {
+      if (!hkCanInitMaps()) return;
       const mapContainer = document.getElementById('archiveAllMap');
       if (!mapContainer) return;
 
@@ -7050,6 +7059,7 @@ if (window.__hkGateBlocked) {
 
       // Initialize / Update leaflet map inside Detail Modal
       setTimeout(() => {
+        if (!hkCanInitMaps()) return;
         const mapDiv = document.getElementById('detailLocationMap');
 
         // Hide map element if opening non-coordinate absence reports
@@ -8821,6 +8831,7 @@ if (window.__hkGateBlocked) {
     }
 
     function updateAdminTeamMap(filteredData) {
+        if (!hkCanInitMaps()) return;
         const mapDiv = document.getElementById('adminTeamMap');
         if (!mapDiv) return;
 
@@ -9413,6 +9424,7 @@ if (window.__hkGateBlocked) {
 
         // Map showing both points
         setTimeout(() => {
+            if (!hkCanInitMaps()) return;
             const mapDiv = document.getElementById('adminDayMap');
             if (mapDetailModal) { mapDetailModal.remove(); mapDetailModal = null; }
 
@@ -9513,6 +9525,7 @@ if (window.__hkGateBlocked) {
 
         // Map setup
         setTimeout(() => {
+            if (!hkCanInitMaps()) return;
             const coords = item.coords.split(',').map(Number);
             if (mapDetailModal) { mapDetailModal.remove(); mapDetailModal = null; }
             mapDetailModal = L.map('detailLocationMap', { zoomControl: false }).setView(coords, 15);
@@ -12683,6 +12696,7 @@ if (window.__hkGateBlocked) {
             }
 
             setTimeout(() => {
+                if (!hkCanInitMaps()) return;
                 if (defectInputMap) { defectInputMap.remove(); defectInputMap = null; }
                 const center = [parseFloat(lat), parseFloat(lng)];
                 defectInputMap = L.map('defectInputMap', { zoomControl: false }).setView(center, 15);
@@ -13886,6 +13900,7 @@ if (window.__hkGateBlocked) {
         // Render Leaflet Detail Map in Modal
         if (item.coords && item.coords.includes(',')) {
             setTimeout(() => {
+                if (!hkCanInitMaps()) return;
                 if (defectDetailMapInstance) {
                     defectDetailMapInstance.remove();
                     defectDetailMapInstance = null;
@@ -13917,6 +13932,7 @@ if (window.__hkGateBlocked) {
         if (!mapContainer) return;
 
         setTimeout(() => {
+            if (!hkCanInitMaps()) return;
             if (defectDistributionMapInstance) {
                 defectDistributionMapInstance.remove();
                 defectDistributionMapInstance = null;
