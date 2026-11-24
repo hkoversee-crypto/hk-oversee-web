@@ -172,934 +172,1004 @@ window.HK_FB_CONFIG = {
     };
 </script>
 <script>
-/* ================= [26] WEB BRIDGE (tanpa gate Safari) ================= */
-const HK_FB_VERSION = '9.22.1';
-    let _fbCache = null;
+/* ================= [26] IOS SAFARI GATE ================= */
+(function () {
+  'use strict';
+  function hkIsSafariIOS() {
+    var ua = navigator.userAgent || '';
+    var iOSRegular = /iPad|iPhone|iPod/.test(ua);
+    var iPadDesktop = /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
+    if (!iOSRegular && !iPadDesktop) return false;
+    if (/CriOS|FxiOS|EdgiOS|OPiOS|Instagram|FBAN|FBAV|DuckDuckGo/i.test(ua)) return false;
+    if (!/AppleWebKit/i.test(ua)) return false;
+    return /Safari/i.test(ua) && !/Chrome|Chromium/i.test(ua);
+  }
+  window.hkIsSafariIOS = hkIsSafariIOS;
+  window.__hkGateBlocked = false;
+  if (!hkIsSafariIOS()) {
+    window.__hkGateBlocked = true;
+    // [27] Kunci jembatan: cegah stub lama / kode apa pun memasang window.Android
+    //      pada browser yang tidak diizinkan (bukan Safari iOS).
+    try {
+      Object.defineProperty(window, 'Android', {
+        configurable: true,
+        get: function () { return undefined; },
+        set: function () { /* diabaikan */ }
+      });
+    } catch (e) {}
+    var gate = setInterval(function () {
+      var b = document.body;
+      if (!b) return;
+      clearInterval(gate);
+      var d = document.createElement('div');
+      d.id = 'hkIosGateOverlay';
+      d.innerHTML = '<style>' +
+        '#hkIosGateOverlay{position:fixed;inset:0;z-index:2147483647;display:flex;' +
+        'align-items:center;justify-content:center;background:linear-gradient(135deg,#0369a1,#0284c7);' +
+        'font-family:system-ui,-apple-system,sans-serif;color:#fff;text-align:center;padding:24px}' +
+        '#hkIosGateOverlay .card{max-width:420px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);' +
+        'border-radius:20px;padding:28px 24px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}' +
+        '#hkIosGateOverlay .ico{font-size:44px;margin-bottom:12px}' +
+        '#hkIosGateOverlay h2{margin:0 0 8px;font-size:20px;font-weight:800}' +
+        '#hkIosGateOverlay p{margin:0;font-size:13px;line-height:1.6;opacity:.92}' +
+        '</style>' +
+        '<div class="card"><div class="ico">&#128241;</div>' +
+        '<h2>Hanya untuk Safari di iPhone / iPad</h2>' +
+        '<p>Aplikasi HK-Oversee versi web ini hanya dapat diakses melalui aplikasi <b>Safari</b> di perangkat iOS (iPhone/iPad).</p>' +
+        '<p style="margin-top:10px;opacity:.85">Salin tautan ini, lalu buka di Safari:</p>' +
+        '<p style="margin-top:6px;word-break:break-all;font-weight:700">' + location.href + '</p>' +
+        '</div>';
+      b.appendChild(d);
+      try { var sp = document.getElementById('splash-screen'); if (sp) sp.classList.add('hidden-splash'); } catch (e) {}
+    }, 30);
+    return;
+  }
+})();
 
-    async function fb() {
-        if (_fbCache) return _fbCache;
-        const [appMod, authMod, fsMod, stMod] = await Promise.all([
-            import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-app.js`),
-            import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`),
-            import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-firestore.js`),
-            import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-storage.js`)
-        ]);
-        const app = appMod.initializeApp(window.HK_FB_CONFIG);
-        const auth = authMod.getAuth(app);
-        let db;
+/* ---------- Jalur Safari iOS: aktifkan jembatan web lengkap ---------- */
+if (!window.__hkGateBlocked) {
+  const HK_FB_VERSION = '9.22.1';
+      let _fbCache = null;
+  
+      async function fb() {
+          if (_fbCache) return _fbCache;
+          const [appMod, authMod, fsMod, stMod] = await Promise.all([
+              import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-app.js`),
+              import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`),
+              import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-firestore.js`),
+              import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-storage.js`)
+          ]);
+          const app = appMod.initializeApp(window.HK_FB_CONFIG);
+          const auth = authMod.getAuth(app);
+          let db;
+          try {
+              db = fsMod.initializeFirestore(app, { experimentalAutoDetectLongPolling: true }, 'hkoversee');
+          } catch (e) {
+              db = fsMod.getFirestore(app, 'hkoversee');
+          }
+          const storage = stMod.getStorage(app);
+          _fbCache = { app, auth, db, fs: fsMod, storage, st: stMod };
+          return _fbCache;
+      }
+  
+      // Alias lama yang masih dirujuk beberapa titik
+      async function fsMod() { const x = await fb(); return x.fs; }
+      async function hkDB() { const x = await fb(); return x.db; }
+  
+      if (typeof window.Android === 'undefined') {
+          // [HK-SYNC] Helper sinkronisasi foto. Firestore membatasi 1 dokumen = 1.048.576 byte
+          // (1 MiB); foto base64 dipindahkan ke Firebase Storage dan dokumen hanya menyimpan
+          // nama berkasnya. Indeks hash mencegah foto yang sama diunggah berulang kali.
+          window.__hkSyncHelpers = (function () {
+              const IDX_KEY = 'hk_photo_storage_index_v1';
+              const B64_MIN = 8192;
+              let idx = null;
+              const loadIdx = function () {
+                  if (idx) return idx;
+                  try { idx = JSON.parse(window.localStorage.getItem(IDX_KEY) || '{}') || {}; }
+                  catch (e) { idx = {}; }
+                  return idx;
+              };
+              const saveIdx = function () {
+                  try { window.localStorage.setItem(IDX_KEY, JSON.stringify(idx)); } catch (e) {}
+              };
+              const hash = function (s) {
+                  let h = 5381;
+                  for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
+                  return h.toString(36) + '_' + s.length;
+              };
+              const isImgB64 = function (v) {
+                  return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:image/') === 0;
+              };
+              const isBigB64 = function (v) {
+                  return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:') === 0;
+              };
+              const byteLen = function (s) {
+                  try { return new TextEncoder().encode(s).length; } catch (e) { return s.length; }
+              };
+              const upload = async function (dataUrl, uid, st, storage, stat) {
+                  const key = uid + '|' + hash(dataUrl);
+                  const known = loadIdx()[key];
+                  if (known) return known;
+                  try {
+                      const blob = await fetch(dataUrl).then(function (r) { return r.blob(); });
+                      const name = 'sync_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.jpg';
+                      await st.uploadBytes(st.ref(storage, 'photos/' + uid + '/' + name), blob);
+                      loadIdx()[key] = name;
+                      saveIdx();
+                      if (stat) stat.ok++;
+                      return name;
+                  } catch (e) {
+                      if (stat) stat.fail++;
+                      console.warn('[HK-SYNC] foto gagal dipindah ke Storage:', e);
+                      return null;
+                  }
+              };
+              const offload = async function (node, uid, st, storage, stat) {
+                  if (Array.isArray(node)) {
+                      for (let i = 0; i < node.length; i++) node[i] = await offload(node[i], uid, st, storage, stat);
+                      return node;
+                  }
+                  if (node && typeof node === 'object') {
+                      for (const k of Object.keys(node)) node[k] = await offload(node[k], uid, st, storage, stat);
+                      return node;
+                  }
+                  if (!isImgB64(node)) return node;
+                  const name = await upload(node, uid, st, storage, stat);
+                  return name || node;
+              };
+              const strip = function (node) {
+                  let n = 0;
+                  if (Array.isArray(node)) { for (let i = 0; i < node.length; i++) n += strip(node[i]); return n; }
+                  if (node && typeof node === 'object') {
+                      for (const k of Object.keys(node)) {
+                          if (isBigB64(node[k])) { node[k] = null; n++; } else n += strip(node[k]);
+                      }
+                  }
+                  return n;
+              };
+              return { upload: upload, offload: offload, strip: strip, byteLen: byteLen, isImgB64: isImgB64 };
+          })();
+  
+          // [HK-PRESENSI] Satu absen juga ditulis ke subkoleksi per record seperti
+          // aplikasi native, bukan hanya array `users.presensi` di dokumen induk.
+          function hkPresensiDocId(item) {
+              return String(((item && item.date) || '') + '_' + ((item && item.type) || ''))
+                  .replace(/\//g, '-').trim().slice(0, 200) || ('record_' + Date.now());
+          }
+  
+          /**
+           * Salin absen lama dari array ke `presensi_items` saat Sinkron.
+           * Idempoten: penanda localStorage menyimpan `updatedAt` terakhir yang
+           * sudah disalin, sehingga riwayat tidak ditulis ulang setiap sinkron.
+           */
+          async function hkBackfillPresensiItems(fs, db, uid, items) {
+              if (!uid || !Array.isArray(items) || items.length === 0) return 0;
+              const markerKey = 'hk_presensi_items_backfill_' + uid;
+              let done = {};
+              try { done = JSON.parse(localStorage.getItem(markerKey) || '{}') || {}; } catch (e) { done = {}; }
+              const pending = items.filter((item) => {
+                  if (!item || !item.date || !item.type) return false;
+                  const key = hkPresensiDocId(item);
+                  const stamp = Number(item.updatedAt) || 0;
+                  return !(key in done) || (stamp > 0 && done[key] !== stamp);
+              });
+              let written = 0;
+              for (let start = 0; start < pending.length; start += 400) {
+                  const chunk = pending.slice(start, start + 400);
+                  const batch = fs.writeBatch(db);
+                  chunk.forEach((item) => {
+                      batch.set(
+                          fs.doc(fs.collection(db, 'users', uid, 'presensi_items'),
+                              hkPresensiDocId(item)),
+                          item,
+                          { merge: true }
+                      );
+                  });
+                  try {
+                      await batch.commit();
+                      chunk.forEach((item) => {
+                          done[hkPresensiDocId(item)] = Number(item.updatedAt) || 1;
+                      });
+                      written += chunk.length;
+                  } catch (e) {
+                      // Satu dokumen terlalu besar tidak boleh menggagalkan seluruh backfill.
+                      for (const item of chunk) {
+                          try {
+                              await fs.setDoc(
+                                  fs.doc(fs.collection(db, 'users', uid, 'presensi_items'),
+                                      hkPresensiDocId(item)),
+                                  item,
+                                  { merge: true }
+                              );
+                              done[hkPresensiDocId(item)] = Number(item.updatedAt) || 1;
+                              written++;
+                          } catch (err) { console.error('backfill presensi_items:', err); }
+                      }
+                  }
+                  try { localStorage.setItem(markerKey, JSON.stringify(done)); } catch (e) {}
+              }
+              return written;
+          }
+  
+          window.Android = {
+              isBrowser: true,
+              checkLoginStatus: async () => {
+                  const { auth } = await fb();
+                  const onAuthStateChanged = (await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`)).onAuthStateChanged;
+                  onAuthStateChanged(auth, (user) => {
+                      if (typeof window.onCheckLoginStatus === 'function') {
+                          window.onCheckLoginStatus(!!user, user ? user.email : "");
+                      }
+                  });
+              },
+              loginWithEmail: async (email, pass) => {
+                  try {
+                      const { auth } = await fb();
+                      const { signInWithEmailAndPassword } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
+                      await signInWithEmailAndPassword(auth, email, pass);
+                      if (typeof window.onLoginResult === 'function') window.onLoginResult(true, "Login Berhasil");
+                  } catch (err) {
+                      if (typeof window.onLoginResult === 'function') window.onLoginResult(false, err.message);
+                  }
+              },
+              resetPassword: async (email) => {
+                  try {
+                      const { auth } = await fb();
+                      const { sendPasswordResetEmail } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
+                      await sendPasswordResetEmail(auth, email);
+                      if (typeof window.onResetResult === 'function') window.onResetResult(true, "Email terkirim");
+                  } catch (err) {
+                      if (typeof window.onResetResult === 'function') window.onResetResult(false, err.message);
+                  }
+              },
+              logoutFirebase: async () => {
+                  const { auth } = await fb();
+                  const { signOut } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
+                  await signOut(auth);
+                  localStorage.clear();
+                  location.reload();
+              },
+              persistData: (key, data) => {
+                  localStorage.setItem('hk_persist_' + key, data);
+              },
+              retrieveData: (key) => {
+                  return localStorage.getItem('hk_persist_' + key) || "";
+              },
+              requestLocalData: async (callbackName) => {
+                  try {
+                      const { fs, db, auth } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) return;
+                      const ref = fs.doc(db, 'users', user.uid);
+                      const snap = await fs.getDoc(ref);
+                      if (snap.exists()) {
+                          const data = snap.data();
+                          const base64 = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+                          if (window[callbackName]) window[callbackName](base64);
+                      }
+                  } catch (e) { console.error("Cloud fetch error:", e); }
+              },
+              restoreFromCloud: async () => {
+                  try {
+                      const { fs, db, auth } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) {
+                          if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, "Sesi berakhir, silakan login ulang");
+                          return;
+                      }
+                      const snap = await fs.getDoc(fs.doc(db, 'users', user.uid));
+                      if (snap.exists()) {
+                          if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(true, JSON.stringify(snap.data()));
+                      } else {
+                          if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, "Data tidak ditemukan");
+                      }
+                  } catch (e) { if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, e.message); }
+              },
+              fetchRole: async () => {
+                  try {
+                      const { fs, db, auth } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) return;
+                      const snap = await fs.getDoc(fs.doc(db, 'users', user.uid));
+                      const role = snap.data()?.role || "Pegawai";
+                      const managed = snap.data()?.managedRole || "";
+                      if (typeof window.onFetchRole === 'function') window.onFetchRole(role, managed);
+                  } catch (e) {}
+              },
+              syncToCloud: async (jsonData) => {
+                  // [HK-SYNC] Tulis state ke users/{uid} tanpa melampaui batas 1 MiB Firestore.
+                  const helpers = window.__hkSyncHelpers;
+                  const LIMIT = 1048576;
+                  const STRIP_AT = 940000;
+                  const stat = { ok: 0, fail: 0 };
+                  try {
+                      if (!helpers) throw new Error('[HK-SYNC] helper sinkronisasi belum terpasang');
+                      const { fs, db, auth, st, storage } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) {
+                          if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, 'Sesi berakhir');
+                          return;
+                      }
+                      const data = JSON.parse(jsonData);
+                      await helpers.offload(data, user.uid, st, storage, stat);
+                      const ref = fs.doc(db, 'users', user.uid);
+                      let payload = data;
+                      const legacy = { ok: 0, fail: 0 };
+                      try {
+                          const cur = await fs.getDoc(ref);
+                          if (cur.exists()) {
+                              const old = cur.data() || {};
+                              // [HK-SYNC] bersihkan base64 lama yang menumpuk di dokumen (hasil merge
+                              // bertahun-tahun): dipindahkan ke Storage, tidak dibuang. Unggahan diindeks
+                              // hash, sehingga sinkron berikutnya tidak mengunggah foto yang sama lagi.
+                              await helpers.offload(old, user.uid, st, storage, legacy);
+                              payload = Object.assign({}, old, data);
+                          }
+                      } catch (e) { console.warn('[HK-SYNC] dokumen lama tidak terbaca:', e); }
+                      if (helpers.byteLen(JSON.stringify(payload)) > STRIP_AT) helpers.strip(payload);
+                      const size = helpers.byteLen(JSON.stringify(payload));
+                      if (size > LIMIT) {
+                          throw new Error('Data sinkronisasi masih terlalu besar (' + size +
+                              ' byte, batas 1.048.576 byte). Kurangi riwayat absen/kegiatan lalu coba lagi.');
+                      }
+                      await fs.setDoc(ref, payload, { merge: true });
+                      let note = '';
+                      try {
+                          const copied = await hkBackfillPresensiItems(fs, db, user.uid, data.presensi);
+                          if (copied > 0) note += ' - ' + copied + ' absen lama disalin ke riwayat';
+                      } catch (e) { console.warn('[HK-PRESENSI] backfill gagal:', e); }
+                      if (legacy.ok > 0) note += ' - ' + legacy.ok + ' foto lama dipindah ke awan';
+                      const failed = stat.fail + legacy.fail;
+                      if (failed > 0) note += ' - ' + failed + ' foto tidak dapat dipindah ke awan';
+                      if (typeof window.onSyncComplete === 'function') window.onSyncComplete(true, 'Sinkronisasi Web Berhasil' + note);
+                  } catch (e) {
+                      let msg = (e && e.message) ? e.message : String(e);
+                      if (/cannot be written because its size/i.test(msg)) {
+                          msg = 'Data sinkronisasi melebihi batas 1 MB di Firestore. Foto sudah dipindah ke awan - coba Sinkron ulang; jika masih gagal, kurangi riwayat absen/kegiatan lama.';
+                      }
+                      if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, msg);
+                  }
+              },
+              getUserId: () => _fbCache?.auth?.currentUser?.uid || "",
+              savePresensi: async (json) => {
+                  try {
+                      const { fs, db, auth, st, storage } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) return;
+                      const item = JSON.parse(json);
+                      // [HK-SYNC] pindahkan foto ke Storage lebih dulu agar tulisan incremental
+                      // tidak menaikkan ukuran dokumen user melebihi batas 1 MiB.
+                      if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
+                          const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
+                          if (name) item.photo = name;
+                      }
+                      await fs.updateDoc(fs.doc(db, 'users', user.uid), {
+                          presensi: fs.arrayUnion(item)
+                      });
+                      await fs.setDoc(
+                          fs.doc(fs.collection(db, 'users', user.uid, 'presensi_items'),
+                              hkPresensiDocId(item)),
+                          item,
+                          { merge: true }
+                      );
+                  } catch (e) { console.error("savePresensi:", e); }
+              },
+              saveKegiatan: async (json) => {
+                  try {
+                      const { fs, db, auth, st, storage } = await fb();
+                      const user = auth.currentUser;
+                      if (!user) return;
+                      const item = JSON.parse(json);
+                      // [HK-SYNC] pindahkan foto ke Storage sebelum ditulis ke dokumen user.
+                      if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
+                          const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
+                          if (name) item.photo = name;
+                      }
+                      await fs.updateDoc(fs.doc(db, 'users', user.uid), {
+                          kegiatan: fs.arrayUnion(item)
+                      });
+                  } catch (e) { console.error("saveKegiatan:", e); }
+              },
+              fetchTeamData: async (month, year) => {
+                  try {
+                      const { fs, db } = await fb();
+                      const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'users'), fs.limit(200)));
+                      const users = [];
+                      snapshot.forEach(d => users.push({id: d.id, ...d.data()}));
+                      if (typeof window.onFetchTeamResult === 'function') {
+                          window.onFetchTeamResult(true, JSON.stringify(users));
+                      }
+                  } catch (e) { if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, e.message); }
+              },
+              fetchTeamDocuments: async (team, docCat, month, year) => {
+                  try {
+                      const { fs, db } = await fb();
+                      const cons = [];
+                      if (team !== "all") cons.push(fs.where("category", "==", team));
+                      if (docCat !== "all") cons.push(fs.where("docCategory", "==", docCat));
+                      cons.push(fs.orderBy("timestamp", "desc"), fs.limit(50));
+                      const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'team_documents'), ...cons));
+                      const docs = [];
+                      snapshot.forEach(d => {
+                          const v = d.data();
+                          if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
+                          docs.push({id: d.id, ...v});
+                      });
+                      if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
+                  } catch (e) { console.error(e); }
+              },
+              uploadTeamDocument: async (base64, fileName, mimeType, team, docCat, note, driveUrl) => {
+                  try {
+                      const { fs, db, st, storage, auth } = await fb();
+                      const user = auth.currentUser;
+                      const path = `team_documents/${team}/${docCat}/${Date.now()}_${fileName}`;
+                      const blob = await fetch(base64).then(r => r.blob());
+                      await st.uploadBytes(st.ref(storage, path), blob);
+                      await fs.addDoc(fs.collection(db, 'team_documents'), {
+                          fileName, storagePath: path, category: team, docCategory: docCat,
+                          note, uploaderUid: user.uid, driveUrl, timestamp: fs.serverTimestamp()
+                      });
+                      if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(true, "Berhasil diunggah");
+                  } catch (e) { if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(false, e.message); }
+              },
+              getCloudPhotoUrl: async (uid, photo, elementId) => {
+                  // [HK-SYNC] Foto kini tersimpan di Storage; sekali ambil lalu di-cache sebagai base64
+                  // agar render berikutnya dan export Excel/PDF (via getImageBase64) tetap mendapat foto.
+                  try {
+                      const { st, storage } = await fb();
+                      const el = document.getElementById(elementId);
+                      const cache = window.__hkPhotoCache || (window.__hkPhotoCache = {});
+                      if (cache[photo]) { if (el) el.src = 'data:image/jpeg;base64,' + cache[photo]; return; }
+                      const url = await st.getDownloadURL(st.ref(storage, 'photos/' + uid + '/' + photo));
+                      try {
+                          const blob = await fetch(url).then((r) => r.blob());
+                          const b64 = await new Promise((res, rej) => {
+                              const rd = new FileReader();
+                              rd.onload = () => res(String(rd.result).split(',')[1] || '');
+                              rd.onerror = rej;
+                              rd.readAsDataURL(blob);
+                          });
+                          if (b64) cache[photo] = b64;
+                          if (el) el.src = b64 ? 'data:image/jpeg;base64,' + b64 : url;
+                      } catch (e) { if (el) el.src = url; }
+                  } catch (e) { /* skip */ }
+              },
+              getImageBase64: (fileName) => {
+                  const c = window.__hkPhotoCache;
+                  return (c && typeof c[fileName] === 'string') ? c[fileName] : '';
+              },
+              downloadJsonBackup: (json) => {
+                  const blob = new Blob([json], {type: "application/json"});
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `HK_Oversee_Web_Backup_${Date.now()}.json`;
+                  a.click();
+              },
+              getRegistrationLogs: async () => {
+                  try {
+                      const { fs, db } = await fb();
+                      const snap = await fs.getDocs(fs.query(fs.collection(db, 'employee_registrations'), fs.orderBy('timestamp', 'desc'), fs.limit(10)));
+                      const logs = [];
+                      snap.forEach(d => {
+                          const v = d.data();
+                          if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
+                          logs.push({ id: d.id, ...v });
+                      });
+                      if (typeof window.onFetchRegLogs === 'function') window.onFetchRegLogs(JSON.stringify(logs));
+                  } catch (e) {
+                      if (typeof window.onFetchRegLogs === 'function') window.onFetchRegLogs("[]");
+                  }
+              },
+              cleanupDatabase: async () => {
+                  try {
+                      const { fs, db } = await fb();
+                      const snap = await fs.getDocs(fs.collection(db, 'employee_registrations'));
+                      const batch = fs.writeBatch(db);
+                      snap.forEach(d => batch.delete(d.ref));
+                      await batch.commit();
+                      showToast("Log pendaftaran dikosongkan", "success");
+                  } catch (e) {
+                      showToast("Gagal mengosongkan log: " + e.message, "error");
+                  }
+              },
+              // ---- Fitur sebelumnya hanya-Android, kini jalan di web ----
+              registerUserByAdmin: async (name, email, role, managedRole) => {
+                  // Menulis ke employee_registrations memicu Cloud Function
+                  // autoRegisterEmployee: membuat akun Auth + kirim email kredensial.
+                  try {
+                      const { fs, db, auth } = await fb();
+                      await fs.addDoc(fs.collection(db, 'employee_registrations'), {
+                          name, email, role, managedRole,
+                          status: 'registered_by_admin',
+                          adminCreator: auth.currentUser ? auth.currentUser.email : 'unknown',
+                          timestamp: fs.serverTimestamp()
+                      });
+                      if (typeof window.onAdminRegisterResult === 'function') window.onAdminRegisterResult(true, "Permintaan terkirim — akun dibuat otomatis & kredensial di-email");
+                  } catch (e) {
+                      if (typeof window.onAdminRegisterResult === 'function') window.onAdminRegisterResult(false, e.message);
+                  }
+              },
+              requestAdmin: async (gmail) => {
+                  try {
+                      const { fs, db } = await fb();
+                      await fs.addDoc(fs.collection(db, 'admin_requests'), {
+                          email: gmail, status: 'pending', timestamp: fs.serverTimestamp()
+                      });
+                      if (typeof window.onRequestAdminResult === 'function') window.onRequestAdminResult(true, "Permintaan terkirim");
+                  } catch (e) {
+                      if (typeof window.onRequestAdminResult === 'function') window.onRequestAdminResult(false, e.message);
+                  }
+              },
+              updatePassword: async (newPass) => {
+                  try {
+                      const { auth } = await fb();
+                      const { updatePassword } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
+                      await updatePassword(auth.currentUser, newPass);
+                      if (typeof window.onUpdatePasswordResult === 'function') window.onUpdatePasswordResult(true, "Sandi berhasil diubah");
+                  } catch (e) {
+                      if (typeof window.onUpdatePasswordResult === 'function') window.onUpdatePasswordResult(false, e.message);
+                  }
+              },
+              getTeamDocuments: async (team, docCat, month, year) => {
+                  try {
+                      const { fs, db } = await fb();
+                      const cons = [];
+                      if (team !== "all") cons.push(fs.where("category", "==", team));
+                      if (docCat !== "all") cons.push(fs.where("docCategory", "==", docCat));
+                      cons.push(fs.orderBy("timestamp", "desc"), fs.limit(50));
+                      const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'team_documents'), ...cons));
+                      const docs = [];
+                      snapshot.forEach(d => {
+                          const v = d.data();
+                          if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
+                          docs.push({id: d.id, ...v});
+                      });
+                      if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
+                  } catch (e) {
+                      console.error("getTeamDocuments:", e);
+                      if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs("[]");
+                  }
+              },
+              saveImageToInternalStorage: (base64, folder) => {
+                  // Di browser foto tetap data-URL; tersinkron via syncToCloud.
+                  return base64 && base64.startsWith('data:') ? base64 : "";
+              },
+              saveActivityPhoto: async (base64) => {
+                  try {
+                      const { st, storage, auth } = await fb();
+                      const user = auth.currentUser;
+                      if (!user || !base64 || !base64.startsWith('data:')) return;
+                      const blob = await fetch(base64).then(r => r.blob());
+                      const path = `photos/${user.uid}/kegiatan_${Date.now()}.jpg`;
+                      await st.uploadBytes(st.ref(storage, path), blob);
+                  } catch (e) { console.error("saveActivityPhoto:", e); }
+              },
+              getAllPresensi: () => JSON.stringify(state && state.presensi ? state.presensi : []),
+              getAllKegiatan: () => JSON.stringify(state && state.kegiatan ? state.kegiatan : []),
+              getPendingTeamData: () => "",
+              setBiometricEnabled: () => { showToast("Biometrik hanya tersedia di aplikasi Android", "info"); },
+              clearOldPhotos: () => { showToast("Pembersihan foto otomatis hanya di aplikasi Android", "info"); },
+              downloadMissingPhotos: async (photosJson) => {
+                  // Di browser foto diambil on-demand saat dirender.
+                  try {
+                      const photos = JSON.parse(photosJson || "[]");
+                      if (photos.length) showToast(`${photos.length} foto akan dimuat otomatis dari awan saat ditampilkan`, "info");
+                  } catch (e) {}
+              },
+              generateExcel: async (jsonData, type, fileName) => {
+                  try {
+                      if (type === "absensi") await buildAbsensiExcelBrowser(JSON.parse(jsonData), fileName);
+                      else await buildKegiatanExcelBrowser(JSON.parse(jsonData), fileName);
+                  } catch (e) {
+                      console.error("Excel export error:", e);
+                      showToast("Gagal membuat Excel: " + e.message, "error");
+                  }
+              },
+              generatePdf: (jsonData, fileName) => {
+                  try {
+                      buildKegiatanPdfBrowser(JSON.parse(jsonData), fileName);
+                  } catch (e) {
+                      console.error("PDF export error:", e);
+                      showToast("Gagal membuat PDF: " + e.message, "error");
+                  }
+              },
+              generateAdminExcel: async (jsonData, fileName) => {
+                  try {
+                      await buildAdminRecapExcelBrowser(JSON.parse(jsonData), fileName);
+                  } catch (e) {
+                      console.error("Admin export error:", e);
+                      showToast("Gagal membuat Rekap: " + e.message, "error");
+                  }
+              }
+          };
+          console.warn("Aplikasi berjalan dalam mode WEBSITE (Firebase Web SDK Aktif)");
+      }
+  
+      // ===================== WEB BRIDGE: CHAT =====================
+      let _chatUnsub = null, _presenceUnsub = null, _presenceTimer = null;
+      function hkSanitizeRoom(r) { return (r || 'General').replace(/\//g, '-'); }
+      window.__hkStopChat = function() {
+        if (_chatUnsub) { _chatUnsub(); _chatUnsub = null; }
+        if (_presenceUnsub) { _presenceUnsub(); _presenceUnsub = null; }
+        if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; }
+      };
+      window.Android.startChat = async (room) => {
         try {
-            db = fsMod.initializeFirestore(app, { experimentalAutoDetectLongPolling: true }, 'hkoversee');
-        } catch (e) {
-            db = fsMod.getFirestore(app, 'hkoversee');
-        }
-        const storage = stMod.getStorage(app);
-        _fbCache = { app, auth, db, fs: fsMod, storage, st: stMod };
-        return _fbCache;
-    }
-
-    // Alias lama yang masih dirujuk beberapa titik
-    async function fsMod() { const x = await fb(); return x.fs; }
-    async function hkDB() { const x = await fb(); return x.db; }
-
-    if (typeof window.Android === 'undefined') {
-        // [HK-SYNC] Helper sinkronisasi foto. Firestore membatasi 1 dokumen = 1.048.576 byte
-        // (1 MiB); foto base64 dipindahkan ke Firebase Storage dan dokumen hanya menyimpan
-        // nama berkasnya. Indeks hash mencegah foto yang sama diunggah berulang kali.
-        window.__hkSyncHelpers = (function () {
-            const IDX_KEY = 'hk_photo_storage_index_v1';
-            const B64_MIN = 8192;
-            let idx = null;
-            const loadIdx = function () {
-                if (idx) return idx;
-                try { idx = JSON.parse(window.localStorage.getItem(IDX_KEY) || '{}') || {}; }
-                catch (e) { idx = {}; }
-                return idx;
-            };
-            const saveIdx = function () {
-                try { window.localStorage.setItem(IDX_KEY, JSON.stringify(idx)); } catch (e) {}
-            };
-            const hash = function (s) {
-                let h = 5381;
-                for (let i = 0; i < s.length; i++) h = ((h * 33) ^ s.charCodeAt(i)) >>> 0;
-                return h.toString(36) + '_' + s.length;
-            };
-            const isImgB64 = function (v) {
-                return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:image/') === 0;
-            };
-            const isBigB64 = function (v) {
-                return typeof v === 'string' && v.length > B64_MIN && v.indexOf('data:') === 0;
-            };
-            const byteLen = function (s) {
-                try { return new TextEncoder().encode(s).length; } catch (e) { return s.length; }
-            };
-            const upload = async function (dataUrl, uid, st, storage, stat) {
-                const key = uid + '|' + hash(dataUrl);
-                const known = loadIdx()[key];
-                if (known) return known;
-                try {
-                    const blob = await fetch(dataUrl).then(function (r) { return r.blob(); });
-                    const name = 'sync_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8) + '.jpg';
-                    await st.uploadBytes(st.ref(storage, 'photos/' + uid + '/' + name), blob);
-                    loadIdx()[key] = name;
-                    saveIdx();
-                    if (stat) stat.ok++;
-                    return name;
-                } catch (e) {
-                    if (stat) stat.fail++;
-                    console.warn('[HK-SYNC] foto gagal dipindah ke Storage:', e);
-                    return null;
-                }
-            };
-            const offload = async function (node, uid, st, storage, stat) {
-                if (Array.isArray(node)) {
-                    for (let i = 0; i < node.length; i++) node[i] = await offload(node[i], uid, st, storage, stat);
-                    return node;
-                }
-                if (node && typeof node === 'object') {
-                    for (const k of Object.keys(node)) node[k] = await offload(node[k], uid, st, storage, stat);
-                    return node;
-                }
-                if (!isImgB64(node)) return node;
-                const name = await upload(node, uid, st, storage, stat);
-                return name || node;
-            };
-            const strip = function (node) {
-                let n = 0;
-                if (Array.isArray(node)) { for (let i = 0; i < node.length; i++) n += strip(node[i]); return n; }
-                if (node && typeof node === 'object') {
-                    for (const k of Object.keys(node)) {
-                        if (isBigB64(node[k])) { node[k] = null; n++; } else n += strip(node[k]);
-                    }
-                }
-                return n;
-            };
-            return { upload: upload, offload: offload, strip: strip, byteLen: byteLen, isImgB64: isImgB64 };
-        })();
-
-        // [HK-PRESENSI] Satu absen juga ditulis ke subkoleksi per record seperti
-        // aplikasi native, bukan hanya array `users.presensi` di dokumen induk.
-        function hkPresensiDocId(item) {
-            return String(((item && item.date) || '') + '_' + ((item && item.type) || ''))
-                .replace(/\//g, '-').trim().slice(0, 200) || ('record_' + Date.now());
-        }
-
-        /**
-         * Salin absen lama dari array ke `presensi_items` saat Sinkron.
-         * Idempoten: penanda localStorage menyimpan `updatedAt` terakhir yang
-         * sudah disalin, sehingga riwayat tidak ditulis ulang setiap sinkron.
-         */
-        async function hkBackfillPresensiItems(fs, db, uid, items) {
-            if (!uid || !Array.isArray(items) || items.length === 0) return 0;
-            const markerKey = 'hk_presensi_items_backfill_' + uid;
-            let done = {};
-            try { done = JSON.parse(localStorage.getItem(markerKey) || '{}') || {}; } catch (e) { done = {}; }
-            const pending = items.filter((item) => {
-                if (!item || !item.date || !item.type) return false;
-                const key = hkPresensiDocId(item);
-                const stamp = Number(item.updatedAt) || 0;
-                return !(key in done) || (stamp > 0 && done[key] !== stamp);
+          window.__hkStopChat();
+          const { fs, db, auth } = await fb();
+          const user = auth.currentUser;
+          if (!user) return;
+          const r = hkSanitizeRoom(room);
+          const startTime = Date.now();
+          const q = fs.query(fs.collection(db, 'chat_rooms', r, 'messages'),
+            fs.orderBy('timestamp', 'asc'), fs.limitToLast(50));
+          _chatUnsub = fs.onSnapshot(q, (snap) => {
+            const msgs = [];
+            snap.forEach(d => {
+              const v = d.data();
+              if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
+              msgs.push({ id: d.id, ...v });
             });
-            let written = 0;
-            for (let start = 0; start < pending.length; start += 400) {
-                const chunk = pending.slice(start, start + 400);
-                const batch = fs.writeBatch(db);
-                chunk.forEach((item) => {
-                    batch.set(
-                        fs.doc(fs.collection(db, 'users', uid, 'presensi_items'),
-                            hkPresensiDocId(item)),
-                        item,
-                        { merge: true }
-                    );
-                });
-                try {
-                    await batch.commit();
-                    chunk.forEach((item) => {
-                        done[hkPresensiDocId(item)] = Number(item.updatedAt) || 1;
-                    });
-                    written += chunk.length;
-                } catch (e) {
-                    // Satu dokumen terlalu besar tidak boleh menggagalkan seluruh backfill.
-                    for (const item of chunk) {
-                        try {
-                            await fs.setDoc(
-                                fs.doc(fs.collection(db, 'users', uid, 'presensi_items'),
-                                    hkPresensiDocId(item)),
-                                item,
-                                { merge: true }
-                            );
-                            done[hkPresensiDocId(item)] = Number(item.updatedAt) || 1;
-                            written++;
-                        } catch (err) { console.error('backfill presensi_items:', err); }
-                    }
+            // Notifikasi pesan baru dari orang lain
+            for (const ch of snap.docChanges()) {
+              if (ch.type === 'added' && ch.doc.id) {
+                const v = ch.doc.data();
+                const ts = v.timestamp && v.timestamp.toDate ? v.timestamp.toDate().getTime() : 0;
+                if (ts > startTime && v.senderId !== user.uid && typeof window.showToast === 'function') {
+                  window.showToast('Pesan tim baru: ' + (v.senderName || 'Seseorang'), 'info');
                 }
-                try { localStorage.setItem(markerKey, JSON.stringify(done)); } catch (e) {}
+              }
             }
-            return written;
+            if (typeof window.onChatMessagesReceived === 'function') {
+              window.onChatMessagesReceived(btoa(unescape(encodeURIComponent(JSON.stringify(msgs)))));
+            }
+          }, (err) => console.error('chat listener:', err));
+          // Presence: tulis & dengar
+          const presenceRef = fs.doc(db, 'chat_rooms', r, 'active_users', user.uid);
+          const beat = () => fs.setDoc(presenceRef, { userId: user.uid, lastActive: fs.serverTimestamp() }, { merge: true }).catch(() => {});
+          beat();
+          _presenceTimer = setInterval(beat, 30000);
+          const pq = fs.collection(db, 'chat_rooms', r, 'active_users');
+          _presenceUnsub = fs.onSnapshot(pq, (snap) => {
+            let online = 0;
+            const threshold = Date.now() - 2 * 60 * 1000;
+            snap.forEach(d => {
+              const v = d.data();
+              const t = v.lastActive && v.lastActive.toMillis ? v.lastActive.toMillis() : 0;
+              if (t > threshold) online++;
+            });
+            if (typeof window.onChatPresenceUpdate === 'function') window.onChatPresenceUpdate(online);
+          }, () => {});
+        } catch (e) { console.error('startChat:', e); }
+      };
+      window.Android.stopChat = () => window.__hkStopChat();
+      window.Android.updateChatPresence = async (room) => {
+        try {
+          const { fs, db, auth } = await fb();
+          const user = auth.currentUser;
+          if (!user) return;
+          await fs.setDoc(fs.doc(db, 'chat_rooms', hkSanitizeRoom(room), 'active_users', user.uid),
+            { userId: user.uid, lastActive: fs.serverTimestamp() }, { merge: true });
+        } catch (e) {}
+      };
+      window.Android.sendChatMessage = async (room, text, name, category, type, fileUrl) => {
+        try {
+          const { fs, db, auth } = await fb();
+          const user = auth.currentUser;
+          if (!user) return;
+          await fs.addDoc(fs.collection(db, 'chat_rooms', hkSanitizeRoom(room), 'messages'), {
+            senderId: user.uid, senderName: name || '', senderCategory: category || '',
+            text: text || '', type: type || 'text', fileUrl: fileUrl || '',
+            timestamp: fs.serverTimestamp()
+          });
+        } catch (e) { console.error('sendChatMessage:', e); showToast('Gagal mengirim pesan', 'error'); }
+      };
+      window.Android.uploadChatFile = async (base64, fileName, mimeType) => {
+        try {
+          const { st, storage, auth } = await fb();
+          const user = auth.currentUser;
+          if (!user) return;
+          const blob = await (await fetch(base64)).blob();
+          const path = 'chat_media/' + Date.now() + '_' + (fileName || 'file');
+          const snap = await st.uploadBytes(st.ref(storage, path), blob);
+          const url = await st.getDownloadURL(snap.ref);
+          if (typeof window.onChatFileUploadResult === 'function') window.onChatFileUploadResult(url, mimeType);
+        } catch (e) {
+          console.error('uploadChatFile:', e);
+          if (typeof window.onChatFileUploadResult === 'function') window.onChatFileUploadResult(null, mimeType);
         }
-
-        window.Android = {
-            isBrowser: true,
-            checkLoginStatus: async () => {
-                const { auth } = await fb();
-                const onAuthStateChanged = (await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`)).onAuthStateChanged;
-                onAuthStateChanged(auth, (user) => {
-                    if (typeof window.onCheckLoginStatus === 'function') {
-                        window.onCheckLoginStatus(!!user, user ? user.email : "");
-                    }
-                });
-            },
-            loginWithEmail: async (email, pass) => {
-                try {
-                    const { auth } = await fb();
-                    const { signInWithEmailAndPassword } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
-                    await signInWithEmailAndPassword(auth, email, pass);
-                    if (typeof window.onLoginResult === 'function') window.onLoginResult(true, "Login Berhasil");
-                } catch (err) {
-                    if (typeof window.onLoginResult === 'function') window.onLoginResult(false, err.message);
-                }
-            },
-            resetPassword: async (email) => {
-                try {
-                    const { auth } = await fb();
-                    const { sendPasswordResetEmail } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
-                    await sendPasswordResetEmail(auth, email);
-                    if (typeof window.onResetResult === 'function') window.onResetResult(true, "Email terkirim");
-                } catch (err) {
-                    if (typeof window.onResetResult === 'function') window.onResetResult(false, err.message);
-                }
-            },
-            logoutFirebase: async () => {
-                const { auth } = await fb();
-                const { signOut } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
-                await signOut(auth);
-                localStorage.clear();
-                location.reload();
-            },
-            persistData: (key, data) => {
-                localStorage.setItem('hk_persist_' + key, data);
-            },
-            retrieveData: (key) => {
-                return localStorage.getItem('hk_persist_' + key) || "";
-            },
-            requestLocalData: async (callbackName) => {
-                try {
-                    const { fs, db, auth } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) return;
-                    const ref = fs.doc(db, 'users', user.uid);
-                    const snap = await fs.getDoc(ref);
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        const base64 = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
-                        if (window[callbackName]) window[callbackName](base64);
-                    }
-                } catch (e) { console.error("Cloud fetch error:", e); }
-            },
-            restoreFromCloud: async () => {
-                try {
-                    const { fs, db, auth } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) {
-                        if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, "Sesi berakhir, silakan login ulang");
-                        return;
-                    }
-                    const snap = await fs.getDoc(fs.doc(db, 'users', user.uid));
-                    if (snap.exists()) {
-                        if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(true, JSON.stringify(snap.data()));
-                    } else {
-                        if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, "Data tidak ditemukan");
-                    }
-                } catch (e) { if (typeof window.onRestoreComplete === 'function') window.onRestoreComplete(false, e.message); }
-            },
-            fetchRole: async () => {
-                try {
-                    const { fs, db, auth } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) return;
-                    const snap = await fs.getDoc(fs.doc(db, 'users', user.uid));
-                    const role = snap.data()?.role || "Pegawai";
-                    const managed = snap.data()?.managedRole || "";
-                    if (typeof window.onFetchRole === 'function') window.onFetchRole(role, managed);
-                } catch (e) {}
-            },
-            syncToCloud: async (jsonData) => {
-                // [HK-SYNC] Tulis state ke users/{uid} tanpa melampaui batas 1 MiB Firestore.
-                const helpers = window.__hkSyncHelpers;
-                const LIMIT = 1048576;
-                const STRIP_AT = 940000;
-                const stat = { ok: 0, fail: 0 };
-                try {
-                    if (!helpers) throw new Error('[HK-SYNC] helper sinkronisasi belum terpasang');
-                    const { fs, db, auth, st, storage } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) {
-                        if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, 'Sesi berakhir');
-                        return;
-                    }
-                    const data = JSON.parse(jsonData);
-                    await helpers.offload(data, user.uid, st, storage, stat);
-                    const ref = fs.doc(db, 'users', user.uid);
-                    let payload = data;
-                    const legacy = { ok: 0, fail: 0 };
-                    try {
-                        const cur = await fs.getDoc(ref);
-                        if (cur.exists()) {
-                            const old = cur.data() || {};
-                            // [HK-SYNC] bersihkan base64 lama yang menumpuk di dokumen (hasil merge
-                            // bertahun-tahun): dipindahkan ke Storage, tidak dibuang. Unggahan diindeks
-                            // hash, sehingga sinkron berikutnya tidak mengunggah foto yang sama lagi.
-                            await helpers.offload(old, user.uid, st, storage, legacy);
-                            payload = Object.assign({}, old, data);
-                        }
-                    } catch (e) { console.warn('[HK-SYNC] dokumen lama tidak terbaca:', e); }
-                    if (helpers.byteLen(JSON.stringify(payload)) > STRIP_AT) helpers.strip(payload);
-                    const size = helpers.byteLen(JSON.stringify(payload));
-                    if (size > LIMIT) {
-                        throw new Error('Data sinkronisasi masih terlalu besar (' + size +
-                            ' byte, batas 1.048.576 byte). Kurangi riwayat absen/kegiatan lalu coba lagi.');
-                    }
-                    await fs.setDoc(ref, payload, { merge: true });
-                    let note = '';
-                    try {
-                        const copied = await hkBackfillPresensiItems(fs, db, user.uid, data.presensi);
-                        if (copied > 0) note += ' - ' + copied + ' absen lama disalin ke riwayat';
-                    } catch (e) { console.warn('[HK-PRESENSI] backfill gagal:', e); }
-                    if (legacy.ok > 0) note += ' - ' + legacy.ok + ' foto lama dipindah ke awan';
-                    const failed = stat.fail + legacy.fail;
-                    if (failed > 0) note += ' - ' + failed + ' foto tidak dapat dipindah ke awan';
-                    if (typeof window.onSyncComplete === 'function') window.onSyncComplete(true, 'Sinkronisasi Web Berhasil' + note);
-                } catch (e) {
-                    let msg = (e && e.message) ? e.message : String(e);
-                    if (/cannot be written because its size/i.test(msg)) {
-                        msg = 'Data sinkronisasi melebihi batas 1 MB di Firestore. Foto sudah dipindah ke awan - coba Sinkron ulang; jika masih gagal, kurangi riwayat absen/kegiatan lama.';
-                    }
-                    if (typeof window.onSyncComplete === 'function') window.onSyncComplete(false, msg);
-                }
-            },
-            getUserId: () => _fbCache?.auth?.currentUser?.uid || "",
-            savePresensi: async (json) => {
-                try {
-                    const { fs, db, auth, st, storage } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) return;
-                    const item = JSON.parse(json);
-                    // [HK-SYNC] pindahkan foto ke Storage lebih dulu agar tulisan incremental
-                    // tidak menaikkan ukuran dokumen user melebihi batas 1 MiB.
-                    if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
-                        const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
-                        if (name) item.photo = name;
-                    }
-                    await fs.updateDoc(fs.doc(db, 'users', user.uid), {
-                        presensi: fs.arrayUnion(item)
-                    });
-                    await fs.setDoc(
-                        fs.doc(fs.collection(db, 'users', user.uid, 'presensi_items'),
-                            hkPresensiDocId(item)),
-                        item,
-                        { merge: true }
-                    );
-                } catch (e) { console.error("savePresensi:", e); }
-            },
-            saveKegiatan: async (json) => {
-                try {
-                    const { fs, db, auth, st, storage } = await fb();
-                    const user = auth.currentUser;
-                    if (!user) return;
-                    const item = JSON.parse(json);
-                    // [HK-SYNC] pindahkan foto ke Storage sebelum ditulis ke dokumen user.
-                    if (window.__hkSyncHelpers && window.__hkSyncHelpers.isImgB64(item.photo)) {
-                        const name = await window.__hkSyncHelpers.upload(item.photo, user.uid, st, storage, { ok: 0, fail: 0 });
-                        if (name) item.photo = name;
-                    }
-                    await fs.updateDoc(fs.doc(db, 'users', user.uid), {
-                        kegiatan: fs.arrayUnion(item)
-                    });
-                } catch (e) { console.error("saveKegiatan:", e); }
-            },
-            fetchTeamData: async (month, year) => {
-                try {
-                    const { fs, db } = await fb();
-                    const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'users'), fs.limit(200)));
-                    const users = [];
-                    snapshot.forEach(d => users.push({id: d.id, ...d.data()}));
-                    if (typeof window.onFetchTeamResult === 'function') {
-                        window.onFetchTeamResult(true, JSON.stringify(users));
-                    }
-                } catch (e) { if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, e.message); }
-            },
-            fetchTeamDocuments: async (team, docCat, month, year) => {
-                try {
-                    const { fs, db } = await fb();
-                    const cons = [];
-                    if (team !== "all") cons.push(fs.where("category", "==", team));
-                    if (docCat !== "all") cons.push(fs.where("docCategory", "==", docCat));
-                    cons.push(fs.orderBy("timestamp", "desc"), fs.limit(50));
-                    const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'team_documents'), ...cons));
-                    const docs = [];
-                    snapshot.forEach(d => {
-                        const v = d.data();
-                        if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-                        docs.push({id: d.id, ...v});
-                    });
-                    if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
-                } catch (e) { console.error(e); }
-            },
-            uploadTeamDocument: async (base64, fileName, mimeType, team, docCat, note, driveUrl) => {
-                try {
-                    const { fs, db, st, storage, auth } = await fb();
-                    const user = auth.currentUser;
-                    const path = `team_documents/${team}/${docCat}/${Date.now()}_${fileName}`;
-                    const blob = await fetch(base64).then(r => r.blob());
-                    await st.uploadBytes(st.ref(storage, path), blob);
-                    await fs.addDoc(fs.collection(db, 'team_documents'), {
-                        fileName, storagePath: path, category: team, docCategory: docCat,
-                        note, uploaderUid: user.uid, driveUrl, timestamp: fs.serverTimestamp()
-                    });
-                    if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(true, "Berhasil diunggah");
-                } catch (e) { if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(false, e.message); }
-            },
-            getCloudPhotoUrl: async (uid, photo, elementId) => {
-                // [HK-SYNC] Foto kini tersimpan di Storage; sekali ambil lalu di-cache sebagai base64
-                // agar render berikutnya dan export Excel/PDF (via getImageBase64) tetap mendapat foto.
-                try {
-                    const { st, storage } = await fb();
-                    const el = document.getElementById(elementId);
-                    const cache = window.__hkPhotoCache || (window.__hkPhotoCache = {});
-                    if (cache[photo]) { if (el) el.src = 'data:image/jpeg;base64,' + cache[photo]; return; }
-                    const url = await st.getDownloadURL(st.ref(storage, 'photos/' + uid + '/' + photo));
-                    try {
-                        const blob = await fetch(url).then((r) => r.blob());
-                        const b64 = await new Promise((res, rej) => {
-                            const rd = new FileReader();
-                            rd.onload = () => res(String(rd.result).split(',')[1] || '');
-                            rd.onerror = rej;
-                            rd.readAsDataURL(blob);
-                        });
-                        if (b64) cache[photo] = b64;
-                        if (el) el.src = b64 ? 'data:image/jpeg;base64,' + b64 : url;
-                    } catch (e) { if (el) el.src = url; }
-                } catch (e) { /* skip */ }
-            },
-            getImageBase64: (fileName) => {
-                const c = window.__hkPhotoCache;
-                return (c && typeof c[fileName] === 'string') ? c[fileName] : '';
-            },
-            downloadJsonBackup: (json) => {
-                const blob = new Blob([json], {type: "application/json"});
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `HK_Oversee_Web_Backup_${Date.now()}.json`;
-                a.click();
-            },
-            getRegistrationLogs: async () => {
-                try {
-                    const { fs, db } = await fb();
-                    const snap = await fs.getDocs(fs.query(fs.collection(db, 'employee_registrations'), fs.orderBy('timestamp', 'desc'), fs.limit(10)));
-                    const logs = [];
-                    snap.forEach(d => {
-                        const v = d.data();
-                        if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-                        logs.push({ id: d.id, ...v });
-                    });
-                    if (typeof window.onFetchRegLogs === 'function') window.onFetchRegLogs(JSON.stringify(logs));
-                } catch (e) {
-                    if (typeof window.onFetchRegLogs === 'function') window.onFetchRegLogs("[]");
-                }
-            },
-            cleanupDatabase: async () => {
-                try {
-                    const { fs, db } = await fb();
-                    const snap = await fs.getDocs(fs.collection(db, 'employee_registrations'));
-                    const batch = fs.writeBatch(db);
-                    snap.forEach(d => batch.delete(d.ref));
-                    await batch.commit();
-                    showToast("Log pendaftaran dikosongkan", "success");
-                } catch (e) {
-                    showToast("Gagal mengosongkan log: " + e.message, "error");
-                }
-            },
-            // ---- Fitur sebelumnya hanya-Android, kini jalan di web ----
-            registerUserByAdmin: async (name, email, role, managedRole) => {
-                // Menulis ke employee_registrations memicu Cloud Function
-                // autoRegisterEmployee: membuat akun Auth + kirim email kredensial.
-                try {
-                    const { fs, db, auth } = await fb();
-                    await fs.addDoc(fs.collection(db, 'employee_registrations'), {
-                        name, email, role, managedRole,
-                        status: 'registered_by_admin',
-                        adminCreator: auth.currentUser ? auth.currentUser.email : 'unknown',
-                        timestamp: fs.serverTimestamp()
-                    });
-                    if (typeof window.onAdminRegisterResult === 'function') window.onAdminRegisterResult(true, "Permintaan terkirim — akun dibuat otomatis & kredensial di-email");
-                } catch (e) {
-                    if (typeof window.onAdminRegisterResult === 'function') window.onAdminRegisterResult(false, e.message);
-                }
-            },
-            requestAdmin: async (gmail) => {
-                try {
-                    const { fs, db } = await fb();
-                    await fs.addDoc(fs.collection(db, 'admin_requests'), {
-                        email: gmail, status: 'pending', timestamp: fs.serverTimestamp()
-                    });
-                    if (typeof window.onRequestAdminResult === 'function') window.onRequestAdminResult(true, "Permintaan terkirim");
-                } catch (e) {
-                    if (typeof window.onRequestAdminResult === 'function') window.onRequestAdminResult(false, e.message);
-                }
-            },
-            updatePassword: async (newPass) => {
-                try {
-                    const { auth } = await fb();
-                    const { updatePassword } = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-auth.js`);
-                    await updatePassword(auth.currentUser, newPass);
-                    if (typeof window.onUpdatePasswordResult === 'function') window.onUpdatePasswordResult(true, "Sandi berhasil diubah");
-                } catch (e) {
-                    if (typeof window.onUpdatePasswordResult === 'function') window.onUpdatePasswordResult(false, e.message);
-                }
-            },
-            getTeamDocuments: async (team, docCat, month, year) => {
-                try {
-                    const { fs, db } = await fb();
-                    const cons = [];
-                    if (team !== "all") cons.push(fs.where("category", "==", team));
-                    if (docCat !== "all") cons.push(fs.where("docCategory", "==", docCat));
-                    cons.push(fs.orderBy("timestamp", "desc"), fs.limit(50));
-                    const snapshot = await fs.getDocs(fs.query(fs.collection(db, 'team_documents'), ...cons));
-                    const docs = [];
-                    snapshot.forEach(d => {
-                        const v = d.data();
-                        if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-                        docs.push({id: d.id, ...v});
-                    });
-                    if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
-                } catch (e) {
-                    console.error("getTeamDocuments:", e);
-                    if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs("[]");
-                }
-            },
-            saveImageToInternalStorage: (base64, folder) => {
-                // Di browser foto tetap data-URL; tersinkron via syncToCloud.
-                return base64 && base64.startsWith('data:') ? base64 : "";
-            },
-            saveActivityPhoto: async (base64) => {
-                try {
-                    const { st, storage, auth } = await fb();
-                    const user = auth.currentUser;
-                    if (!user || !base64 || !base64.startsWith('data:')) return;
-                    const blob = await fetch(base64).then(r => r.blob());
-                    const path = `photos/${user.uid}/kegiatan_${Date.now()}.jpg`;
-                    await st.uploadBytes(st.ref(storage, path), blob);
-                } catch (e) { console.error("saveActivityPhoto:", e); }
-            },
-            getAllPresensi: () => JSON.stringify(state && state.presensi ? state.presensi : []),
-            getAllKegiatan: () => JSON.stringify(state && state.kegiatan ? state.kegiatan : []),
-            getPendingTeamData: () => "",
-            setBiometricEnabled: () => { showToast("Biometrik hanya tersedia di aplikasi Android", "info"); },
-            clearOldPhotos: () => { showToast("Pembersihan foto otomatis hanya di aplikasi Android", "info"); },
-            downloadMissingPhotos: async (photosJson) => {
-                // Di browser foto diambil on-demand saat dirender.
-                try {
-                    const photos = JSON.parse(photosJson || "[]");
-                    if (photos.length) showToast(`${photos.length} foto akan dimuat otomatis dari awan saat ditampilkan`, "info");
-                } catch (e) {}
-            },
-            generateExcel: async (jsonData, type, fileName) => {
-                try {
-                    if (type === "absensi") await buildAbsensiExcelBrowser(JSON.parse(jsonData), fileName);
-                    else await buildKegiatanExcelBrowser(JSON.parse(jsonData), fileName);
-                } catch (e) {
-                    console.error("Excel export error:", e);
-                    showToast("Gagal membuat Excel: " + e.message, "error");
-                }
-            },
-            generatePdf: (jsonData, fileName) => {
-                try {
-                    buildKegiatanPdfBrowser(JSON.parse(jsonData), fileName);
-                } catch (e) {
-                    console.error("PDF export error:", e);
-                    showToast("Gagal membuat PDF: " + e.message, "error");
-                }
-            },
-            generateAdminExcel: async (jsonData, fileName) => {
-                try {
-                    await buildAdminRecapExcelBrowser(JSON.parse(jsonData), fileName);
-                } catch (e) {
-                    console.error("Admin export error:", e);
-                    showToast("Gagal membuat Rekap: " + e.message, "error");
-                }
-            }
-        };
-        console.warn("Aplikasi berjalan dalam mode WEBSITE (Firebase Web SDK Aktif)");
-    }
-
-    // ===================== WEB BRIDGE: CHAT =====================
-    let _chatUnsub = null, _presenceUnsub = null, _presenceTimer = null;
-    function hkSanitizeRoom(r) { return (r || 'General').replace(/\//g, '-'); }
-    window.__hkStopChat = function() {
-      if (_chatUnsub) { _chatUnsub(); _chatUnsub = null; }
-      if (_presenceUnsub) { _presenceUnsub(); _presenceUnsub = null; }
-      if (_presenceTimer) { clearInterval(_presenceTimer); _presenceTimer = null; }
-    };
-    window.Android.startChat = async (room) => {
-      try {
-        window.__hkStopChat();
-        const { fs, db, auth } = await fb();
-        const user = auth.currentUser;
-        if (!user) return;
-        const r = hkSanitizeRoom(room);
-        const startTime = Date.now();
-        const q = fs.query(fs.collection(db, 'chat_rooms', r, 'messages'),
-          fs.orderBy('timestamp', 'asc'), fs.limitToLast(50));
-        _chatUnsub = fs.onSnapshot(q, (snap) => {
-          const msgs = [];
+      };
+      window.Android.openChatCamera = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+          const video = document.createElement('video');
+          video.srcObject = stream; video.playsInline = true; await video.play();
+          await new Promise(r => setTimeout(r, 600));
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth; canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0);
+          stream.getTracks().forEach(t => t.stop());
+          if (typeof window.onChatCameraResult === 'function') {
+            window.onChatCameraResult(canvas.toDataURL('image/jpeg', 0.6));
+          }
+        } catch (e) { showToast('Kamera tidak dapat diakses', 'error'); }
+      };
+      window.Android.requestMicrophonePermission = () => { /* browser meminta otomatis */ };
+  
+      // ===================== WEB BRIDGE: ACTION PLAN =====================
+      window.Android.getActionPlans = async (cat) => {
+        try {
+          const { fs, db } = await fb();
+          let q = fs.query(fs.collection(db, 'action_plans'), fs.orderBy('timestamp', 'desc'), fs.limit(200));
+          if (cat && cat !== 'all') q = fs.query(q, fs.where('category', '==', cat));
+          const snap = await fs.getDocs(q);
+          const plans = [];
           snap.forEach(d => {
             const v = d.data();
             if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-            msgs.push({ id: d.id, ...v });
+            plans.push({ id: d.id, ...v });
           });
-          // Notifikasi pesan baru dari orang lain
-          for (const ch of snap.docChanges()) {
-            if (ch.type === 'added' && ch.doc.id) {
-              const v = ch.doc.data();
-              const ts = v.timestamp && v.timestamp.toDate ? v.timestamp.toDate().getTime() : 0;
-              if (ts > startTime && v.senderId !== user.uid && typeof window.showToast === 'function') {
-                window.showToast('Pesan tim baru: ' + (v.senderName || 'Seseorang'), 'info');
-              }
-            }
-          }
-          if (typeof window.onChatMessagesReceived === 'function') {
-            window.onChatMessagesReceived(btoa(unescape(encodeURIComponent(JSON.stringify(msgs)))));
-          }
-        }, (err) => console.error('chat listener:', err));
-        // Presence: tulis & dengar
-        const presenceRef = fs.doc(db, 'chat_rooms', r, 'active_users', user.uid);
-        const beat = () => fs.setDoc(presenceRef, { userId: user.uid, lastActive: fs.serverTimestamp() }, { merge: true }).catch(() => {});
-        beat();
-        _presenceTimer = setInterval(beat, 30000);
-        const pq = fs.collection(db, 'chat_rooms', r, 'active_users');
-        _presenceUnsub = fs.onSnapshot(pq, (snap) => {
-          let online = 0;
-          const threshold = Date.now() - 2 * 60 * 1000;
-          snap.forEach(d => {
-            const v = d.data();
-            const t = v.lastActive && v.lastActive.toMillis ? v.lastActive.toMillis() : 0;
-            if (t > threshold) online++;
-          });
-          if (typeof window.onChatPresenceUpdate === 'function') window.onChatPresenceUpdate(online);
-        }, () => {});
-      } catch (e) { console.error('startChat:', e); }
-    };
-    window.Android.stopChat = () => window.__hkStopChat();
-    window.Android.updateChatPresence = async (room) => {
-      try {
-        const { fs, db, auth } = await fb();
-        const user = auth.currentUser;
-        if (!user) return;
-        await fs.setDoc(fs.doc(db, 'chat_rooms', hkSanitizeRoom(room), 'active_users', user.uid),
-          { userId: user.uid, lastActive: fs.serverTimestamp() }, { merge: true });
-      } catch (e) {}
-    };
-    window.Android.sendChatMessage = async (room, text, name, category, type, fileUrl) => {
-      try {
-        const { fs, db, auth } = await fb();
-        const user = auth.currentUser;
-        if (!user) return;
-        await fs.addDoc(fs.collection(db, 'chat_rooms', hkSanitizeRoom(room), 'messages'), {
-          senderId: user.uid, senderName: name || '', senderCategory: category || '',
-          text: text || '', type: type || 'text', fileUrl: fileUrl || '',
-          timestamp: fs.serverTimestamp()
-        });
-      } catch (e) { console.error('sendChatMessage:', e); showToast('Gagal mengirim pesan', 'error'); }
-    };
-    window.Android.uploadChatFile = async (base64, fileName, mimeType) => {
-      try {
-        const { st, storage, auth } = await fb();
-        const user = auth.currentUser;
-        if (!user) return;
-        const blob = await (await fetch(base64)).blob();
-        const path = 'chat_media/' + Date.now() + '_' + (fileName || 'file');
-        const snap = await st.uploadBytes(st.ref(storage, path), blob);
-        const url = await st.getDownloadURL(snap.ref);
-        if (typeof window.onChatFileUploadResult === 'function') window.onChatFileUploadResult(url, mimeType);
-      } catch (e) {
-        console.error('uploadChatFile:', e);
-        if (typeof window.onChatFileUploadResult === 'function') window.onChatFileUploadResult(null, mimeType);
-      }
-    };
-    window.Android.openChatCamera = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
-        const video = document.createElement('video');
-        video.srcObject = stream; video.playsInline = true; await video.play();
-        await new Promise(r => setTimeout(r, 600));
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth; canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        stream.getTracks().forEach(t => t.stop());
-        if (typeof window.onChatCameraResult === 'function') {
-          window.onChatCameraResult(canvas.toDataURL('image/jpeg', 0.6));
+          if (typeof window.onActionPlansReceived === 'function') window.onActionPlansReceived(JSON.stringify(plans));
+        } catch (e) {
+          console.error('getActionPlans:', e);
+          if (typeof window.onActionPlansReceived === 'function') window.onActionPlansReceived('[]');
         }
-      } catch (e) { showToast('Kamera tidak dapat diakses', 'error'); }
-    };
-    window.Android.requestMicrophonePermission = () => { /* browser meminta otomatis */ };
-
-    // ===================== WEB BRIDGE: ACTION PLAN =====================
-    window.Android.getActionPlans = async (cat) => {
-      try {
-        const { fs, db } = await fb();
-        let q = fs.query(fs.collection(db, 'action_plans'), fs.orderBy('timestamp', 'desc'), fs.limit(200));
-        if (cat && cat !== 'all') q = fs.query(q, fs.where('category', '==', cat));
-        const snap = await fs.getDocs(q);
-        const plans = [];
-        snap.forEach(d => {
-          const v = d.data();
-          if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-          plans.push({ id: d.id, ...v });
-        });
-        if (typeof window.onActionPlansReceived === 'function') window.onActionPlansReceived(JSON.stringify(plans));
-      } catch (e) {
-        console.error('getActionPlans:', e);
-        if (typeof window.onActionPlansReceived === 'function') window.onActionPlansReceived('[]');
-      }
-    };
-    window.Android.saveActionPlan = async (json) => {
-      try {
-        const { fs, db } = await fb();
-        const plans = JSON.parse(json);
-        const batch = fs.writeBatch(db);
-        plans.forEach(p => {
-          batch.set(fs.doc(fs.collection(db, 'action_plans')), {
-            activityName: p.activityName, targetVolume: Number(p.targetVolume) || 0,
-            unit: p.unit || '', pics: p.pics || [], category: p.category,
-            status: 'Planned', timestamp: fs.serverTimestamp()
-          });
-        });
-        await batch.commit();
-        if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(true, plans.length + ' Action Plan berhasil disimpan');
-      } catch (e) {
-        if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(false, e.message);
-      }
-    };
-    window.Android.updateActionPlanRealization = async (id, date, volume, unit, photo, coords, sta, notes, completedByName, status) => {
-      try {
-        const { fs, db, st, storage, auth } = await fb();
-        const user = auth.currentUser;
-        let photoRef = photo;
-        // Upload foto ke Storage bila data-URL
-        if (photo && photo.startsWith('data:') && user) {
-          try {
-            const blob = await (await fetch(photo)).blob();
-            const path = 'photos/' + user.uid + '/tr_' + Date.now() + '.jpg';
-            const snap = await st.uploadBytes(st.ref(storage, path), blob);
-            photoRef = path;
-          } catch (e2) { photoRef = photo; }
-        }
-        await fs.updateDoc(fs.doc(db, 'action_plans', id), {
-          realizations: fs.arrayUnion({
-            date, volume: Number(volume) || 0, unit, sta: sta || '', notes: notes || '',
-            photo: photoRef, coords: coords || '', timestamp: Date.now(),
-            completedByUid: user ? user.uid : '', completedByName: completedByName || ''
-          }),
-          status: status || 'In Progress', updatedAt: Date.now()
-        });
-        if (typeof window.onActionPlanUpdateResult === 'function') window.onActionPlanUpdateResult(true);
-      } catch (e) {
-        console.error('updateActionPlanRealization:', e);
-        if (typeof window.onActionPlanUpdateResult === 'function') window.onActionPlanUpdateResult(false);
-      }
-    };
-
-    // ===================== WEB BRIDGE: AI GEMINI =====================
-    async function hkGeminiImage(base64DataUrl, prompt) {
-        // [29] Lewat Cloud Function hkGeminiProxy — API key hanya ada di Secret Manager server.
-        const fns = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-functions.js`);
-        const { app } = await fb();
-        const callProxy = fns.httpsCallable(fns.getFunctions(app, "asia-southeast1"), "hkGeminiProxy");
-        const out = await callProxy({ base64: base64DataUrl, prompt: prompt });
-        return String((out.data || {}).text || "");
-      }
-          const HK_AP_PROMPT = `Analyze this construction action plan, schedule, or task list document (PDF or Image). Extract all distinct tasks, activities, or work items mentioned in the document. Look for tables, bullet points, or numbered lists that represent the scope of work. Also try to extract the target quantity/volume and the unit of measurement if available. Important rules: 1. Return ONLY a valid raw JSON object. 2. Format: {"tasks": [{"name": "Activity Name", "volume": 123.4, "unit": "m3"}, ...]} 3. "volume" should be a number. If not available, use 0. 4. "unit" should be a string (e.g., "m3", "kg", "m'", "ton"). If not available, use "". 5. Do not include markdown tags like \`\`\`json or any introductory text. 6. If no tasks are clearly found, return {"tasks": []}. 7. Task names must be concise and taken directly from the document.`;
-    window.Android.analyzeActionPlanAI = async (base64) => {
-      try {
-        const json = await hkGeminiImage(base64, HK_AP_PROMPT);
-        if (typeof window.onActionPlanAIResult === 'function') window.onActionPlanAIResult(json);
-        else console.log('AP AI:', json);
-      } catch (e) {
-        if (typeof window.onAPAIError === 'function') window.onAPAIError(e.message);
-      }
-    };
-    const HK_DOC_PROMPT = 'Analyze this construction document image. Extract and return ONLY a JSON object with the following fields: "title": the official subject or title of the document, "no_doc": the formal document or letter reference number, "date": the document date in YYYY-MM-DD format, "category": classify into one of these: Site Instruksi, Dokumen Quality, Back Up MC, Dokumen QHSE, Laporan, Invoice, Surat, or Lainnya. Important: Return only the raw JSON object string. Do not include markdown like backtick-backtick-json.';
-    window.Android.analyzeDocumentAI = async (base64) => {
-      try {
-        const json = await hkGeminiImage(base64, HK_DOC_PROMPT);
-        if (typeof window.onAIDocumentAnalysisResult === 'function') window.onAIDocumentAnalysisResult(json);
-      } catch (e) {
-        if (typeof window.onAIError === 'function') window.onAIError(e.message);
-      }
-    };
-
-    // ===================== WEB BRIDGE: BACKUP & DOKUMEN =====================
-    window.Android.exportJsonBackup = (json, fileName) => {
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = fileName || 'backup.json';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      showToast('Backup diunduh', 'success');
-    };
-    window.Android.importJsonBackup = () => {
-      const inp = document.createElement('input');
-      inp.type = 'file'; inp.accept = 'application/json';
-      inp.onchange = async () => {
-        const file = inp.files[0];
-        if (!file) return;
-        try {
-          const text = await file.text();
-          const b64 = btoa(unescape(encodeURIComponent(text)));
-          if (typeof window.onImportJsonComplete === 'function') window.onImportJsonComplete(b64);
-        } catch (e) { showToast('File tidak valid', 'error'); }
       };
-      inp.click();
-    };
-    window.Android.updateDocumentMetadata = async (docId, jsonUpdates) => {
-      try {
-        const { fs, db } = await fb();
-        await fs.updateDoc(fs.doc(db, 'team_documents', docId), JSON.parse(jsonUpdates));
-        if (typeof window.onUpdateDocMetadataResult === 'function') window.onUpdateDocMetadataResult(true);
-      } catch (e) {
-        showToast('Gagal menyimpan: ' + e.message, 'error');
-        if (typeof window.onUpdateDocMetadataResult === 'function') window.onUpdateDocMetadataResult(false);
-      }
-    };
-    window.Android.requestNotificationPermission = async () => {
-      if ('Notification' in window) { try { await Notification.requestPermission(); } catch (e) {} }
-    };
+      window.Android.saveActionPlan = async (json) => {
+        try {
+          const { fs, db } = await fb();
+          const plans = JSON.parse(json);
+          const batch = fs.writeBatch(db);
+          plans.forEach(p => {
+            batch.set(fs.doc(fs.collection(db, 'action_plans')), {
+              activityName: p.activityName, targetVolume: Number(p.targetVolume) || 0,
+              unit: p.unit || '', pics: p.pics || [], category: p.category,
+              status: 'Planned', timestamp: fs.serverTimestamp()
+            });
+          });
+          await batch.commit();
+          if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(true, plans.length + ' Action Plan berhasil disimpan');
+        } catch (e) {
+          if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(false, e.message);
+        }
+      };
+      window.Android.updateActionPlanRealization = async (id, date, volume, unit, photo, coords, sta, notes, completedByName, status) => {
+        try {
+          const { fs, db, st, storage, auth } = await fb();
+          const user = auth.currentUser;
+          let photoRef = photo;
+          // Upload foto ke Storage bila data-URL
+          if (photo && photo.startsWith('data:') && user) {
+            try {
+              const blob = await (await fetch(photo)).blob();
+              const path = 'photos/' + user.uid + '/tr_' + Date.now() + '.jpg';
+              const snap = await st.uploadBytes(st.ref(storage, path), blob);
+              photoRef = path;
+            } catch (e2) { photoRef = photo; }
+          }
+          await fs.updateDoc(fs.doc(db, 'action_plans', id), {
+            realizations: fs.arrayUnion({
+              date, volume: Number(volume) || 0, unit, sta: sta || '', notes: notes || '',
+              photo: photoRef, coords: coords || '', timestamp: Date.now(),
+              completedByUid: user ? user.uid : '', completedByName: completedByName || ''
+            }),
+            status: status || 'In Progress', updatedAt: Date.now()
+          });
+          if (typeof window.onActionPlanUpdateResult === 'function') window.onActionPlanUpdateResult(true);
+        } catch (e) {
+          console.error('updateActionPlanRealization:', e);
+          if (typeof window.onActionPlanUpdateResult === 'function') window.onActionPlanUpdateResult(false);
+        }
+      };
+  
+      // ===================== WEB BRIDGE: AI GEMINI =====================
+      async function hkGeminiImage(base64DataUrl, prompt) {
+          // [29] Lewat Cloud Function hkGeminiProxy — API key hanya ada di Secret Manager server.
+          const fns = await import(`https://www.gstatic.com/firebasejs/${HK_FB_VERSION}/firebase-functions.js`);
+          const { app } = await fb();
+          const callProxy = fns.httpsCallable(fns.getFunctions(app, "asia-southeast1"), "hkGeminiProxy");
+          const out = await callProxy({ base64: base64DataUrl, prompt: prompt });
+          return String((out.data || {}).text || "");
+        }
+            const HK_AP_PROMPT = `Analyze this construction action plan, schedule, or task list document (PDF or Image). Extract all distinct tasks, activities, or work items mentioned in the document. Look for tables, bullet points, or numbered lists that represent the scope of work. Also try to extract the target quantity/volume and the unit of measurement if available. Important rules: 1. Return ONLY a valid raw JSON object. 2. Format: {"tasks": [{"name": "Activity Name", "volume": 123.4, "unit": "m3"}, ...]} 3. "volume" should be a number. If not available, use 0. 4. "unit" should be a string (e.g., "m3", "kg", "m'", "ton"). If not available, use "". 5. Do not include markdown tags like \`\`\`json or any introductory text. 6. If no tasks are clearly found, return {"tasks": []}. 7. Task names must be concise and taken directly from the document.`;
+      window.Android.analyzeActionPlanAI = async (base64) => {
+        try {
+          const json = await hkGeminiImage(base64, HK_AP_PROMPT);
+          if (typeof window.onActionPlanAIResult === 'function') window.onActionPlanAIResult(json);
+          else console.log('AP AI:', json);
+        } catch (e) {
+          if (typeof window.onAPAIError === 'function') window.onAPAIError(e.message);
+        }
+      };
+      const HK_DOC_PROMPT = 'Analyze this construction document image. Extract and return ONLY a JSON object with the following fields: "title": the official subject or title of the document, "no_doc": the formal document or letter reference number, "date": the document date in YYYY-MM-DD format, "category": classify into one of these: Site Instruksi, Dokumen Quality, Back Up MC, Dokumen QHSE, Laporan, Invoice, Surat, or Lainnya. Important: Return only the raw JSON object string. Do not include markdown like backtick-backtick-json.';
+      window.Android.analyzeDocumentAI = async (base64) => {
+        try {
+          const json = await hkGeminiImage(base64, HK_DOC_PROMPT);
+          if (typeof window.onAIDocumentAnalysisResult === 'function') window.onAIDocumentAnalysisResult(json);
+        } catch (e) {
+          if (typeof window.onAIError === 'function') window.onAIError(e.message);
+        }
+      };
+  
+      // ===================== WEB BRIDGE: BACKUP & DOKUMEN =====================
+      window.Android.exportJsonBackup = (json, fileName) => {
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = fileName || 'backup.json';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        showToast('Backup diunduh', 'success');
+      };
+      window.Android.importJsonBackup = () => {
+        const inp = document.createElement('input');
+        inp.type = 'file'; inp.accept = 'application/json';
+        inp.onchange = async () => {
+          const file = inp.files[0];
+          if (!file) return;
+          try {
+            const text = await file.text();
+            const b64 = btoa(unescape(encodeURIComponent(text)));
+            if (typeof window.onImportJsonComplete === 'function') window.onImportJsonComplete(b64);
+          } catch (e) { showToast('File tidak valid', 'error'); }
+        };
+        inp.click();
+      };
+      window.Android.updateDocumentMetadata = async (docId, jsonUpdates) => {
+        try {
+          const { fs, db } = await fb();
+          await fs.updateDoc(fs.doc(db, 'team_documents', docId), JSON.parse(jsonUpdates));
+          if (typeof window.onUpdateDocMetadataResult === 'function') window.onUpdateDocMetadataResult(true);
+        } catch (e) {
+          showToast('Gagal menyimpan: ' + e.message, 'error');
+          if (typeof window.onUpdateDocMetadataResult === 'function') window.onUpdateDocMetadataResult(false);
+        }
+      };
+      window.Android.requestNotificationPermission = async () => {
+        if ('Notification' in window) { try { await Notification.requestPermission(); } catch (e) {} }
+      };
 
-/* ---------- Override skema = FirebaseManager.kt (Android) ---------- */
-window.Android.fetchTeamData = async (month, year) => {
-  try {
-    const { fs, db, auth } = await fb();
-    const user = auth.currentUser;
-    if (!user) { if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, 'NOT_LOGGED_IN'); return; }
-    const snap = await fs.getDocs(fs.query(fs.collection(db, 'users'), fs.limit(200)));
-    const p1 = year + '-' + String(month + 1).padStart(2, '0');
-    const p2 = year + '-' + (month + 1);
-    const users = [];
-    snap.forEach(doc => {
-      const d = doc.data();
-      const prof = d.profile || {};
-      const filteredPresensi = (d.presensi || []).filter(p => (p.date || '').startsWith(p1) || (p.date || '').startsWith(p2));
-      const filteredKegiatan = (d.kegiatan || []).filter(k => (k.date || '').startsWith(p1) || (k.date || '').startsWith(p2));
-      users.push({ id: doc.id, name: d.name || prof.name || 'User Tanpa Nama', jabatan: d.jabatan || prof.jabatan || '-',
-        managedRole: d.managedRole || prof.managedRole || prof.konsultan || '', email: d.email || '',
-        presensi: filteredPresensi, kegiatan: filteredKegiatan, profile: prof });
-    });
-    window.__hkPendingTeamData = btoa(unescape(encodeURIComponent(JSON.stringify(users))));
-    if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(true, 'PENDING');
-  } catch (e) {
-    if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, e.message);
-  }
-};
-window.Android.getPendingTeamData = () => window.__hkPendingTeamData || '';
-window.Android.getTeamDocuments = async (team, docCat, month, year) => {
-  try {
-    const { fs, db } = await fb();
-    let q = fs.collection(db, 'team_documents');
-    if (team !== 'all') q = fs.query(q, fs.where('category', '==', team));
-    if (docCat !== 'all' && docCat) q = fs.query(q, fs.where('docCategory', '==', docCat));
-    // [HK-DOC] Tanpa orderBy Firestore: where + orderBy lintas field mewajibkan
-    // composite index (category, timestamp) yang tidak pernah dibuat → gagal
-    // failed-precondition & daftar kosong. Sort di memori (sama seperti FirebaseManager.kt).
-    q = fs.query(q, fs.limit(500));
-    const snap = await fs.getDocs(q);
-    const docs = [];
-    snap.forEach(d0 => {
-      const v = d0.data();
-      if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
-      const t = v.timestamp ? new Date(v.timestamp) : null;
-      if (t && (month !== -1 && t.getMonth() !== month)) return;
-      if (t && (year !== -1 && t.getFullYear() !== year)) return;
-      docs.push({ id: d0.id, ...v });
-    });
-    docs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-    if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
-  } catch (e) {
-    console.error('getTeamDocuments:', e);
-    if (typeof window.showToast === 'function') showToast('Gagal memuat dokumen: ' + ((e && e.message) || e), 'error');
-    if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs('[]');
-  }
-};
-window.Android.uploadTeamDocument = async (base64, fileName, mimeType, team, docCat, title, note, driveUrl, docDate, parentDocId) => {
-  try {
-    const { fs, db, st, storage, auth } = await fb();
-    const user = auth.currentUser;
-    const path = 'team_documents/' + (team || 'General') + '/' + (docCat || 'Lainnya') + '/' + Date.now() + '_' + fileName;
-    const blob = await (await fetch(base64)).blob();
-    await st.uploadBytes(st.ref(storage, path), blob, { contentType: mimeType });
-    const docData = { fileName, storagePath: path, category: team, docCategory: docCat, title: title || '',
-      note: note || '', docDate: docDate || '', uploaderUid: user.uid, driveUrl: driveUrl || '', timestamp: fs.serverTimestamp() };
-    if (parentDocId) docData.parentDocId = parentDocId;
-    await fs.addDoc(fs.collection(db, 'team_documents'), docData);
-    if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(true, 'Berhasil diunggah ke folder: ' + team + '/' + docCat);
-  } catch (e) { if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(false, e.message); }
-};
-// [HK-DOC] Preview & unduh dokumen — validasi path (data lama bisa menyimpan
-// nomor dokumen di driveUrl → storage/unauthorized), toast berisi sebab nyata,
-// unduh via blob dengan nama berkas asli (bukan buka tab baru tanpa nama).
-window.Android.getStorageUrlForPreview = async (path) => {
-  try {
-    const { st, storage } = await fb();
-    const cleanPath = String(path || '').replace(/^\/+/, '');
-    if (!/^(team_documents|photos)\//.test(cleanPath)) {
-      throw new Error('Data lama: path penyimpanan tidak valid ("' + cleanPath + '")');
+  
+  /* ---------- Override skema = FirebaseManager.kt (Android) ---------- */
+  window.Android.fetchTeamData = async (month, year) => {
+    try {
+      const { fs, db, auth } = await fb();
+      const user = auth.currentUser;
+      if (!user) { if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, 'NOT_LOGGED_IN'); return; }
+      const snap = await fs.getDocs(fs.query(fs.collection(db, 'users'), fs.limit(200)));
+      const p1 = year + '-' + String(month + 1).padStart(2, '0');
+      const p2 = year + '-' + (month + 1);
+      const users = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        const prof = d.profile || {};
+        const filteredPresensi = (d.presensi || []).filter(p => (p.date || '').startsWith(p1) || (p.date || '').startsWith(p2));
+        const filteredKegiatan = (d.kegiatan || []).filter(k => (k.date || '').startsWith(p1) || (k.date || '').startsWith(p2));
+        users.push({ id: doc.id, name: d.name || prof.name || 'User Tanpa Nama', jabatan: d.jabatan || prof.jabatan || '-',
+          managedRole: d.managedRole || prof.managedRole || prof.konsultan || '', email: d.email || '',
+          presensi: filteredPresensi, kegiatan: filteredKegiatan, profile: prof });
+      });
+      window.__hkPendingTeamData = btoa(unescape(encodeURIComponent(JSON.stringify(users))));
+      if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(true, 'PENDING');
+    } catch (e) {
+      if (typeof window.onFetchTeamResult === 'function') window.onFetchTeamResult(false, e.message);
     }
-    const url = await st.getDownloadURL(st.ref(storage, cleanPath));
-    window.__hkLastPreviewUrl = url;
-    if (typeof window.onPreviewUrlReceived === 'function') window.onPreviewUrlReceived(url, cleanPath);
-    else window.open(url, '_blank');
-  } catch (e) {
-    if (typeof window.showToast === 'function') showToast('Gagal memuat pratinjau: ' + ((e && e.message) || e), 'error');
-    if (typeof window.closePreviewModal === 'function') window.closePreviewModal();
-  }
-};
-window.Android.downloadDocument = async (path, name) => {
-  try {
-    let url = path;
-    if (!/^https?:\/\//i.test(path)) {
+  };
+  window.Android.getPendingTeamData = () => window.__hkPendingTeamData || '';
+  window.Android.getTeamDocuments = async (team, docCat, month, year) => {
+    try {
+      const { fs, db } = await fb();
+      let q = fs.collection(db, 'team_documents');
+      if (team !== 'all') q = fs.query(q, fs.where('category', '==', team));
+      if (docCat !== 'all' && docCat) q = fs.query(q, fs.where('docCategory', '==', docCat));
+      // [HK-DOC] Tanpa orderBy Firestore: where + orderBy lintas field mewajibkan
+      // composite index (category, timestamp) yang tidak pernah dibuat → gagal
+      // failed-precondition & daftar kosong. Sort di memori (sama seperti FirebaseManager.kt).
+      q = fs.query(q, fs.limit(500));
+      const snap = await fs.getDocs(q);
+      const docs = [];
+      snap.forEach(d0 => {
+        const v = d0.data();
+        if (v.timestamp && v.timestamp.toDate) v.timestamp = v.timestamp.toDate().toISOString();
+        const t = v.timestamp ? new Date(v.timestamp) : null;
+        if (t && (month !== -1 && t.getMonth() !== month)) return;
+        if (t && (year !== -1 && t.getFullYear() !== year)) return;
+        docs.push({ id: d0.id, ...v });
+      });
+      docs.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+      if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs(JSON.stringify(docs));
+    } catch (e) {
+      console.error('getTeamDocuments:', e);
+      if (typeof window.showToast === 'function') showToast('Gagal memuat dokumen: ' + ((e && e.message) || e), 'error');
+      if (typeof window.onFetchTeamDocs === 'function') window.onFetchTeamDocs('[]');
+    }
+  };
+  window.Android.uploadTeamDocument = async (base64, fileName, mimeType, team, docCat, title, note, driveUrl, docDate, parentDocId) => {
+    try {
+      const { fs, db, st, storage, auth } = await fb();
+      const user = auth.currentUser;
+      const path = 'team_documents/' + (team || 'General') + '/' + (docCat || 'Lainnya') + '/' + Date.now() + '_' + fileName;
+      const blob = await (await fetch(base64)).blob();
+      await st.uploadBytes(st.ref(storage, path), blob, { contentType: mimeType });
+      const docData = { fileName, storagePath: path, category: team, docCategory: docCat, title: title || '',
+        note: note || '', docDate: docDate || '', uploaderUid: user.uid, driveUrl: driveUrl || '', timestamp: fs.serverTimestamp() };
+      if (parentDocId) docData.parentDocId = parentDocId;
+      await fs.addDoc(fs.collection(db, 'team_documents'), docData);
+      if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(true, 'Berhasil diunggah ke folder: ' + team + '/' + docCat);
+    } catch (e) { if (typeof window.onUploadDocResult === 'function') window.onUploadDocResult(false, e.message); }
+  };
+  // [HK-DOC] Preview & unduh dokumen — validasi path (data lama bisa menyimpan
+  // nomor dokumen di driveUrl → storage/unauthorized), toast berisi sebab nyata,
+  // unduh via blob dengan nama berkas asli (bukan buka tab baru tanpa nama).
+  window.Android.getStorageUrlForPreview = async (path) => {
+    try {
       const { st, storage } = await fb();
       const cleanPath = String(path || '').replace(/^\/+/, '');
       if (!/^(team_documents|photos)\//.test(cleanPath)) {
         throw new Error('Data lama: path penyimpanan tidak valid ("' + cleanPath + '")');
       }
-      url = await st.getDownloadURL(st.ref(storage, cleanPath));
+      const url = await st.getDownloadURL(st.ref(storage, cleanPath));
+      window.__hkLastPreviewUrl = url;
+      if (typeof window.onPreviewUrlReceived === 'function') window.onPreviewUrlReceived(url, cleanPath);
+      else window.open(url, '_blank');
+    } catch (e) {
+      if (typeof window.showToast === 'function') showToast('Gagal memuat pratinjau: ' + ((e && e.message) || e), 'error');
+      if (typeof window.closePreviewModal === 'function') window.closePreviewModal();
     }
-    const blob = await fetch(url).then(r => r.blob());
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name || url.split('/').pop() || 'dokumen';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-  } catch (e) {
-    if (typeof window.showToast === 'function') showToast('Gagal mengunduh: ' + ((e && e.message) || e), 'error');
-  }
-};
-window.Android.saveActionPlan = async (json) => {
-  try {
-    const { fs, db } = await fb();
-    const plans = JSON.parse(json);
-    const batch = fs.writeBatch(db);
-    plans.forEach(p => {
-      batch.set(fs.doc(fs.collection(db, 'action_plans')), {
-        activityName: p.activityName, targetVolume: Number(p.targetVolume) || 0,
-        unit: p.unit || '', pics: (p.pics || []).map(x => ({ uid: x.uid, name: x.name })),
-        category: p.category, status: 'Planned', timestamp: fs.serverTimestamp()
+  };
+  window.Android.downloadDocument = async (path, name) => {
+    try {
+      let url = path;
+      if (!/^https?:\/\//i.test(path)) {
+        const { st, storage } = await fb();
+        const cleanPath = String(path || '').replace(/^\/+/, '');
+        if (!/^(team_documents|photos)\//.test(cleanPath)) {
+          throw new Error('Data lama: path penyimpanan tidak valid ("' + cleanPath + '")');
+        }
+        url = await st.getDownloadURL(st.ref(storage, cleanPath));
+      }
+      const blob = await fetch(url).then(r => r.blob());
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name || url.split('/').pop() || 'dokumen';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+    } catch (e) {
+      if (typeof window.showToast === 'function') showToast('Gagal mengunduh: ' + ((e && e.message) || e), 'error');
+    }
+  };
+  window.Android.saveActionPlan = async (json) => {
+    try {
+      const { fs, db } = await fb();
+      const plans = JSON.parse(json);
+      const batch = fs.writeBatch(db);
+      plans.forEach(p => {
+        batch.set(fs.doc(fs.collection(db, 'action_plans')), {
+          activityName: p.activityName, targetVolume: Number(p.targetVolume) || 0,
+          unit: p.unit || '', pics: (p.pics || []).map(x => ({ uid: x.uid, name: x.name })),
+          category: p.category, status: 'Planned', timestamp: fs.serverTimestamp()
+        });
       });
-    });
-    await batch.commit();
-    if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(true, plans.length + ' Action Plan berhasil disimpan');
-  } catch (e) { if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(false, e.message); }
-};
+      await batch.commit();
+      if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(true, plans.length + ' Action Plan berhasil disimpan');
+    } catch (e) { if (typeof window.onActionPlanSaveResult === 'function') window.onActionPlanSaveResult(false, e.message); }
+  };
+}
+console && console.log && console.log('[HK-26] HK-Oversee Web (iOS Safari) siap.');
+</script>
+<script>
+if (window.__hkGateBlocked) {
+  // Cegah aplikasi berjalan: hapus global yang dibutuhkan skrip utama & SDK
+  // (stub web & semua fungsi inti butuh firebase; L/Chart/ExcelJS untuk render).
+  try { delete window.firebase; } catch (e) { window.firebase = undefined; }
+  try { window.L = undefined; window.Chart = undefined; window.ExcelJS = undefined; window.XlsxPopulate = undefined; } catch (e) {}
+  // Sembunyikan seluruh isi halaman via style + tampilkan hanya overlay blokir.
+  var st = document.createElement("style");
+  st.textContent = "body > *:not(#hkIosGateOverlay){display:none !important}";
+  document.head.appendChild(st);
+}
 </script>
 <!-- ================= [26] END WEB BRIDGE --></head>
 <body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300 pb-20 lg:pb-0">
